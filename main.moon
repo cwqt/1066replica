@@ -1,75 +1,39 @@
-require("moonscript")
-M = require("moses")
-inspect = require("inspect")
+export M = require("../libs/moses")
+export inspect = require("../libs/inspect")
+export lovebird = require("../libs/lovebird")
 
+io.stdout\setvbuf("no")
 
-Map = {}
+export Map = require("Map")
 
-Map.generate = (length, width) ->
-  t = {}
-  for y=1, length do
-    t[y] = {}
-    for x=1, width do
-      t[y][x] = {}
-  return t
-
-t = Map.generate(5, 10)
-
-Map.print = (map) ->
-  yl = "  "
-  for i=1, 10 do yl = yl..i.." "
-  print(yl)
-  ys = string.rep("+-", #map[1]) .. "+"
-  for y=1, #map do
-    xs = ""
-    for x=1, #map[y] do
-      icon = " "
-      if map[y][x].object
-        icon = map[y][x].object.icon
-      xs = xs.."|"..icon
-    xs = xs .. "|"
-    print(" "..ys.."\n"..y..xs)
-  print(" "..ys)
-
+Map.set(Map.generate(5, 10))
 
 class Map.Object
   new: (@icon="█") =>
+  
+  update: (dt) =>
 
-for i=1, 6
-  t[3][i].object = Map.Object()
-for i=2, 4
-  t[i][7].object = Map.Object()
+  draw: () =>
 
-Map.print(t)
+love.load = () ->
+  for i=1, 6
+    Map.current[3][i].object = Map.Object()
+  for i=2, 4
+    Map.current[i][7].object = Map.Object()
 
-Map.getSimplePFMap = (map) ->
-  tt = M.clone(map)
-  for y=1, #tt do
-    for x=1, #tt[y] do
-      if tt[y][x].object != nil
-        tt[y][x] = 1
-      else
-        tt[y][x]= 0
-  return tt
+  Map.print(Map.current)
+  z = Map.findPath({1,3}, {8,3})
+  Map.objectFollowPath(z)
 
+love.update = (dt) ->
+  lovebird.update()
 
-Grid = require("jumper.grid")
-Pathfinder = require("jumper.pathfinder")
+love.draw = () ->
+  love.graphics.print("hello", 10, 10)
 
-Map.findPath = (a, b) ->
-  grid = Grid(Map.getSimplePFMap(t))
-  myFinder = Pathfinder(grid, 'JPS', 0)
-  myFinder\setMode("ORTHOGONAL")
-  startx, starty = a[1], a[2]
-  endx, endy = b[1], b[2]
-
-  path, length = myFinder\getPath(startx, starty, endx, endy)
-  if path then
-    path\filter()
-    print(('Path found! Length: %.2f')\format(length))
-    for node, count in path\iter() do
-      print(('x: %d, y: %d')\format(node.x, node.y))
-
-Map.findPath({1,4}, {1,2})
+love.keypressed = (key) ->
+  switch key
+    when "w"
+      Map.moveObject({1,3}, {1,4})
 
 
