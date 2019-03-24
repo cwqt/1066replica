@@ -85,11 +85,7 @@ Map.moveObject = function(start, finish)
   Map.current[fromy][fromx].object = nil
 end
 Map.objectFollowPath = function(path)
-  os.execute("clear")
-  Map.print(Map.current)
-  os.execute("sleep 1")
-  os.execute("clear")
-  print(M.isTable(path))
+  print("Moving " .. tostring(Map.current[path[1][2]][path[1][1]].object.__class.__name) .. " from " .. tostring(inspect(path[1])) .. " to " .. tostring(inspect(path[#path])))
   for i = 1, #path do
     if i == #path then
       return 
@@ -101,9 +97,6 @@ Map.objectFollowPath = function(path)
       path[i + 1][1],
       path[i + 1][2]
     })
-    Map.print(Map.current)
-    os.execute("sleep 1")
-    os.execute("clear")
   end
 end
 return Map

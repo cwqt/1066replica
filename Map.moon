@@ -77,7 +77,7 @@ Map.moveObject = (start, finish) ->
   Map.current[fromy][fromx].object = nil
 
 Map.objectFollowPath = (path) ->
-  print M.isTable(path)
+  print("Moving #{Map.current[path[1][2]][path[1][1]].object.__class.__name} from #{inspect(path[1])} to #{inspect(path[#path])}")
   for i=1, #path do
     if i == #path then return
     Map.moveObject({path[i][1], path[i][2]},{path[i+1][1], path[i+1][2]})
