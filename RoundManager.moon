@@ -37,10 +37,6 @@ RM.executeCommands = (ft=true) ->
         io.write("Player #{i}: ")
         currentPlayer[#currentPlayer][1]()
         table.remove(currentPlayer, #currentPlayer)
-     -- else
-     --   print "No commands in P#{i}, removing"
-     --   table.remove(RM.cmdStack, i)
-     --   continue
     RM.executeCommands(false)
 
 

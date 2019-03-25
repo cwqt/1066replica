@@ -13,9 +13,18 @@ Map.generate = function(length, width)
   end
   return t
 end
+Map.addObject = function(x, y, obj)
+  if Map.current[y][x].object == nil then
+    Map.current[y][x].object = obj
+    obj.x, obj.y = x, y
+    return print("Inserted " .. tostring(obj.__class.__name) .. " at " .. tostring(x) .. ", " .. tostring(y))
+  else
+    return print("Object already exists at " .. tostring(x) .. ", " .. tostring(y))
+  end
+end
 Map.print = function(map)
   local yl = "  "
-  for i = 1, 10 do
+  for i = 1, #Map.current[1] do
     yl = yl .. i .. " "
   end
   print(yl)
@@ -50,7 +59,9 @@ end
 local Grid = require("../libs/jumper.grid")
 local Pathfinder = require("../libs/jumper.pathfinder")
 Map.findPath = function(a, b)
-  local grid = Grid(Map.getSimplePFMap(Map.current))
+  local pathFinderMap = Map.getSimplePFMap(Map.current)
+  pathFinderMap[a[2]][a[1]] = 0
+  local grid = Grid(pathFinderMap)
   local myFinder = Pathfinder(grid, 'JPS', 0)
   myFinder:setMode("ORTHOGONAL")
   local startx, starty = unpack(a)
@@ -70,8 +81,15 @@ Map.findPath = function(a, b)
         node.y
       }
     end
-    return t
+    return t, length
+  else
+    print("No path found")
+    return nil
   end
+end
+Map.updateObjectPos = function(object, newx, newy)
+  object.x = newx
+  object.y = newy
 end
 Map.moveObject = function(start, finish)
   local fromx, fromy = start[1], start[2]
@@ -83,20 +101,56 @@ Map.moveObject = function(start, finish)
   local copy = M.clone(Map.current[fromy][fromx].object)
   Map.current[toy][tox].object = copy
   Map.current[fromy][fromx].object = nil
+  return Map.updateObjectPos(copy, tox, toy)
 end
-Map.objectFollowPath = function(path)
-  print("Moving " .. tostring(Map.current[path[1][2]][path[1][1]].object.__class.__name) .. " from " .. tostring(inspect(path[1])) .. " to " .. tostring(inspect(path[#path])))
-  for i = 1, #path do
-    if i == #path then
+Map.objectFollowPath = function(path, length)
+  if path then
+    local o = Map.current[path[1][2]][path[1][1]].object
+    if length < o.range then
+      print("Moving " .. tostring(o.__class.__name) .. " from " .. tostring(inspect(path[1])) .. " to " .. tostring(inspect(path[#path])))
+      for i = 1, #path do
+        if i == #path then
+          return 
+        end
+        Map.moveObject({
+          path[i][1],
+          path[i][2]
+        }, {
+          path[i + 1][1],
+          path[i + 1][2]
+        })
+      end
+    else
+      print("Path out of range: " .. tostring(length) .. " > " .. tostring(o.range))
       return 
     end
-    Map.moveObject({
-      path[i][1],
-      path[i][2]
-    }, {
-      path[i + 1][1],
-      path[i + 1][2]
-    })
   end
+end
+do
+  local _class_0
+  local _base_0 = {
+    update = function(self, dt) end,
+    draw = function(self) end
+  }
+  _base_0.__index = _base_0
+  _class_0 = setmetatable({
+    __init = function(self, icon)
+      if icon == nil then
+        icon = "█"
+      end
+      self.icon = icon
+    end,
+    __base = _base_0,
+    __name = "Object"
+  }, {
+    __index = _base_0,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  Map.Object = _class_0
 end
 return Map

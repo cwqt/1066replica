@@ -1,118 +1,51 @@
 M = require("../libs/moses")
 inspect = require("../libs/inspect")
+lb = require("../libs/lovebird")
 io.stdout:setvbuf("no")
 Map = require("Map")
 RM = require("RoundManager")
-Map.set(Map.generate(5, 10))
-do
-  local _class_0
-  local _base_0 = {
-    update = function(self, dt) end,
-    draw = function(self) end
-  }
-  _base_0.__index = _base_0
-  _class_0 = setmetatable({
-    __init = function(self, icon)
-      if icon == nil then
-        icon = "█"
-      end
-      self.icon = icon
-    end,
-    __base = _base_0,
-    __name = "Object"
-  }, {
-    __index = _base_0,
-    __call = function(cls, ...)
-      local _self_0 = setmetatable({}, _base_0)
-      cls.__init(_self_0, ...)
-      return _self_0
-    end
-  })
-  _base_0.__class = _class_0
-  Map.Object = _class_0
-end
-local Entity
-do
-  local _class_0
-  local _parent_0 = Map.Object
-  local _base_0 = {
-    update = function(self, dt)
-      return _class_0.__parent.draw(self)
-    end,
-    draw = function(self)
-      return _class_0.__parent.draw(self)
-    end
-  }
-  _base_0.__index = _base_0
-  setmetatable(_base_0, _parent_0.__base)
-  _class_0 = setmetatable({
-    __init = function(self, hp, ...)
-      if hp == nil then
-        hp = 10
-      end
-      self.hp = hp
-      return _class_0.__parent.__init(self, ...)
-    end,
-    __base = _base_0,
-    __name = "Entity",
-    __parent = _parent_0
-  }, {
-    __index = function(cls, name)
-      local val = rawget(_base_0, name)
-      if val == nil then
-        local parent = rawget(cls, "__parent")
-        if parent then
-          return parent[name]
-        end
-      else
-        return val
-      end
-    end,
-    __call = function(cls, ...)
-      local _self_0 = setmetatable({}, _base_0)
-      cls.__init(_self_0, ...)
-      return _self_0
-    end
-  })
-  _base_0.__class = _class_0
-  if _parent_0.__inherited then
-    _parent_0.__inherited(_parent_0, _class_0)
-  end
-  Entity = _class_0
-end
+Player = require("Player")
+Entity = require("Entity")
+GAME = require("GAME")
 love.load = function()
+  Map.set(Map.generate(4, 10))
   for i = 1, 6 do
     Map.current[3][i].object = Map.Object()
   end
   for i = 2, 4 do
     Map.current[i][7].object = Map.Object()
   end
-  local z = Map.findPath({
-    1,
-    3
-  }, {
-    10,
-    3
-  })
-  Map.objectFollowPath(z)
-  local x = Entity(3, "o")
-  Map.current[5][8].object = x
-  Map.print(Map.current)
+  local a = Player()
+  local b = Player()
+  b:addUnit(8, 1, (function()
+    do
+      local _with_0 = Entity("x")
+      _with_0.def = 5
+      return _with_0
+    end
+  end)())
+  a:addUnit(1, 1, (function()
+    do
+      local _with_0 = Entity("i")
+      _with_0.range = 10
+      return _with_0
+    end
+  end)())
   RM.pushCmd(1, function()
     return Map.objectFollowPath(Map.findPath({
-      8,
-      5
+      1,
+      1
     }, {
-      8,
+      7,
       1
     }))
   end)
-  RM.pushCmd(1, function()
-    return print("hello1")
-  end)
-  return RM.executeCommands()
+  RM.executeCommands()
+  return Map.print(Map.current)
 end
-love.update = function(dt) end
+love.update = function(dt)
+  return lb.update()
+end
 love.draw = function()
   return love.graphics.print("hello", 10, 10)
 end

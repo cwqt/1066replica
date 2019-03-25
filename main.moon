@@ -1,52 +1,44 @@
 export M = require("../libs/moses")
 export inspect = require("../libs/inspect")
+export lb      = require("../libs/lovebird")
 
 io.stdout\setvbuf("no")
 
 export Map = require("Map")
 export RM  = require("RoundManager")
+export Player = require("Player")
+export Entity = require("Entity")
 
-Map.set(Map.generate(5, 10))
-
-class Map.Object
-  new: (@icon="█") =>
-  
-  update: (dt) =>
-
-  draw: () =>
-
-class Entity extends Map.Object
-  new: (@hp=10, ...) =>
-    super(...)
-
-  update: (dt) =>
-    super\draw()
-
-  draw: () =>
-    super\draw()
-
-export Entity
+export GAME = require("GAME")
 
 love.load = () ->
+  Map.set(Map.generate(4, 10))
+
   for i=1, 6
     Map.current[3][i].object = Map.Object()
   for i=2, 4
     Map.current[i][7].object = Map.Object()
 
-  z = Map.findPath({1,3}, {10,3})
-  Map.objectFollowPath(z)
-  
-  x = Entity(3, "o")
-  Map.current[5][8].object = x
+  a = Player()
+  b = Player()
 
-  Map.print(Map.current)
+  b\addUnit(8,1,
+    with Entity("x")
+      .def = 5
+  )
+  a\addUnit(1,1, 
+    with Entity("i")
+      .range = 10
+  )
 
-  RM.pushCmd(1, -> Map.objectFollowPath(Map.findPath({8,5},{8,1})))
-  RM.pushCmd(1, -> print("hello1"))
- -- RM.pushCmd(2, -> print("hello2"))
+  RM.pushCmd(1, -> Map.objectFollowPath(Map.findPath({1,1},{7,1})))
   RM.executeCommands()
 
+  Map.print(Map.current)
+  --love.event.quit()
+
 love.update = (dt) ->
+  lb.update()
 
 love.draw = () ->
   love.graphics.print("hello", 10, 10)
