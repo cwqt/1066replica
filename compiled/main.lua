@@ -12,12 +12,13 @@ love.load = function()
   for i = 1, 6 do
     Map.current[3][i].object = Map.Object()
   end
-  for i = 2, 4 do
+  for i = 2, 3 do
     Map.current[i][7].object = Map.Object()
   end
+  Map.print(Map.current)
   local a = Player()
   local b = Player()
-  b:addUnit(8, 1, (function()
+  b:addUnit(3, 1, (function()
     do
       local _with_0 = Entity("x")
       _with_0.def = 5
@@ -27,21 +28,16 @@ love.load = function()
   a:addUnit(1, 1, (function()
     do
       local _with_0 = Entity("i")
-      _with_0.range = 10
+      _with_0.range = 50
       return _with_0
     end
   end)())
   RM.pushCmd(1, function()
-    return Map.objectFollowPath(Map.findPath({
-      1,
-      1
-    }, {
-      7,
-      1
-    }))
+    return Map.current[1][1].object:move(2, 2)
   end)
   RM.executeCommands()
-  return Map.print(Map.current)
+  Map.print(Map.current)
+  return love.event.quit()
 end
 love.update = function(dt)
   return lb.update()
@@ -62,5 +58,8 @@ love.keypressed = function(key)
   end
 end
 love.errhand = function(msg)
+  print("\n\nERR: " .. string.rep("=", 30))
+  print(msg)
+  print(string.rep("=", 35) .. "\n")
   return love.event.quit()
 end

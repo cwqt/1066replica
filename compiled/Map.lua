@@ -100,29 +100,33 @@ Map.moveObject = function(start, finish)
   end
   local copy = M.clone(Map.current[fromy][fromx].object)
   Map.current[toy][tox].object = copy
+  Map.updateObjectPos(copy, tox, toy)
   Map.current[fromy][fromx].object = nil
-  return Map.updateObjectPos(copy, tox, toy)
 end
-Map.objectFollowPath = function(path, length)
-  if path then
-    local o = Map.current[path[1][2]][path[1][1]].object
-    if length < o.range then
-      print("Moving " .. tostring(o.__class.__name) .. " from " .. tostring(inspect(path[1])) .. " to " .. tostring(inspect(path[#path])))
-      for i = 1, #path do
-        if i == #path then
-          return 
-        end
-        Map.moveObject({
-          path[i][1],
-          path[i][2]
-        }, {
-          path[i + 1][1],
-          path[i + 1][2]
-        })
-      end
-    else
-      print("Path out of range: " .. tostring(length) .. " > " .. tostring(o.range))
-      return 
+Map.getDirection = function(path)
+  local sx, sy = path[1][1], path[1][2]
+  local ex, ey = path[2][1], path[2][2]
+  local dx = ex - sx
+  local dy = ey - sy
+  return {
+    dx,
+    dy
+  }
+end
+Map.deleteStack = { }
+Map.removeObject = function(x, y)
+  return table.insert(Map.deleteStack, {
+    x = x,
+    y = y
+  })
+end
+Map.removeObjects = function()
+  if #Map.deleteStack >= 1 then
+    local _list_0 = Map.deleteStack
+    for _index_0 = 1, #_list_0 do
+      local obj = _list_0[_index_0]
+      print("Removed object " .. tostring(obj))
+      Map.current[obj.y][obj.x].object = nil
     end
   end
 end

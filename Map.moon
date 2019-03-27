@@ -56,13 +56,14 @@ Map.findPath = (a, b) ->
   pathFinderMap = Map.getSimplePFMap(Map.current)
   -- Allow movement from start position (e.g. if object at start)
   pathFinderMap[a[2]][a[1]] = 0
-
+  
   grid = Grid(pathFinderMap)
   myFinder = Pathfinder(grid, 'JPS', 0)
   myFinder\setMode("ORTHOGONAL")
   startx, starty = unpack(a)
   endx, endy = unpack(b)
   path, length = myFinder\getPath(startx, starty, endx, endy)
+  
   if path then
     path\filter()
     print(('Path found! Length: %.2f')\format(length))
@@ -89,23 +90,38 @@ Map.moveObject = (start, finish) ->
   if Map.current[toy][tox].object
     print("moveObject: Object exists at #{tox}, #{toy}")
     return
-
+  
   copy = M.clone(Map.current[fromy][fromx].object)
   Map.current[toy][tox].object = copy
-  Map.current[fromy][fromx].object = nil
   Map.updateObjectPos(copy, tox, toy)
+  Map.current[fromy][fromx].object = nil
 
-Map.objectFollowPath = (path, length) ->
-  if path
-    o = Map.current[path[1][2]][path[1][1]].object
-    if length < o.range
-      print("Moving #{o.__class.__name} from #{inspect(path[1])} to #{inspect(path[#path])}")
-      for i=1, #path do
-        if i == #path then return
-        Map.moveObject({path[i][1], path[i][2]},{path[i+1][1], path[i+1][2]})
-    else
-      print("Path out of range: #{length} > #{o.range}")
-      return
+Map.getDirection = (path) ->
+  --     |0,-1|
+  -- ----+----+---
+  -- -1,0|0,0 |1,0
+  -- ----+----+---            
+  --     |0, 1|
+  --path = {current, next}
+  --path = {{1,1}, {1,2}}
+  sx, sy = path[1][1], path[1][2]
+  ex, ey = path[2][1], path[2][2]
+  dx = ex - sx
+  dy = ey - sy
+  return {dx, dy}
+
+
+Map.deleteStack = {}
+
+Map.removeObject = (x, y) ->
+  table.insert(Map.deleteStack, {x:x, y:y})
+
+Map.removeObjects = () ->
+  if #Map.deleteStack >= 1
+    for obj in *Map.deleteStack
+      print "Removed object #{obj}"
+      Map.current[obj.y][obj.x].object = nil
+
 
 class Map.Object
   new: (@icon="█") =>
@@ -113,9 +129,5 @@ class Map.Object
   update: (dt) =>
 
   draw: () =>
-
-
-
-
 
 return Map

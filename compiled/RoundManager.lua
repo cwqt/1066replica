@@ -35,6 +35,8 @@ RM.executeCommands = function(ft)
         io.write("Player " .. tostring(i) .. ": ")
         currentPlayer[#currentPlayer][1]()
         table.remove(currentPlayer, #currentPlayer)
+        Map.removeObjects()
+        print("-----------------------------")
       end
     end
     return RM.executeCommands(false)
