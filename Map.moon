@@ -4,9 +4,11 @@ Map.current = {}
 Map.set = (map) ->
   Map.current = map
 
-Map.generate = (length, width) ->
+Map.generate = (height, width) ->
   t = {}
-  for y=1, length do
+  Map.height = height
+  Map.width  = width
+  for y=1, height do
     t[y] = {}
     for x=1, width do
       t[y][x] = {}
@@ -91,7 +93,7 @@ Map.moveObject = (start, finish) ->
     print("moveObject: Object exists at #{tox}, #{toy}")
     return
   
-  copy = M.clone(Map.current[fromy][fromx].object)
+  copy = copy2(Map.current[fromy][fromx].object)
   Map.current[toy][tox].object = copy
   Map.updateObjectPos(copy, tox, toy)
   Map.current[fromy][fromx].object = nil

@@ -3,9 +3,11 @@ Map.current = { }
 Map.set = function(map)
   Map.current = map
 end
-Map.generate = function(length, width)
+Map.generate = function(height, width)
   local t = { }
-  for y = 1, length do
+  Map.height = height
+  Map.width = width
+  for y = 1, height do
     t[y] = { }
     for x = 1, width do
       t[y][x] = { }
@@ -98,7 +100,7 @@ Map.moveObject = function(start, finish)
     print("moveObject: Object exists at " .. tostring(tox) .. ", " .. tostring(toy))
     return 
   end
-  local copy = M.clone(Map.current[fromy][fromx].object)
+  local copy = copy2(Map.current[fromy][fromx].object)
   Map.current[toy][tox].object = copy
   Map.updateObjectPos(copy, tox, toy)
   Map.current[fromy][fromx].object = nil

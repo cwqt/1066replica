@@ -25,54 +25,32 @@ class Entity extends Map.Object
         print("Charge!")
 
       if path
-        --o = Map.current[@y][@x].object
         print("Moving #{@.__class.__name} from #{inspect(path[1])} to #{inspect(path[#path])}")
         for i=1, #path do
-          if i == #path then return
-          
-          -- Get direction in which we're travelling {x, y}
-          d = Map.getDirection({path[i], path[i+1]})
-
-          -- if moving in x, will see a ±1 in d[1] (x)
-          -- check @x + d[1] to see next position if we carry on 
-          -- moving in present direction and might see an enemy e.g.
-          -- ----+ enemy <-- @x+d[1]
-          --     |
-          --     v
-          --  attack at +
-          
           -- Command is inserted into a stack, so if the object
           -- is copied (as in moveObject), the object referenced
           -- in the stack will remain the same, so @x/@y are static
           -- so we update it here
           @x, @y = path[i][1], path[i][2]
-          x1 = path[i][1]+d[1]
-          y1 = path[i][2]+d[2]
+
+          -- Table edge cases checking
+          xub = L.clamp(@x+1, 1, Map.width)
+          xlb = L.clamp(@x-1, 1, Map.width)
+          
+          -- Probe left and right of current position for enemies
+          for i=xlb, xub do
+            o = Map.current[@y][i].object
+            if o and o != self
+              if o.isPlayer != @isPlayer and o.isPlayer != nil
+                print("Enemy infront of curent position (#{@x}, #{@y}) at #{o.x}, #{o.y}, attacking!")
+                @attack(o)
+                return
+
+          -- Finished moving
+          if i == #path then return
 
           -- Move object to next position
           Map.moveObject({path[i][1], path[i][2]},{path[i+1][1], path[i+1][2]})
-         
-          -- After move, our present position is the old predicted future position
-          px, py = x1,y1
-          -- If we were to keep moving along the same direction vector, our next
-          -- position would be fx, fy
-          -- probe this position for enemies to see if we should attack them
-          -- and stop moving
-          fx, fy = px + d[1], py + d[2]
-          eo = Map.current[fy][fx].object
-         
-          -- Only detect people when moving in x
-          if (d[1]==1 or d[1]==-1) and d[2] == 0
-            -- See if someone exists
-            if eo != nil
-              -- Only attack enemies
-              if eo.isPlayer != @isPlayer and eo.isPlayer != nil
-                print "help"
-                print eo.isPlayer
-                print @isPlayer
-                print("Enemy infront of curent position (#{px}, #{py}) at #{fx}, #{fy}, attacking!")
-                @attack(eo)
-                return
     else
       print("Path out of range: #{length} > #{@range}")
 

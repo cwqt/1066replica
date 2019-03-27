@@ -24,16 +24,22 @@ do
         if path then
           print("Moving " .. tostring(self.__class.__name) .. " from " .. tostring(inspect(path[1])) .. " to " .. tostring(inspect(path[#path])))
           for i = 1, #path do
+            self.x, self.y = path[i][1], path[i][2]
+            local xub = L.clamp(self.x + 1, 1, Map.width)
+            local xlb = L.clamp(self.x - 1, 1, Map.width)
+            for i = xlb, xub do
+              local o = Map.current[self.y][i].object
+              if o and o ~= self then
+                if o.isPlayer ~= self.isPlayer and o.isPlayer ~= nil then
+                  print("Enemy infront of curent position (" .. tostring(self.x) .. ", " .. tostring(self.y) .. ") at " .. tostring(o.x) .. ", " .. tostring(o.y) .. ", attacking!")
+                  self:attack(o)
+                  return 
+                end
+              end
+            end
             if i == #path then
               return 
             end
-            local d = Map.getDirection({
-              path[i],
-              path[i + 1]
-            })
-            self.x, self.y = path[i][1], path[i][2]
-            local x1 = path[i][1] + d[1]
-            local y1 = path[i][2] + d[2]
             Map.moveObject({
               path[i][1],
               path[i][2]
@@ -41,21 +47,6 @@ do
               path[i + 1][1],
               path[i + 1][2]
             })
-            local px, py = x1, y1
-            local fx, fy = px + d[1], py + d[2]
-            local eo = Map.current[fy][fx].object
-            if (d[1] == 1 or d[1] == -1) and d[2] == 0 then
-              if eo ~= nil then
-                if eo.isPlayer ~= self.isPlayer and eo.isPlayer ~= nil then
-                  print("help")
-                  print(eo.isPlayer)
-                  print(self.isPlayer)
-                  print("Enemy infront of curent position (" .. tostring(px) .. ", " .. tostring(py) .. ") at " .. tostring(fx) .. ", " .. tostring(fy) .. ", attacking!")
-                  self:attack(eo)
-                  return 
-                end
-              end
-            end
           end
         end
       else
