@@ -24,7 +24,7 @@ love.load = () ->
   a = Player()
   b = Player()
 
-  b\addUnit(3,1,
+  b\addUnit(4,1,
     with Entity("x")
       .def = 5
   )

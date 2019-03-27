@@ -60,10 +60,19 @@ class Entity extends Map.Object
           -- and stop moving
           fx, fy = px + d[1], py + d[2]
           eo = Map.current[fy][fx].object
-          if eo != nil
-            print("Enemy infront of curent position (#{px}, #{py}) at #{fx}, #{fy}, attacking!")
-            @attack(eo)
-            return
+         
+          -- Only detect people when moving in x
+          if (d[1]==1 or d[1]==-1) and d[2] == 0
+            -- See if someone exists
+            if eo != nil
+              -- Only attack enemies
+              if eo.isPlayer != @isPlayer and eo.isPlayer != nil
+                print "help"
+                print eo.isPlayer
+                print @isPlayer
+                print("Enemy infront of curent position (#{px}, #{py}) at #{fx}, #{fy}, attacking!")
+                @attack(eo)
+                return
     else
       print("Path out of range: #{length} > #{@range}")
 
@@ -72,7 +81,7 @@ class Entity extends Map.Object
     print("Attacking #{object.__class.__name} at #{object.x}, #{object.y}")
     dmg = math.ceil((@atk^2)/(@atk + object.def))
     print("Dealing #{dmg} damage")
-    object.hp -= 10
+    object.hp -= dmg
     print("#{object.__class.__name} has #{object.hp}HP remaining")
     if object.hp <= 0
       object\die()

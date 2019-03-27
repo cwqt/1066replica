@@ -110,9 +110,7 @@ Map.getDirection = (path) ->
   dy = ey - sy
   return {dx, dy}
 
-
 Map.deleteStack = {}
-
 Map.removeObject = (x, y) ->
   table.insert(Map.deleteStack, {x:x, y:y})
 
@@ -125,7 +123,7 @@ Map.removeObjects = () ->
 
 class Map.Object
   new: (@icon="█") =>
-  
+
   update: (dt) =>
 
   draw: () =>

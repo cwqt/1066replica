@@ -44,10 +44,17 @@ do
             local px, py = x1, y1
             local fx, fy = px + d[1], py + d[2]
             local eo = Map.current[fy][fx].object
-            if eo ~= nil then
-              print("Enemy infront of curent position (" .. tostring(px) .. ", " .. tostring(py) .. ") at " .. tostring(fx) .. ", " .. tostring(fy) .. ", attacking!")
-              self:attack(eo)
-              return 
+            if (d[1] == 1 or d[1] == -1) and d[2] == 0 then
+              if eo ~= nil then
+                if eo.isPlayer ~= self.isPlayer and eo.isPlayer ~= nil then
+                  print("help")
+                  print(eo.isPlayer)
+                  print(self.isPlayer)
+                  print("Enemy infront of curent position (" .. tostring(px) .. ", " .. tostring(py) .. ") at " .. tostring(fx) .. ", " .. tostring(fy) .. ", attacking!")
+                  self:attack(eo)
+                  return 
+                end
+              end
             end
           end
         end
@@ -59,7 +66,7 @@ do
       print("Attacking " .. tostring(object.__class.__name) .. " at " .. tostring(object.x) .. ", " .. tostring(object.y))
       local dmg = math.ceil((self.atk ^ 2) / (self.atk + object.def))
       print("Dealing " .. tostring(dmg) .. " damage")
-      object.hp = object.hp - 10
+      object.hp = object.hp - dmg
       print(tostring(object.__class.__name) .. " has " .. tostring(object.hp) .. "HP remaining")
       if object.hp <= 0 then
         return object:die()

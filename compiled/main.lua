@@ -18,7 +18,7 @@ love.load = function()
   Map.print(Map.current)
   local a = Player()
   local b = Player()
-  b:addUnit(3, 1, (function()
+  b:addUnit(4, 1, (function()
     do
       local _with_0 = Entity("x")
       _with_0.def = 5
