@@ -7,7 +7,10 @@ export lb        = require("../libs/lovebird")  -- online debugger
 export Gamestate = require("../libs/gamestate") -- gamestates, duh
 export Timer     = require("../libs/timer")     -- " "
 export LN        = require("../libs/lovernet")
+export sock      = require("../libs/sock")
 
+
+--export Steam     = require('luasteam')
 
 export Map       = require("modules.Map")
 export RM        = require("modules.RoundManager")
@@ -25,8 +28,8 @@ M.deepClone = (obj) ->
   return res
 
 love.load = () ->
-  Client.start()
-
+--  Client.start()
+  P2P.start("178.62.42.106")
 
   -- Map.set(Map.generate(4, 10))
 
