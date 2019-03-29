@@ -1,4 +1,4 @@
-LN = require("../libs/LoverNet/lovernet")
+LN = require("../libs/lovernet")
 Timer = require("../libs/timer")
 inspect = require("../libs/inspect")
 M = require("../libs/moses")

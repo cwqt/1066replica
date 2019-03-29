@@ -2,7 +2,8 @@ local Server = { }
 Server.start = function()
   Server.matches = { }
   Server.LN = LN.new({
-    type = LN.mode.server
+    type = LN.mode.server,
+    ip = "82.18.185.11"
   })
   Server.LN:addOp('version')
   Server.LN:addProcessOnServer('version', function(self, peer, arg, storage)
