@@ -15,6 +15,8 @@ export sock      = require("../libs/sock")
 export Map       = require("modules.Map")
 export RM        = require("modules.RoundManager")
 export Client    = require("modules.Client")
+export P2P       = require("modules.P2P")
+
 
 export Player    = require("components.Player")
 export Entity    = require("components.Entity")
@@ -61,7 +63,8 @@ love.load = () ->
   -- love.event.quit()
 
 love.update = (dt) ->
-  Client.update(dt)
+  P2P.update(dt)
+  --  Client.update(dt)
 --  lb.update()
 
 love.draw = () ->

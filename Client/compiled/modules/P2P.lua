@@ -1,7 +1,7 @@
 local P2P = { }
 P2P.start = function(peerIP)
-  P2P.Client = sock.newClient(peerIP, "22122")
-  P2P.Server = sock.newServer("localhost", "22122")
+  P2P.Client = sock.newClient(peerID, 22122)
+  P2P.Server = sock.newServer("*", 22122)
   P2P.Client:on("connect", function(data)
     return print("Client connected to the server.")
   end)

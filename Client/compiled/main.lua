@@ -10,6 +10,7 @@ sock = require("../libs/sock")
 Map = require("modules.Map")
 RM = require("modules.RoundManager")
 Client = require("modules.Client")
+P2P = require("modules.P2P")
 Player = require("components.Player")
 Entity = require("components.Entity")
 GAME = require("GAME")
@@ -24,10 +25,10 @@ M.deepClone = function(obj)
   return res
 end
 love.load = function()
-  return Client.start()
+  return P2P.start("178.62.42.106")
 end
 love.update = function(dt)
-  return Client.update(dt)
+  return P2P.update(dt)
 end
 love.draw = function()
   return love.graphics.print("hello", 10, 10)
