@@ -7,7 +7,7 @@ Inspired by [1066](https://armorgames.com/play/4594/1066).
 ## Key goals
 
 * **Logic separated from UI**
-* **No UI developed before logic & networking sorted88
+* **No UI developed before logic & networking sorted**
 * Multi-player
 * Higher entity count (~100 units)
 * More eras (e.g. Roman, WW1)
