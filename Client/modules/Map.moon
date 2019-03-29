@@ -93,7 +93,7 @@ Map.moveObject = (start, finish) ->
     print("moveObject: Object exists at #{tox}, #{toy}")
     return
   
-  copy = copy2(Map.current[fromy][fromx].object)
+  copy = M.deepClone(Map.current[fromy][fromx].object)
   Map.current[toy][tox].object = copy
   Map.updateObjectPos(copy, tox, toy)
   Map.current[fromy][fromx].object = nil
