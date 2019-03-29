@@ -1,7 +1,7 @@
 Client = {}
 
 Client.start = () ->
-  Client.LN = LN.new({type: LN.mode.client, ip:"82.18.185.11"})
+  Client.LN = LN.new({type: LN.mode.client, ip:"178.62.42.106"})
   Client.LN\addOp('version')
   Client.LN\pushData('version')
 

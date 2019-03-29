@@ -1,4 +1,4 @@
-export LN = require("../libs/LoverNet/lovernet")
+export LN = require("../libs/lovernet")
 export Timer = require("../libs/timer")
 export inspect = require("../libs/inspect")
 export M       = require("../libs/moses")

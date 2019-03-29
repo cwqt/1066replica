@@ -6,7 +6,7 @@ export inspect   = require("../libs/inspect")   -- table pretty print
 export lb        = require("../libs/lovebird")  -- online debugger
 export Gamestate = require("../libs/gamestate") -- gamestates, duh
 export Timer     = require("../libs/timer")     -- " "
-export LN        = require("../libs/LoverNet/lovernet")
+export LN        = require("../libs/lovernet")
 
 
 export Map       = require("modules.Map")
