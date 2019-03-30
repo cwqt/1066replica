@@ -7,8 +7,7 @@ export lb        = require("../libs/lovebird")  -- online debugger
 export Gamestate = require("../libs/gamestate") -- gamestates, duh
 export Timer     = require("../libs/timer")     -- " "
 export LN        = require("../libs/lovernet")
-export sock      = require("../libs/sock")
-
+export ANet      = require("../libs/Affair/network")
 
 --export Steam     = require('luasteam')
 
@@ -16,7 +15,7 @@ export Map       = require("modules.Map")
 export RM        = require("modules.RoundManager")
 export Client    = require("modules.Client")
 export P2P       = require("modules.P2P")
-
+export NM        = require("modules.Networking")
 
 export Player    = require("components.Player")
 export Entity    = require("components.Entity")
@@ -32,6 +31,7 @@ M.deepClone = (obj) ->
 love.load = () ->
 --  Client.start()
   P2P.start("178.62.42.106")
+
 
   -- Map.set(Map.generate(4, 10))
 
@@ -60,7 +60,6 @@ love.load = () ->
 
 
   -- Map.print(Map.current)
-  -- love.event.quit()
 
 love.update = (dt) ->
   P2P.update(dt)

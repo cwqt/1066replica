@@ -1,3 +1,3 @@
 local GAME = { }
-GAME.PLAYERS = { }
+GAME.START_TIME = love.timer.getTime()
 return GAME
