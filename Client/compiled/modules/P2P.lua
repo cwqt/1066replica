@@ -26,8 +26,6 @@ P2P.cmd = {
 }
 P2P.start = function(peerIP)
   P2P.Server = ANet:startServer(10, 22121)
-  P2P.Client = ANet:startClient("localhost", "player", 22121)
-  P2P.Client = ANet:startClient("localhost", "player", 22121)
   if P2P.Server then
     P2P.Server.callbacks.received = function(...)
       return P2P.cmd.Server["received"](...)

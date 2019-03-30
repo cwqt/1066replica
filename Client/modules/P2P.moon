@@ -33,7 +33,6 @@ P2P.cmd = {
 
 P2P.start = (peerIP) ->
   P2P.Server = ANet\startServer(10, 22121)
-  P2P.Client = ANet\startClient("localhost", "player", 22121)
 
   if P2P.Server
     P2P.Server.callbacks.received           = (...) -> P2P.cmd.Server["received"](...)
@@ -55,7 +54,6 @@ P2P.update = (dt) ->
     P2P.Server\update(dt)
   if P2P.Client
     P2P.Client\update(dt)
-
 
 P2P.sendDataToPeer = (data) ->
   P2P.Client\send(unpack(data))

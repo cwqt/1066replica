@@ -25,11 +25,17 @@ M.deepClone = function(obj)
   end
   return res
 end
+local timer = Timer()
 love.load = function()
-  return P2P.start("178.62.42.106")
+  P2P.start()
+  print("enter 1 to start client")
+  return timer:after(4, function()
+    P2P.Client = ANet:startClient("178.62.42.106", "player", 22121)
+  end)
 end
 love.update = function(dt)
-  return P2P.update(dt)
+  P2P.update(dt)
+  return timer:update(dt)
 end
 love.draw = function()
   return love.graphics.print("hello", 10, 10)

@@ -28,10 +28,15 @@ M.deepClone = (obj) ->
   for k, v in pairs(obj) do res[M.deepClone(k)] = M.deepClone(v)
   return res
 
+timer = Timer()
+
 love.load = () ->
 --  Client.start()
-  P2P.start("178.62.42.106")
+  P2P.start()
+  print "quick start it!"
 
+  timer\after 4, ->
+    P2P.Client = ANet\startClient("178.62.42.106", "player", 22121)
 
   -- Map.set(Map.generate(4, 10))
 
@@ -63,6 +68,7 @@ love.load = () ->
 
 love.update = (dt) ->
   P2P.update(dt)
+  timer\update(dt)
   --  Client.update(dt)
 --  lb.update()
 
