@@ -33,7 +33,7 @@ P2P.cmd = {
 }
 
 P2P.start = (peerIP) ->
-  P2P.Server = ANet\startServer(10, 22121)
+--  P2P.Server = ANet\startServer(10, 22121)
 
   if P2P.Server
     P2P.Server.callbacks.received           = (...) -> P2P.cmd.Server["received"](...)

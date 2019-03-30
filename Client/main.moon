@@ -7,7 +7,6 @@ export lb        = require("../libs/lovebird")  -- online debugger
 export Gamestate = require("../libs/gamestate") -- gamestates, duh
 export Timer     = require("../libs/timer")     -- " "
 export LN        = require("../libs/lovernet")
-export ANet      = require("../libs/Affair/network")
 
 --export Steam     = require('luasteam')
 
@@ -22,6 +21,10 @@ export Entity    = require("components.Entity")
 
 export GAME = require("GAME")
 
+export ANet      = require("../libs/Affair/network")
+
+
+
 M.deepClone = (obj) ->
   if type(obj) ~= 'table' then return obj
   res = setmetatable({}, getmetatable(obj))
@@ -34,9 +37,6 @@ love.load = () ->
 --  Client.start()
   P2P.start()
   print "quick start it!"
-
-  ip = NM.getLocalIP()
-  NM.log("local", ip)
 
   timer\after 4, ->
     P2P.Client = ANet\startClient("178.62.42.106", "player", 22121)

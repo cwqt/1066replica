@@ -18,11 +18,11 @@ NM.getLocalIP = () ->
   ip = ""
   switch love.system.getOS()
     when "Linux"
-      handle = io.popen("hostname -I | awk '{print $2}'")
+      handle = io.popen("hostname -I | awk '{print $2}' | tr -d '\\n'")
       ip = handle\read("*a")
       handle\close()
     when "OS X"
-      handle = io.popen("ifconfig  | grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*' | grep -Eo '192([0-9]*\\.){3}[0-9]*'")
+      handle = io.popen("ifconfig  | grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*' | grep -Eo '192([0-9]*\\.){3}[0-9]*' | tr -d '\\n'")
       ip = handle\read("*a")
       handle\close()
   return ip

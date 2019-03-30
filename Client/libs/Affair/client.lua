@@ -22,7 +22,8 @@ local function print(...)
   NM.log("p2p_client", {...})
 end
 
-function Client:new( address, port, playerName, authMsg )
+
+function Client:new( address, port, playerName, authMsg, FLAG )
 	local o = {}
 	setmetatable( o, self )
 
@@ -30,10 +31,14 @@ function Client:new( address, port, playerName, authMsg )
 
 	print("Initialising Client...")
 	o.conn = socket.tcp()
+
+	-- Set the Client to run at localIP:22122
+	o.conn:setsockname(NM.getLocalIP(), 22122)
 	o.conn:settimeout(5)
 	local ok, msg = o.conn:connect( address, port )
 	--ok, o.conn = pcall(o.conn.connect, o.conn, address, port)
 	if ok and o.conn then
+		print(o.conn:getsockname())
 		o.conn:settimeout(0)
 		self.send( o, CMD.AUTHORIZATION_REQUREST, authMsg )
 		print("\t-> Client connected", o.conn)
