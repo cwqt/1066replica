@@ -11,6 +11,9 @@ NM.log = (tag, msg) ->
   t = tostring(t * 1000)\sub(1, 6)
   print("#{t} [#{string.upper tag}]: #{msg}")
 
+
+NM.NATpassthrough = (peerIP, privateIP) ->
+
 NM.getLocalIP = () ->
   ip = ""
   switch love.system.getOS()
