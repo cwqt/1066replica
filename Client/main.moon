@@ -35,8 +35,14 @@ love.load = () ->
   P2P.start()
   print "quick start it!"
 
+  ip = NM.getLocalIP()
+  NM.log("local", ip)
+
   timer\after 4, ->
     P2P.Client = ANet\startClient("178.62.42.106", "player", 22121)
+    timer\after 2, ->
+      P2P.Client\send(128, "hehe ur a p2p faget")
+
 
   -- Map.set(Map.generate(4, 10))
 

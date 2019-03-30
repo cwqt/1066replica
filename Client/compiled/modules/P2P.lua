@@ -1,10 +1,14 @@
 local P2P = { }
 P2P.cmd = {
   Server = {
-    ["received"] = function(command, msg, user) end,
-    ["userFullyConnected"] = function(user)
-      return NM.log("p2p_server", tostring(inspect(user)))
+    ["received"] = function(command, msg, user)
+      return NM.log("p2p_server", {
+        command,
+        message,
+        user
+      })
     end,
+    ["userFullyConnected"] = function(user) end,
     ["synchronize"] = function(user)
       return NM.log("p2p_server", "Synched user: " .. tostring(user.playerName))
     end,

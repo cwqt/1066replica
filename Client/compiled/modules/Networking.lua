@@ -11,4 +11,18 @@ NM.log = function(tag, msg)
   t = tostring(t * 1000):sub(1, 6)
   return print(tostring(t) .. " [" .. tostring(string.upper(tag)) .. "]: " .. tostring(msg))
 end
+NM.getLocalIP = function()
+  local ip = ""
+  local _exp_0 = love.system.getOS()
+  if "Linux" == _exp_0 then
+    local handle = io.popen("hostname -I | awk '{print $2}'")
+    ip = handle:read("*a")
+    handle:close()
+  elseif "OS X" == _exp_0 then
+    local handle = io.popen("ifconfig  | grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*' | grep -Eo '192([0-9]*\\.){3}[0-9]*'")
+    ip = handle:read("*a")
+    handle:close()
+  end
+  return ip
+end
 return NM

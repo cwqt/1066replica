@@ -2,9 +2,10 @@ P2P = {}
 P2P.cmd = {
   Server: {
     ["received"]: (command, msg, user) ->
+      NM.log("p2p_server", {command, message, user})
 
     ["userFullyConnected"]: (user) ->
-      NM.log("p2p_server", "#{inspect(user)}")
+--      NM.log("p2p_server", "#{inspect(user)}")
     
     ["synchronize"]: (user) ->
       NM.log("p2p_server", "Synched user: #{user.playerName}")
