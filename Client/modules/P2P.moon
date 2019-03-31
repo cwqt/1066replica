@@ -59,6 +59,26 @@ P2P.update = (dt) ->
 P2P.sendDataToPeer = (data) ->
   P2P.Client\send(unpack(data))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 P2P.Disconnect = () ->
 
 return P2P

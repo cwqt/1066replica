@@ -40,7 +40,7 @@ function network:startServer( maxNumberOfPlayers, port, pingTime )
 	return server, err
 end
 
-function network:startClient( address, playername, port, authMsg )
+function network:startClient( address, playername, port, localPort, authMsg )
 
 	if not address or #address == 0 then
 		print("No address found. Using default: 'localhost'")
@@ -50,7 +50,7 @@ function network:startClient( address, playername, port, authMsg )
 	print( "Connecting to:", address, port, authMsg)
 
 	local createClient = function()
-		return Client:new( address, port or PORT, playername, authMsg )
+		return Client:new( address, port or PORT, localPort, playername, authMsg )
 	end
 
 	success, client = pcall( createClient )

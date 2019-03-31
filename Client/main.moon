@@ -6,7 +6,6 @@ export inspect   = require("../libs/inspect")   -- table pretty print
 export lb        = require("../libs/lovebird")  -- online debugger
 export Gamestate = require("../libs/gamestate") -- gamestates, duh
 export Timer     = require("../libs/timer")     -- " "
-export LN        = require("../libs/lovernet")
 
 --export Steam     = require('luasteam')
 
@@ -34,15 +33,19 @@ M.deepClone = (obj) ->
 timer = Timer()
 
 love.load = () ->
---  Client.start()
-  P2P.start()
-  print "quick start it!"
+  NM.MMClient()
 
-  timer\after 4, ->
-    -- client connect to server ip:22121
-    P2P.Client = ANet\startClient("178.62.42.106", "player", 22121)
-    timer\after 2, ->
-      P2P.Client\send(128, "hehe ur a p2p faget")
+--  Client.start()
+  -- P2P.start()
+  -- print "quick start it!"
+
+  -- timer\after 4, ->
+  --   -- client connect to server ip:22121
+  --   -- P2P.Client = ANetc\new("178.62.42.106", 22121)
+  --   P2P.Client, err = ANet\startClient("178.62.42.106", "player", 22121)
+  --   timer\after 2, ->
+  --     print("sending")
+  --     P2P.Client\send(128, "hehe ur a p2p faget")
 
 
   -- Map.set(Map.generate(4, 10))
@@ -74,7 +77,8 @@ love.load = () ->
   -- Map.print(Map.current)
 
 love.update = (dt) ->
-  P2P.update(dt)
+  ANet\update(dt)
+  -- P2P.update(dt)
   timer\update(dt)
   --  Client.update(dt)
 --  lb.update()

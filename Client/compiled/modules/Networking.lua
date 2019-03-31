@@ -11,7 +11,6 @@ NM.log = function(tag, msg)
   t = tostring(t * 1000):sub(1, 6)
   return print(tostring(t) .. " [" .. tostring(string.upper(tag)) .. "]: " .. tostring(msg))
 end
-NM.NATpassthrough = function(peerIP, privateIP) end
 NM.getLocalIP = function()
   local ip = ""
   local _exp_0 = love.system.getOS()
@@ -25,5 +24,22 @@ NM.getLocalIP = function()
     handle:close()
   end
   return ip
+end
+NM.MMClient = function()
+  local c = ANet:startClient("localhost", 22121)
+end
+local socket = require("socket")
+NM.holePunch = function()
+  local Socks = { }
+  Socks.Listen = socket.tcp()
+  for k, sock in pairs(Socks) do
+    sock:setoption("reuseaddr", true)
+  end
+  for k, sock in pairs(Socks) do
+    sock:bind("0.0.0.0", 22122)
+  end
+  Socks.Listen:listen()
+  NM.log("listen", "Listening on " .. tostring(Socks.Listen:getsockname()))
+  return Socks.Server:connect("178.62.42.106", 22121)
 end
 return NM
