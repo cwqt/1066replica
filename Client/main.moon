@@ -39,7 +39,7 @@ love.load = () ->
   print "quick start it!"
 
   timer\after 4, ->
-    P2P.Client = ANet\startClient("178.62.42.10", "player", 22121)
+    P2P.Client = ANet\startClient("178.62.42.10", "player", 22122)
     timer\after 2, ->
       P2P.Client\send(128, "hehe ur a p2p faget")
 
