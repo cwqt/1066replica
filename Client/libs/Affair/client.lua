@@ -23,7 +23,7 @@ local function print(...)
 end
 
 
-function Client:new( address, port, playerName, authMsg, FLAG )
+function Client:new( address, port, playerName, authMsg )
 	local o = {}
 	setmetatable( o, self )
 
@@ -32,10 +32,9 @@ function Client:new( address, port, playerName, authMsg, FLAG )
 	print("Initialising Client...")
 	o.conn = socket.tcp()
 
-	-- Set the Client to run at localIP:22122
-	o.conn:setsockname(NM.getLocalIP(), 22122)
+    -- Set the Client to run at localIP:22122
 	o.conn:settimeout(5)
-	local ok, msg = o.conn:connect( address, port )
+	local ok, msg = o.conn:connect( address, port, "*", 22121 )
 	--ok, o.conn = pcall(o.conn.connect, o.conn, address, port)
 	if ok and o.conn then
 		print(o.conn:getsockname())

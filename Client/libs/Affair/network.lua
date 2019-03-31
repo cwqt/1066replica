@@ -40,28 +40,28 @@ function network:startServer( maxNumberOfPlayers, port, pingTime )
 	return server, err
 end
 
-function network:startClient( address, playername, port, authMsg )
+-- function network:startClient( address, playername, port, authMsg )
 
-	if not address or #address == 0 then
-		print("No address found. Using default: 'localhost'")
-		address = "localhost"
-	end
+-- 	if not address or #address == 0 then
+-- 		print("No address found. Using default: 'localhost'")
+-- 		address = "localhost"
+-- 	end
 
-	print( "Connecting to:", address, port, authMsg)
+-- 	print( "Connecting to:", address, port, authMsg)
 
-	local createClient = function()
-		return Client:new( address, port or PORT, playername, authMsg )
-	end
+-- 	local createClient = function()
+-- 		return Client:new( address, port or PORT, playername, authMsg )
+-- 	end
 
-	success, client = pcall( createClient )
-	local err = ""
-	if not success then
-		err = client
-		client = nil
-	end
-	assert(client, "Could not connect." )
-	return client, err
-end
+-- 	success, client = pcall( createClient )
+-- 	local err = ""
+-- 	if not success then
+-- 		err = client
+-- 		client = nil
+-- 	end
+-- 	assert(client, "Could not connect." )
+-- 	return client, err
+-- end
 
 function network:closeConnection()
 	print("Closing all connections.")
