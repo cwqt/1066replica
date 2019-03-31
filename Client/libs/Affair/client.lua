@@ -34,7 +34,7 @@ function Client:new( address, port, playerName, authMsg )
 
     -- Set the Client to run at localIP:22122
 	o.conn:settimeout(5)
-	local ok, msg = o.conn:connect( address, port, "*", 22121 )
+	local ok, msg = o.conn:connect( address, port )
 	--ok, o.conn = pcall(o.conn.connect, o.conn, address, port)
 	if ok and o.conn then
 		print(o.conn:getsockname())
