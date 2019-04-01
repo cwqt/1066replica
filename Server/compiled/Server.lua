@@ -1,64 +1,83 @@
 local Server = { }
-Server.start = function()
+Server.functions = {
+  [128] = function(msg, user)
+    return print("testudo")
+  end
+}
+Server.cmd = {
+  ["received"] = function(command, msg, user)
+    return Server.functions[command](msg, user)
+  end,
+  ["userFullyConnected"] = function(user)
+    return Server.attemptMakeMatches()
+  end,
+  ["synchronize"] = function(user) end,
+  ["customDataChanged"] = function(user, value, key, prevValue) end,
+  ["disconnectedUser"] = function(user) end,
+  ["authorize"] = function(user, authMsg) end
+}
+Server.load = function()
+  Server.sv = ANet:startServer(2, 22121)
   Server.matches = { }
-  Server.LN = LN.new({
-    type = LN.mode.server,
-    ip = "82.18.185.11"
-  })
-  Server.LN:addOp('version')
-  Server.LN:addProcessOnServer('version', function(self, peer, arg, storage)
-    return '1.0'
-  end)
-  Server.LN:addOp('match')
-  Server.LN:addProcessOnServer('match', function(self, peer, arg, storage)
-    local k = Server.LN:_getUserIndex(peer)
-    print("Peer " .. tostring(Server.LN:_getUserIndex(peer)) .. " requesting their match: " .. tostring(Server.matches[k]))
-    local match = Server.matches[k]
-    if match then
-      Server.matches[k] = nil
-      Server.LN:_removeUser(peer)
-      return match
+  if Server.sv then
+    Server.sv.callbacks.received = function(...)
+      return Server.cmd["received"](...)
     end
-  end)
-  Server.timer = Timer()
-  return Server.LN:onAddUser(function()
-    return Server.timer:after(1, function()
-      return Server.attemptMatchUsers()
-    end)
-  end)
-end
-Server.update = function(dt)
-  Server.LN:update(dt)
-  return Server.timer:update(dt)
-end
-Server.attemptMatchUsers = function()
-  if Server.getDelta() >= 2 then
-    print("Attempting to match " .. tostring(Server.getDelta()) .. " users")
-    return Server.matchUsers()
-  else
-    return print(tostring(Server.getDelta()) .. " unmatched user(s)...")
+    Server.sv.callbacks.userFullyConnected = function(...)
+      return Server.cmd["userFullyConnected"](...)
+    end
+    Server.sv.callbacks.synchronize = function(...)
+      return Server.cmd["synchronize"](...)
+    end
+    Server.sv.callbacks.customDataChanged = function(...)
+      return Server.cmd["customDataChanged"](...)
+    end
+    Server.sv.callbacks.disconnectedUser = function(...)
+      return Server.cmd["disconnectedUser"](...)
+    end
   end
 end
-Server.getDelta = function()
-  return M.size(Server.LN:getUsers()) - M.size(Server.matches)
+Server.update = function(dt)
+  return ANet:update(dt)
 end
-Server.matchUsers = function()
-  if Server.getDelta() <= 1 then
+Server.getUnmatched = function()
+  local c = 0
+  for k, client in pairs(Server.sv:getUsers()) do
+    if client.match then
+      c = c + 1
+    end
+  end
+  return (Server.sv:getNumUsers() - c)
+end
+Server.attemptMakeMatches = function()
+  if Server.getUnmatched() >= 2 then
+    print("Attempting to match " .. tostring(Server.getUnmatched()) .. " users")
+    return Server.makeMatches()
+  else
+    return print(tostring(Server.getUnmatched()) .. " unmatched user(s)...")
+  end
+end
+Server.makeMatches = function()
+  if Server.getUnmatched() <= 1 then
     print("Not enough users left to make a game")
     return 
   end
-  local p = Server.LN:getUsers()
+  local p = Server.sv:getUsers()
   local x = { }
-  for k, v in pairs(p) do
+  for k, client in pairs(p) do
     local _continue_0 = false
     repeat
-      if v.matched then
+      if client.matched then
         _continue_0 = true
         break
       end
-      x[#x + 1] = k
-      v.matched = true
+      x[#x + 1] = client
+      client.matched = true
       if #x == 2 then
+        x[1].match = x[2]
+        x[2].match = x[1]
+        print("Matched " .. tostring(x[1].connection:getsockname()) .. " with " .. tostring(x[2].connection:getsockname()))
+        Server.sv:send(128, "yeet", client)
         break
       end
       _continue_0 = true
@@ -67,12 +86,7 @@ Server.matchUsers = function()
       break
     end
   end
-  if #x == 2 then
-    Server.matches[x[1]] = x[2]
-    Server.matches[x[2]] = x[1]
-    print("Matched " .. tostring(inspect(x)))
-  end
-  print("Users remaining: " .. tostring(Server.getDelta()))
-  return Server.matchUsers()
+  print("Users remaining: " .. tostring(Server.getUnmatched()))
+  return Server.makeMatches()
 end
 return Server

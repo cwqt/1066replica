@@ -1,29 +1,30 @@
-export LN = require("../libs/lovernet")
-export Timer = require("../libs/timer")
-export inspect = require("../libs/inspect")
-export M       = require("../libs/moses")
+export Timer     = require("../libs/timer")
+export ANet      = require("../libs/Affair/network")
+export M         = require("../libs/moses")
+export inspect   = require("../libs/inspect")   -- table pretty print
 
-Server = require("Server")
 
--- matchmaking list
---  select faction
---  enter matchmaking
---    found other player!
---  select units (timed)
---  sync units
---  enter game
---
+export Server    = require("Server")
+
+export GAME = {}
+GAME.START_TIME = love.timer.getTime()
+export NM = {}
+NM.log = (tag, msg) ->
+  if type(msg) == "table"
+    m = ""
+    for k,v in pairs(msg) do
+      m = m .. " " .. tostring(v)
+    msg = m
+
+  t = love.timer.getTime()-GAME.START_TIME
+  t = tostring(t * 1000)\sub(1, 6)
+  print("#{t} [#{string.upper tag}]: #{msg}")
 
 love.load = () ->
-	Server.start()
+	export timer = Timer()
+	Server.load()
 
---  love.event.quit()
 
 love.update = (dt) ->
-  Server.update(dt)
-
-love.draw = () ->
-
-love.errhand = (msg) ->
-  print(msg)
-  love.event.quit()
+	Server.update(dt)
+	timer\update(dt)

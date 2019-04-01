@@ -1,0 +1,3 @@
+[submodule "Client/libs/imgui"]
+	path = Client/libs/imgui
+	url = https://github.com/slages/love-imgui.git

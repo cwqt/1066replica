@@ -1,63 +1,75 @@
 Server = {}
 
-Server.start = () ->
+Server.functions = {
+  [128]: (msg, user) ->
+    Server.sv\send()
+}
+
+
+Server.cmd = {
+  ["received"]: (command, msg, user) ->
+    Server.functions[command](msg, user)
+
+  ["userFullyConnected"]: (user) ->
+    Server.attemptMakeMatches()
+
+  ["synchronize"]:        (user) ->
+  ["customDataChanged"]:  (user, value, key, prevValue) ->
+  ["disconnectedUser"]:   (user) ->
+  ["authorize"]:          (user, authMsg) ->
+}
+
+Server.load = () ->
+  Server.sv = ANet\startServer(2, 22121)
   Server.matches = {}
-  
-  Server.LN = LN.new({type: LN.mode.server, ip:"82.18.185.11"})
-  Server.LN\addOp('version')
-  Server.LN\addProcessOnServer 'version', (peer, arg, storage) =>
-    return '1.0'
-
-  Server.LN\addOp('match')
-  Server.LN\addProcessOnServer 'match', (peer, arg, storage) =>
-    k = Server.LN\_getUserIndex(peer)
-    print("Peer #{Server.LN\_getUserIndex(peer)} requesting their match: #{Server.matches[k]}")
-    match = Server.matches[k]
-    if match
-      Server.matches[k] = nil
-      Server.LN\_removeUser(peer)
-      return match
-
-  Server.timer = Timer()
-  Server.LN\onAddUser( -> Server.timer\after(1, -> Server.attemptMatchUsers!))
+  if Server.sv
+    Server.sv.callbacks.received           = (...) -> Server.cmd["received"](...)
+    Server.sv.callbacks.userFullyConnected = (...) -> Server.cmd["userFullyConnected"](...)
+    Server.sv.callbacks.synchronize        = (...) -> Server.cmd["synchronize"](...)
+    Server.sv.callbacks.customDataChanged  = (...) -> Server.cmd["customDataChanged"](...)
+    Server.sv.callbacks.disconnectedUser   = (...) -> Server.cmd["disconnectedUser"](...)
 
 Server.update = (dt) ->
-  Server.LN\update(dt)
-  Server.timer\update(dt)
+  ANet\update(dt)
 
-Server.attemptMatchUsers = () ->
-  if Server.getDelta() >= 2
-    print("Attempting to match #{Server.getDelta()} users")
-    Server.matchUsers()
+Server.getUnmatched = () ->
+  c = 0
+  for k, client in pairs(Server.sv\getUsers())
+    if client.match then c+=1
+  return (Server.sv\getNumUsers() - c)
+
+Server.attemptMakeMatches = () ->
+  if Server.getUnmatched() >= 2
+    print("Attempting to match #{Server.getUnmatched()} users")
+    Server.makeMatches()
   else
-    print("#{Server.getDelta()} unmatched user(s)...")
+    print("#{Server.getUnmatched()} unmatched user(s)...")
 
 
-Server.getDelta = () ->
-  return M.size(Server.LN\getUsers()) - M.size(Server.matches)
-
-Server.matchUsers = () ->
-  if Server.getDelta() <= 1
+Server.makeMatches = () ->
+  if Server.getUnmatched() <= 1
     print "Not enough users left to make a game"
     return
 
-  p = Server.LN\getUsers()
- 
-  -- Find a pair of unmatched clients
+  p = Server.sv\getUsers()
   x = {}
-  for k,v in pairs(p)
-    if v.matched then continue
-    x[#x+1] = k
-    v.matched = true
+  for k, client in pairs(p)
+    if client.matched then continue
+    x[#x+1] = client
+    client.matched = true
     if #x == 2
+      x[1].match = x[2]
+      x[2].match = x[1]
+      print("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
+      Server.sv\send(128, "yeet", client)
       break
+
+
+  -- Server.sv\send
   
-  if #x == 2
-    Server.matches[x[1]] = x[2]
-    Server.matches[x[2]] = x[1]
-    print("Matched #{inspect x}")
-  
-  print("Users remaining: #{Server.getDelta()}")
-  Server.matchUsers()
+  print("Users remaining: #{Server.getUnmatched()}")
+  Server.makeMatches()
+
+
 
 return Server

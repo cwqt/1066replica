@@ -23,7 +23,6 @@ export GAME = require("GAME")
 export ANet      = require("../libs/Affair/network")
 
 
-
 M.deepClone = (obj) ->
   if type(obj) ~= 'table' then return obj
   res = setmetatable({}, getmetatable(obj))
@@ -33,7 +32,7 @@ M.deepClone = (obj) ->
 timer = Timer()
 
 love.load = () ->
-  NM.MMClient()
+  NM.startClient()
 
 --  Client.start()
   -- P2P.start()
@@ -77,14 +76,9 @@ love.load = () ->
   -- Map.print(Map.current)
 
 love.update = (dt) ->
-  ANet\update(dt)
-  -- P2P.update(dt)
+  NM.update(dt)
   timer\update(dt)
-  --  Client.update(dt)
 --  lb.update()
-
-love.draw = () ->
-  love.graphics.print("hello", 10, 10)
 
 love.keypressed = (key) ->
   switch key

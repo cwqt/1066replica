@@ -26,10 +26,10 @@ M.deepClone = function(obj)
 end
 local timer = Timer()
 love.load = function()
-  return NM.MMClient()
+  return NM.startClient()
 end
 love.update = function(dt)
-  ANet:update(dt)
+  NM.update(dt)
   return timer:update(dt)
 end
 love.draw = function()

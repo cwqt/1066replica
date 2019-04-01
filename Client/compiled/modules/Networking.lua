@@ -25,21 +25,38 @@ NM.getLocalIP = function()
   end
   return ip
 end
-NM.MMClient = function()
-  local c = ANet:startClient("localhost", 22121)
+NM.cmd = {
+  ["connected"] = function()
+    NM.log('client', "Connected to Server")
+    return NM.Client:send(128, "hello")
+  end,
+  ["received"] = function(command, msg)
+    return NM.log('client', msg)
+  end,
+  ["disconnected"] = function() end,
+  ["newUser"] = function(user)
+    return NM.log("client", "Peer connect: " .. tostring(user.playerName))
+  end,
+  ["authorized"] = function(auth, reason) end
+}
+NM.startClient = function()
+  NM.Client = ANet:startClient("localhost", "Anon", 22121)
+  if NM.Client then
+    NM.Client.callbacks.connected = function(...)
+      return NM.cmd["connected"](...)
+    end
+    NM.Client.callbacks.received = function(...)
+      return NM.cmd["received"](...)
+    end
+    NM.Client.callbacks.disconnected = function(...)
+      return NM.cmd["disconnected"](...)
+    end
+    NM.Client.callbacks.newUser = function(...)
+      return NM.cmd["newUser"](...)
+    end
+  end
 end
-local socket = require("socket")
-NM.holePunch = function()
-  local Socks = { }
-  Socks.Listen = socket.tcp()
-  for k, sock in pairs(Socks) do
-    sock:setoption("reuseaddr", true)
-  end
-  for k, sock in pairs(Socks) do
-    sock:bind("0.0.0.0", 22122)
-  end
-  Socks.Listen:listen()
-  NM.log("listen", "Listening on " .. tostring(Socks.Listen:getsockname()))
-  return Socks.Server:connect("178.62.42.106", 22121)
+NM.update = function(dt)
+  return ANet:update(dt)
 end
 return NM

@@ -24,38 +24,36 @@ NM.getLocalIP = () ->
       handle\close()
   return ip
 
+NM.cmd = {
+    ["connected"]: () ->
+      NM.log('client', "Connected to Server")
+      NM.Client\send(128, "hello")
 
---Matchmaking
-NM.MMClient = () ->
+    ["received"]: (command, msg) ->
+      NM.log('client', msg)
+
+    ["disconnected"]: () ->
+
+    ["newUser"]: (user) ->
+      NM.log("client", "Peer connect: #{user.playerName}")
+
+    ["authorized"]: (auth, reason) ->
+}
+
+NM.startClient = () ->
   -- tcp on 0.0.0.0:22122
-  -- connect to master server
-  c = ANet\startClient("localhost", 22121)
+  NM.Client = ANet\startClient("localhost", "Anon", 22121)
+  if NM.Client
+    NM.Client.callbacks.connected          = (...) -> NM.cmd["connected"](...)
+    NM.Client.callbacks.received           = (...) -> NM.cmd["received"](...)
+    NM.Client.callbacks.disconnected       = (...) -> NM.cmd["disconnected"](...)
+    NM.Client.callbacks.newUser            = (...) -> NM.cmd["newUser"](...)
+    --NM.Client.callbacks.authorized         = (...) -> NM.cmd[""](...)
 
 
 
+NM.update = (dt) ->
+  ANet\update(dt)
 
--- Holepunch
-socket = require("socket")
-
-NM.holePunch = () ->
-  Socks = {}
-  Socks.Listen = socket.tcp()
-
-  for k, sock in pairs(Socks)
-    sock\setoption("reuseaddr", true)
-
-  for k, sock in pairs(Socks)
-    sock\bind("0.0.0.0", 22122)
-
-  Socks.Listen\listen()
-  NM.log("listen", "Listening on #{Socks.Listen\getsockname()}")
-
-  Socks.Server\connect("178.62.42.106", 22121)
-
-
-
-
-
---P2P
 
 return NM

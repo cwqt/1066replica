@@ -31,7 +31,7 @@ function Client:new( address, port, localPort, playerName, authMsg )
 
 	print("Initialising Client...")
 	o.conn = socket.tcp()
-	o.conn:bind("0.0.0.0", 22122)
+	-- o.conn:bind("0.0.0.0", 22122)
 	o.conn:settimeout(5)
 	local ok, msg = o.conn:connect( address, port )
 	--ok, o.conn = pcall(o.conn.connect, o.conn, address, port)
