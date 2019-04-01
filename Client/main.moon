@@ -11,8 +11,6 @@ export Timer     = require("../libs/timer")     -- " "
 
 export Map       = require("modules.Map")
 export RM        = require("modules.RoundManager")
-export Client    = require("modules.Client")
-export P2P       = require("modules.P2P")
 export NM        = require("modules.Networking")
 
 export Player    = require("components.Player")
