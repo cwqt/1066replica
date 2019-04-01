@@ -1,8 +1,17 @@
 Server = {}
 
 Server.functions = {
+  -- exchange data with peer
   [128]: (msg, user) ->
-    Server.sv\send()
+    -- Server.sv\send()
+    if user.match
+      print("Sending data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{msg}")
+    else
+      print("User has no match!")
+
+  -- Server recieve data
+  [129]: (msg, user) ->
+    print msg
 }
 
 

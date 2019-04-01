@@ -1,6 +1,3 @@
-[submodule "Client/libs/imgui"]
-	path = Client/libs/imgui
-	url = https://github.com/slages/love-imgui.git
 [submodule "Client/libs/Affair"]
 	path = Client/libs/Affair
 	url = https://gitlab.com/cxss/Affair.git

@@ -24,18 +24,31 @@ NM.getLocalIP = () ->
       handle\close()
   return ip
 
+
+
+
+NM.functions = {
+  -- send data to peer
+  [128]: (msg) ->
+    print("Sending to peer: #{msg}")
+
+  -- recieve data from server
+  [129]: (msg) ->
+    print("Server sent: #{msg}")
+
+}
+
 NM.cmd = {
+    ["received"]: (command, msg) ->
+      Server.functions[command](msg, user)
+
     ["connected"]: () ->
       NM.log('client', "Connected to Server")
       NM.Client\send(128, "hello")
 
-    ["received"]: (command, msg) ->
-      NM.log('client', msg)
-
     ["disconnected"]: () ->
 
     ["newUser"]: (user) ->
-      NM.log("client", "Peer connect: #{user.playerName}")
 
     ["authorized"]: (auth, reason) ->
 }
@@ -49,6 +62,32 @@ NM.startClient = () ->
     NM.Client.callbacks.disconnected       = (...) -> NM.cmd["disconnected"](...)
     NM.Client.callbacks.newUser            = (...) -> NM.cmd["newUser"](...)
     --NM.Client.callbacks.authorized         = (...) -> NM.cmd[""](...)
+
+NM.sendDataToPeer = (data) ->
+  NM.Client\send(128, data)
+
+NM.sendDataToServer = (data) ->
+  NM.Client\send(129, data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
