@@ -53,9 +53,9 @@ NM.cmd = {
     ["authorized"]: (auth, reason) ->
 }
 
-NM.startClient = () ->
+NM.startClient = (ip) ->
   -- tcp on 0.0.0.0:22122
-  NM.Client = ANet\startClient("localhost", "Anon", 22121)
+  NM.Client = ANet\startClient(ip, "Anon", 22121)
   if NM.Client
     NM.Client.callbacks.connected          = (...) -> NM.cmd["connected"](...)
     NM.Client.callbacks.received           = (...) -> NM.cmd["received"](...)
