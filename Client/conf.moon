@@ -9,7 +9,7 @@ love.conf = (t) ->
  
     t.audio.mixwithsystem = true        -- Keep background music playing when opening LOVE (boolean, iOS and Android only)
  
-    t.window.title = "Untitled"         -- The window title (string)
+    t.window.title = "Alias"         -- The window title (string)
     t.window.icon = nil                 -- Filepath to an image to use as the window's icon (string)
     t.window.width = 800                -- The window width (number)
     t.window.height = 600               -- The window height (number)
@@ -24,8 +24,8 @@ love.conf = (t) ->
     t.window.depth = nil                -- The number of bits per sample in the depth buffer
     t.window.stencil = nil              -- The number of bits per sample in the stencil buffer
     t.window.display = 1                -- Index of the monitor to show the window in (number)
-    t.window.highdpi = false            -- Enable high-dpi mode for the window on a Retina display (boolean)
-    t.window.x = 30                    -- The x-coordinate of the window's position in the specified display (number)
+    t.window.highdpi = false             -- Enable high-dpi mode for the window on a Retina display (boolean)
+    t.window.x = 30                     -- The x-coordinate of the window's position in the specified display (number)
     t.window.y = 100                    -- The y-coordinate of the window's position in the specified display (number)
  
     t.modules.audio = true              -- Enable the audio module (boolean)
