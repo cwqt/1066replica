@@ -40,10 +40,11 @@ NM.functions = {
 
 NM.cmd = {
     ["received"]: (command, msg) ->
+      log.client("NM.cmd::RECEIVED: #{msg}")
       Server.functions[command](msg, user)
 
     ["connected"]: () ->
-      NM.log('client', "Connected to Server")
+      log.client("NM.cmd::CONNECTED")
       NM.Client\send(128, "hello")
 
     ["disconnected"]: () ->
@@ -68,28 +69,6 @@ NM.sendDataToPeer = (data) ->
 
 NM.sendDataToServer = (data) ->
   NM.Client\send(129, data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 NM.update = (dt) ->
   ANet\update(dt)

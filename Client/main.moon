@@ -24,20 +24,21 @@ export MainMenu  = require("states.MainMenu")
 export Game      = require("states.Game")
 
 love.load         = () ->
-  log.client("hello")
-  log.server("hello")
+  os.execute("clear")
+  log.debug("Game started: #{love.timer.getTime()}")
   love.keyboard.setKeyRepeat(true)
   Gamestate.registerEvents()
   Gamestate.switch(MainMenu)
 
 love.update       = (dt) ->
+  NM.update(dt)
 
 love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2)
 
 love.keypressed   = (key, codqe, isrepeat) ->
   if key == "q" then love.event.quit()
-  if key == "d" then UI.dbg = not UI.dbg
+  if key == "/" then UI.dbg = not UI.dbg
 
 love.keyreleased  = (key) ->
 
@@ -57,5 +58,5 @@ love.errhand       = (msg) ->
   love.quit()
 
 love.quit          = () ->
-  log.info("Quitting...")
+  log.fatal("Quitting...")
   love.event.quit()

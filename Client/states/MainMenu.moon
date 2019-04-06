@@ -9,33 +9,27 @@ MainMenu.enter  = ()   =>
 	export ui = UI.Master(8, 5, 160, {
 		UI.Container(2,1,6,4, {
 			with UI.Text("alias", 1,2,12,2)
-				.text.font = GAME.fonts.title[100]
+				.text.font = GAME.fonts.title[216]
 				.text.alignh = "center"
 				.text.alignv = "center"
 				.p = {10,10,10,10}
 				.m = {10,10,10,10}
-			with UI.Image(love.graphics.newImage("crying.jpg"), 1,1,5,4)
-				.p = {20,20,20,20}
-			with UI.TextInput("178.62.42.106", 8,5,3,1, "ip")
+			with UI.TextInput("localhost", 4,5,4,1, "ip")
+				.m = {0, 10, 0, 0}
 				.text.font = GAME.fonts.default[27]
 				.text.alignv = "center"
-			with UI.Button("Connect", 11,5,2,4, "connect")
+			with UI.Button("Connect", 8,5,2,1, "connect")
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
-				.p = {10,10,10,10}
-				.m = {10,10,40,10}
-			with UI.Text("Connecting...", 8,6,3,1, "info")
+			with UI.Text("", 4,6,5,1, "info")
 				.text.font = GAME.fonts.default[27]
 				.text.alignv = "center"
-			UI.Checkbox(false, 7,5,1,1)
-			UI.Slider(0, 10, 1, 1, 5, 5, 2, "slider")
 		})
 	})
 
 	UI.id["connect"].onClick = ->
-		UI.id['info'].value = UI.id['slider'].thx
-
+		z = NM.startClient(UI.id["ip"].value)
 
 --LOGIC============================================================
 
@@ -45,8 +39,6 @@ MainMenu.update = (dt) =>
 
 MainMenu.draw   = ()   =>
 	ui\draw()
-	love.graphics.print(love.timer.getFPS().."FPS", love.window.getMode()-40, 0)
-	love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
 
 --INPUT============================================================
 

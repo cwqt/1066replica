@@ -22,7 +22,8 @@ local modes = {
   { name = "error",  color = "\27[31m", },
   { name = "fatal",  color = "\27[35m", },
   { name = "client", color = "\27[45m", },
-  { name = "server", color = "\27[41m", }
+  { name = "server", color = "\27[41m", },
+  { name = "net",    color = "\27[44m", },
 }
 
 
@@ -73,13 +74,13 @@ for i, x in ipairs(modes) do
                         nameupper,
                         os.date("%H:%M:%S"),
                         log.usecolor and "\27[0m" or "",
-                        lineinfo,
+                        "",
                         msg))
 
     -- Output to log file
     if log.outfile then
       local fp = io.open(log.outfile, "a")
-      local str = string.format("[%-6s%s] %s: %s\n",
+      local str = string.format("[%-7s%s] %s: %s\n",
                                 nameupper, os.date(), lineinfo, msg)
       fp:write(str)
       fp:close()

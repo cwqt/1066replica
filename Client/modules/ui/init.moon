@@ -7,9 +7,9 @@
 -- under the terms of the MIT license.
 --
 
-UI = {}
+UI = { _version: "0.1.0" }
 UI.id = {}
-UI.dbg = true
+UI.dbg = false
 UI.df = love.graphics.newFont(14)
 
 -- Variable names
@@ -30,7 +30,7 @@ UI.theme = {
 	fgh: {1,1,1,1}
 	bgf: {0.3,0.3,0.3,1}
 	fgf: {1,1,1,1}
-	m: {10,10,10,10} -- up, right, down, left (cw)
+	m: {0,0,0,0} -- up, right, down, left (cw)
 	p: {10,10,10,10}
 	-- bg_image:
 	text: {
@@ -423,9 +423,9 @@ class TextInput extends Element
 
 		if @cursorVisible and @focus
 			love.graphics.push()
-			love.graphics.translate(@text.font\getWidth(@value\sub(1, @cursor)), 0)
+			love.graphics.translate(@text.font\getWidth(@value\sub(1, @cursor)), h/2-@foy/2)
 			love.graphics.setColor(@text.color)
-			love.graphics.line(0, 7, 0, @foy)
+			love.graphics.line(0, 0, 0, @foy)
 			love.graphics.pop()
 		love.graphics.setFont(UI.df)
 		love.graphics.setScissor()
