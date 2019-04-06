@@ -5,13 +5,13 @@ Server.functions = {
   [128]: (msg, user) ->
     -- Server.sv\send()
     if user.match
-      print("Sending data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{msg}")
+      log.server("Sending data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{msg}")
     else
-      print("User has no match!")
+      log.server("User has no match!")
 
   -- Server recieve data
   [129]: (msg, user) ->
-    print msg
+    log.server(msg)
 }
 
 
@@ -49,15 +49,15 @@ Server.getUnmatched = () ->
 
 Server.attemptMakeMatches = () ->
   if Server.getUnmatched() >= 2
-    print("Attempting to match #{Server.getUnmatched()} users")
+    log.debug("Attempting to match #{Server.getUnmatched()} users")
     Server.makeMatches()
   else
-    print("#{Server.getUnmatched()} unmatched user(s)...")
+    log.info("#{Server.getUnmatched()} unmatched user(s)...")
 
 
 Server.makeMatches = () ->
   if Server.getUnmatched() <= 1
-    print "Not enough users left to make a game"
+    log.error("Not enough users left to make a game")
     return
 
   p = Server.sv\getUsers()
@@ -69,14 +69,14 @@ Server.makeMatches = () ->
     if #x == 2
       x[1].match = x[2]
       x[2].match = x[1]
-      print("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
+      log.info("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
       Server.sv\send(128, "yeet", client)
       break
 
 
   -- Server.sv\send
   
-  print("Users remaining: #{Server.getUnmatched()}")
+  log.debug("Users remaining: #{Server.getUnmatched()}")
   Server.makeMatches()
 
 

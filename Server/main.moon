@@ -2,7 +2,7 @@ export Timer     = require("../libs/timer")
 export ANet      = require("../libs/Affair/network")
 export M         = require("../libs/moses")
 export inspect   = require("../libs/inspect")   -- table pretty print
-
+export log       = require("../libs/log")
 
 export Server    = require("Server")
 
@@ -23,7 +23,6 @@ NM.log = (tag, msg) ->
 love.load = () ->
 	export timer = Timer()
 	Server.load()
-
 
 love.update = (dt) ->
 	Server.update(dt)
