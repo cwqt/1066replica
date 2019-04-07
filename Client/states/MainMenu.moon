@@ -22,9 +22,6 @@ MainMenu.enter  = ()   =>
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
-			with UI.Text("", 4,6,5,1, "info")
-				.text.font = GAME.fonts.default[27]
-				.text.alignv = "center"
 		})
 	})
 

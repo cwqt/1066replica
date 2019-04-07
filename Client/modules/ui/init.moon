@@ -376,22 +376,12 @@ class TextInput extends Element
 		@cursorVisible = false
 		@timer\every 0.5, -> @cursorVisible = not @cursorVisible
 
-		@keyrepeat = {timer: 0, delay: 0.1}
-
 	activate: (...) =>
 		super\activate(...)
 		@foy = @text.font\getHeight()
 
 	update: (dt) =>
 		super\update(dt)
-
-		@keyrepeat.timer = @keyrepeat.timer + dt
-		if @keyrepeat.timer >= @keyrepeat.delay and love.keyboard.isDown("backspace") then
-				@keyrepeat.timer = 0
-				cur = @cursor
-				if cur > 0 then
-					@cursor = utf8char_begin(@value, cur) - 1
-					@value = @value\sub(1, @cursor)..@value\sub(cur + 1)
 
 
 	onClick: (button) =>
@@ -423,7 +413,25 @@ class TextInput extends Element
 
 		if @cursorVisible and @focus
 			love.graphics.push()
-			love.graphics.translate(@text.font\getWidth(@value\sub(1, @cursor)), h/2-@foy/2)
+			rw, lines = @text.font\getWrap(@value, w)
+
+			-- Get cursor y position by seeing which substring we're over
+			v = 1
+			l = 0
+			for k, line in pairs(lines)
+				v += #line
+				if v <= @cursor and @cursor <= v+#line
+					l = k
+					break
+
+			-- Get cursor x position
+			tc = 0
+			d = 1
+			if #lines > 1
+				for i=1, l do tc += #lines[i]
+				d = tc+1
+
+			love.graphics.translate(@text.font\getWidth(@value\sub(d, @cursor))+2, (l*@foy))
 			love.graphics.setColor(@text.color)
 			love.graphics.line(0, 0, 0, @foy)
 			love.graphics.pop()
@@ -441,6 +449,11 @@ class TextInput extends Element
 			@cursorVisible = true
 			--https://notabug.org/pgimeno/Gspot/src/master/Gspot.lua
 			switch key
+				when 'backspace'
+					cur = @cursor
+					if cur > 0 then
+						@cursor = utf8char_begin(@value, cur) - 1
+						@value = @value\sub(1, @cursor)..@value\sub(cur + 1)
 				when 'delete'
 					cur = utf8char_after(@value, @cursor + 1)
 					@value = @value\sub(1, @cursor)..@value\sub(cur)
