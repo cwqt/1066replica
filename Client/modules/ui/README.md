@@ -71,7 +71,6 @@ Element(x, y, bw, bh, id)
 * __x__: <int> x position inside the container
 * __y__: <int> y position inside the container
 * __id__: <string> custom id used to access elements functions (i.e. what to do when clicked)
-
 * __getMarginDimensions__: returns tuple of width, height of margin area
 * __getPaddedDimensions__: returns tuple of width, heigh of padded area
 * __onClick__: function to be executed when object is clicked
