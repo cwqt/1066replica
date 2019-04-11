@@ -10,8 +10,9 @@ esac; shift; done
 
 if [ "$server" -eq 1 ]; then
   cd Server/
+  rm -rf compiled/
   moonc -t compiled/ .
-  love compiled/
+  lua compiled/main.lua
 elif [ "$client" -eq 1 ]; then
   cd Client/
   moonc -t compiled/ .

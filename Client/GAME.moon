@@ -1,6 +1,8 @@
 GAME = {}
 GAME.START_TIME = love.timer.getTime()
+GAME.PLAYERS = {}
 GAME.fonts = {}
+
 
 F = {
 	title:   "title.ttf"

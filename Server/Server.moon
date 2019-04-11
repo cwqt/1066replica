@@ -3,15 +3,15 @@ Server = {}
 Server.functions = {
   -- exchange data with peer
   [128]: (msg, user) ->
-    -- Server.sv\send()
     if user.match
-      log.server("Sending data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{msg}")
+      log.trace("Relaying data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{msg}")
+      Server.sv\send(129, msg, user.match)
     else
-      log.server("User has no match!")
+      log.debug("User has no match!")
 
-  -- Server recieve data
+  -- Server receive data
   [129]: (msg, user) ->
-    log.server(msg)
+    log.debug("I received: #{msg}")
 }
 
 
@@ -25,6 +25,11 @@ Server.cmd = {
   ["synchronize"]:        (user) ->
   ["customDataChanged"]:  (user, value, key, prevValue) ->
   ["disconnectedUser"]:   (user) ->
+    if user.match
+      Server.sv\send(131, "", user.match)
+      user.match.matched = false
+      user.match.match = nil
+
   ["authorize"]:          (user, authMsg) ->
 }
 
@@ -70,13 +75,14 @@ Server.makeMatches = () ->
       x[1].match = x[2]
       x[2].match = x[1]
       log.info("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
-      Server.sv\send(128, "yeet", client)
+      Server.sv\send(128, "Got match: #{client.match.connection\getsockname()}", client)
+      Server.sv\send(128, "Got match: #{client.connection\getsockname()}",       client.match)
       break
 
-
-  -- Server.sv\send
-  
   log.debug("Users remaining: #{Server.getUnmatched()}")
+  if Server.getUnmatched() == 0
+    log.info("Matched all users!")
+    return
   Server.makeMatches()
 
 

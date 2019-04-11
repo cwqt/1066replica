@@ -8,12 +8,11 @@ function ctrl_c() {
   exit 0
 }
 
-rm -rf compiled/
 moonc -t compiled/ .
 
 for run in {1..2}
 do
-  lovet compiled/ &
+  love compiled/ &
 done
 
 while true ; do continue ; done

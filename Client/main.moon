@@ -15,7 +15,8 @@ export Map       = require("modules.Map")
 export RM        = require("modules.RoundManager")
 export NM        = require("modules.Networking")
 export UI        = require("modules.ui")
-
+export CD        = require("modules.CollDet")
+export UM        = require("modules.UnitManager")
 
 export Player    = require("components.Player")
 export Entity    = require("components.Entity")
@@ -26,9 +27,8 @@ export Game      = require("states.Game")
 love.load         = () ->
   os.execute("clear")
   log.debug("Game started: #{love.timer.getTime()}")
-  love.keyboard.setKeyRepeat(true)
   Gamestate.registerEvents()
-  Gamestate.switch(MainMenu)
+  Gamestate.switch(Game)
 
 love.update       = (dt) ->
   NM.update(dt)
@@ -36,7 +36,7 @@ love.update       = (dt) ->
 love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2)
 
-love.keypressed   = (key, codqe, isrepeat) ->
+love.keypressed   = (key, code, isrepeat) ->
   if key == "q" then love.event.quit()
   if key == "/" then UI.dbg = not UI.dbg
 

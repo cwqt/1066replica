@@ -1,16 +1,5 @@
 NM = {}
 
-NM.log = (tag, msg) ->
-  if type(msg) == "table"
-    m = ""
-    for k,v in pairs(msg) do
-      m = m .. " " .. tostring(v)
-    msg = m
-
-  t = love.timer.getTime()-GAME.START_TIME
-  t = tostring(t * 1000)\sub(1, 6)
-  print("#{t} [#{string.upper tag}]: #{msg}")
-
 NM.getLocalIP = () ->
   ip = ""
   switch love.system.getOS()
@@ -25,27 +14,26 @@ NM.getLocalIP = () ->
   return ip
 
 
-
-
 NM.functions = {
-  -- send data to peer
-  [128]: (msg) ->
-    print("Sending to peer: #{msg}")
+  -- print
+  [128]: (msg) -> log.trace(msg)
 
-  -- recieve data from server
-  [129]: (msg) ->
-    print("Server sent: #{msg}")
+  -- recieve data from peer
+  [129]: (msg, user) ->
+    log.trace("Server relayed: #{msg} from #{inspect user}")
 
+  [131]: () ->
+    log.error("Peer lost.")
+    NM.Client\close()
 }
 
 NM.cmd = {
     ["received"]: (command, msg) ->
-      log.client("NM.cmd::RECEIVED: #{msg}")
-      Server.functions[command](msg, user)
+      log.client("NM.cmd::RECEIVED: #{command}")
+      NM.functions[command](msg, user)
 
     ["connected"]: () ->
       log.client("NM.cmd::CONNECTED")
-      NM.Client\send(128, "hello")
 
     ["disconnected"]: () ->
 
@@ -65,10 +53,16 @@ NM.startClient = (ip) ->
     --NM.Client.callbacks.authorized         = (...) -> NM.cmd[""](...)
 
 NM.sendDataToPeer = (data) ->
-  NM.Client\send(128, data)
+  if NM.Client
+    NM.Client\send(128, data)
+  else
+    log.error("Not connected.")
 
 NM.sendDataToServer = (data) ->
-  NM.Client\send(129, data)
+  if NM.Client
+    NM.Client\send(129, data)
+  else
+    log.error("Not connected.")
 
 NM.update = (dt) ->
   ANet\update(dt)

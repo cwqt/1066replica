@@ -3,27 +3,25 @@ export ANet      = require("../libs/Affair/network")
 export M         = require("../libs/moses")
 export inspect   = require("../libs/inspect")   -- table pretty print
 export log       = require("../libs/log")
+export socket    = require("socket")
+export Server    = require("compiled/Server")
 
-export Server    = require("Server")
-
-export GAME = {}
-GAME.START_TIME = love.timer.getTime()
-export NM = {}
-NM.log = (tag, msg) ->
-  if type(msg) == "table"
-    m = ""
-    for k,v in pairs(msg) do
-      m = m .. " " .. tostring(v)
-    msg = m
-
-  t = love.timer.getTime()-GAME.START_TIME
-  t = tostring(t * 1000)\sub(1, 6)
-  print("#{t} [#{string.upper tag}]: #{msg}")
-
-love.load = () ->
+load = () ->
+	os.execute("clear")
 	export timer = Timer()
 	Server.load()
 
-love.update = (dt) ->
+sleep = (sec) ->
+  socket.select(nil, nil, sec)
+
+load()
+
+time = socket.gettime()
+dt = 0
+while true do
 	Server.update(dt)
 	timer\update(dt)
+	dt = socket.gettime() - time
+	time = socket.gettime()
+
+	sleep( 0.05 )

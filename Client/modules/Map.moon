@@ -4,7 +4,7 @@ Map.current = {}
 Map.set = (map) ->
   Map.current = map
 
-Map.generate = (height, width) ->
+Map.generate = (width, height) ->
   t = {}
   Map.height = height
   Map.width  = width

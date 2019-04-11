@@ -30,7 +30,7 @@ UI.theme = {
 	fgh: {1,1,1,1}
 	bgf: {0.3,0.3,0.3,1}
 	fgf: {1,1,1,1}
-	m: {0,0,0,0} -- up, right, down, left (cw)
+	m: {10,10,10,10} -- up, right, down, left (cw)
 	p: {10,10,10,10}
 	-- bg_image:
 	text: {
@@ -58,6 +58,7 @@ utf8char_after = (s, idx) ->
 class Master
 	new: (@bw, @bh, @bs, @elements={}) =>
 		UI.id = {}
+		love.keyboard.setKeyRepeat(true)
 		@bpw, @bph = @bw*@bs, @bh*@bs
 		love.window.setMode(@bpw, @bph)
 		for container in *@elements do container\activate(@bs)
