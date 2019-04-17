@@ -253,7 +253,7 @@ class Element
 			@whileHover()
 
 	onClick: (button) =>
-		log.debug("onClick, id:#{@id or @.__class.__name}")
+		-- log.debug("onClick, id:#{@id or @.__class.__name}")
 
 	detectHover: (x, y) =>
 		x1, y1 = x, y
@@ -270,10 +270,10 @@ class Element
 	whileHover: () =>
 
 	onHover: () =>
-		log.debug("onHover, id:#{@id or @.__class.__name}")
+		-- log.debug("onHover, id:#{@id or @.__class.__name}")
 
 	onHoverExit: () =>
-		log.debug("onHoverExit, id:#{@id or @.__class.__name}")
+		-- log.debug("onHoverExit, id:#{@id or @.__class.__name}")
 
 	wheelmoved: (x, y) =>
 

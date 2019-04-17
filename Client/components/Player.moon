@@ -2,7 +2,7 @@ class Player
   new: () =>
     @moral = 100
     @player = #GAME.PLAYERS+1
-    print("Created new Player #{@player}")
+    log.info("Created new Player #{@player}")
     table.insert(GAME.PLAYERS, @@)
 
   addUnit: (x, y, object) =>

@@ -16,15 +16,15 @@ RM.nextRound = () ->
 
 RM.executeCommands = (ft=true) ->
   if ft == true then
-    print(string.rep("=", 30 ).. "\nExecuting commands:")
-    print inspect RM.cmdStack
+    log.info("Executing commands:")
+    log.debug("\t #{inspect RM.cmdStack}")
 
   PLAYERS_COUNT = #RM.cmdStack
   -- Check if any more commands exist
   c = 0
   for i=1, PLAYERS_COUNT do c += #RM.cmdStack[i]
   if c == 0
-    print("No more commands, quitting...\n" .. string.rep("=", 30))
+    log.info("No more commands, quitting...")
     -- if not, get out of recursive function
     return
   else
@@ -34,11 +34,10 @@ RM.executeCommands = (ft=true) ->
       -- Check if player has commands, else remove the player stack
       if #currentPlayer > 0
         -- Execute player command and remove it from the table
-        io.write("Player #{i}: ")
+        log.debug("\tPlayer #{i}: ")
         currentPlayer[#currentPlayer][1]()
         table.remove(currentPlayer, #currentPlayer)
         Map.removeObjects()
-        print("-----------------------------")
     RM.executeCommands(false)
 
 

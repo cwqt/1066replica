@@ -1,10 +1,11 @@
 MainMenu = {}
 
-MainMenu.resume = () =>
 
 MainMenu.init = () =>
+	log.state("Initialised MainMenu")
 
-MainMenu.enter  = ()   =>
+MainMenu.enter  = (previous) =>
+	log.state("Entered MainMenu")
 	export timer = Timer()
 	export ui = UI.Master(8, 5, 160, {
 		UI.Container(2,1,6,4, {
@@ -25,7 +26,7 @@ MainMenu.enter  = ()   =>
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
-			with UI.Button("Msg sv", 8,7,2,1, "sv")
+			with UI.Button("Start game", 8,7,2,1, "sv")
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
@@ -38,8 +39,7 @@ MainMenu.enter  = ()   =>
 	UI.id["relay"].onClick = ->
 		NM.sendDataToPeer("ACK #{love.timer.getTime()}")
 
-	UI.id["sv"].onClick = ->
-		NM.sendDataToServer("Hello Server.")
+	UI.id["sv"].onClick = -> Gamestate.switch(UnitSelect)
 
 --LOGIC============================================================
 
@@ -68,9 +68,13 @@ MainMenu.textinput = (t) =>
 	ui\textinput(t)
 
 --POP  ============================================================
+MainMenu.resume = () =>
+	log.state("Resumed MainMenu")
 
 MainMenu.leave = () =>
+	log.state("Left MainMenu")
 
 MainMenu.quit = () =>
+	log.state("Quit MainMenu")
 
 return MainMenu

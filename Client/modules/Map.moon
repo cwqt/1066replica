@@ -18,9 +18,9 @@ Map.addObject = (x, y, obj) ->
   if Map.current[y][x].object == nil
     Map.current[y][x].object = obj
     obj.x, obj.y = x, y
-    print("Inserted #{obj.__class.__name} at #{x}, #{y}")
+    log.info("Inserted #{obj.__class.__name}(#{obj.isPlayer}) at #{x}, #{y}")
   else
-    print("Object already exists at #{x}, #{y}")
+    log.error("Object already exists at #{x}, #{y}")
 
 Map.print = (map) ->
   yl = "  "
@@ -68,9 +68,9 @@ Map.findPath = (a, b) ->
   
   if path then
     path\filter()
-    print(('Path found! Length: %.2f')\format(length))
+    log.debug(('Path found! Length: %.2f')\format(length))
     for node, count in path\iter() do
-      print(('x: %d, y: %d')\format(node.x, node.y))
+      log.debug(('x: %d, y: %d')\format(node.x, node.y))
     
     t = {}
     path\fill()
@@ -78,7 +78,7 @@ Map.findPath = (a, b) ->
       t[#t+1] = {node.x, node.y}
     return t, length
   else
-    print("No path found")
+    log.error("No path found!")
     return nil
 
 Map.updateObjectPos = (object, newx, newy) ->
@@ -90,7 +90,7 @@ Map.moveObject = (start, finish) ->
   tox, toy = finish[1], finish[2]
   
   if Map.current[toy][tox].object
-    print("moveObject: Object exists at #{tox}, #{toy}")
+    log.error("moveObject: Object exists at #{tox}, #{toy}")
     return
   
   copy = M.deepClone(Map.current[fromy][fromx].object)
@@ -119,7 +119,7 @@ Map.removeObject = (x, y) ->
 Map.removeObjects = () ->
   if #Map.deleteStack >= 1
     for obj in *Map.deleteStack
-      print "Removed object #{obj}"
+      log.debug("Removed object #{obj}")
       Map.current[obj.y][obj.x].object = nil
 
 

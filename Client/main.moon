@@ -1,34 +1,36 @@
 io.stdout\setvbuf("no")
 export GAME      = require("GAME")
 
-export M         = require("../libs/moses")     -- table functions
-export L         = require("../libs/lume")      -- lume maths
-export inspect   = require("../libs/inspect")   -- table pretty print
-export lb        = require("../libs/lovebird")  -- online debugger
-export Gamestate = require("../libs/gamestate") -- gamestates, duh
-export Timer     = require("../libs/timer")     -- " "
-export ANet      = require("../libs/Affair/network")
-export log       = require("../libs/log")
+export M          = require("../libs/moses")     -- table functions
+export L          = require("../libs/lume")      -- lume maths
+export inspect    = require("../libs/inspect")   -- table pretty print
+export lb         = require("../libs/lovebird")  -- online debugger
+export Gamestate  = require("../libs/gamestate") -- gamestates, duh
+export Timer      = require("../libs/timer")     -- " "
+export ANet       = require("../libs/Affair/network")
+export log        = require("../libs/log")
+require("../libs/Tserial")
 --export Steam     = require('luasteam')
 
-export Map       = require("modules.Map")
-export RM        = require("modules.RoundManager")
-export NM        = require("modules.Networking")
-export UI        = require("modules.ui")
-export CD        = require("modules.CollDet")
-export UM        = require("modules.UnitManager")
+export Map        = require("modules.Map")
+export RM         = require("modules.RoundManager")
+export NM         = require("modules.Networking")
+export UI         = require("modules.ui")
+export CD         = require("modules.CollDet")
+export UM         = require("modules.UnitManager")
 
-export Player    = require("components.Player")
-export Entity    = require("components.Entity")
+export Player     = require("components.Player")
+export Entity     = require("components.Entity")
 
-export MainMenu  = require("states.MainMenu")
-export Game      = require("states.Game")
+export MainMenu   = require("states.MainMenu")
+export Game       = require("states.Game")
+export UnitSelect = require("states.UnitSelect")
 
 love.load         = () ->
   os.execute("clear")
   log.debug("Game started: #{love.timer.getTime()}")
   Gamestate.registerEvents()
-  Gamestate.switch(Game)
+  Gamestate.switch(MainMenu)
 
 love.update       = (dt) ->
   NM.update(dt)

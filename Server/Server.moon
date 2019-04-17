@@ -1,19 +1,21 @@
+require("../libs/Tserial")
+
 Server = {}
 
 Server.functions = {
   -- exchange data with peer
   [128]: (msg, user) ->
     if user.match
-      log.trace("Relaying data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{msg}")
+      log.trace("Relaying data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{inspect msg}")
+      -- Exchange client-side serialised data
       Server.sv\send(129, msg, user.match)
     else
       log.debug("User has no match!")
 
   -- Server receive data
   [129]: (msg, user) ->
-    log.debug("I received: #{msg}")
+    log.debug("I received: #{msg} from #{user.connection\getsockname()}")
 }
-
 
 Server.cmd = {
   ["received"]: (command, msg, user) ->
@@ -77,6 +79,9 @@ Server.makeMatches = () ->
       log.info("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
       Server.sv\send(128, "Got match: #{client.match.connection\getsockname()}", client)
       Server.sv\send(128, "Got match: #{client.connection\getsockname()}",       client.match)
+      -- Set who's player 1/2
+      Server.sv\send(130, 1, client)
+      Server.sv\send(130, 2, client.match)
       break
 
   log.debug("Users remaining: #{Server.getUnmatched()}")

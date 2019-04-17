@@ -1,27 +1,44 @@
+MU = require("modules.gui.Map")
+
 Game = {}
 
 Game.init = () =>
+	log.state("Initialised Game")
 
 Game.enter  = (previous)   =>
-	Map.set(Map.generate(10, 5))
-	export ui = UI.Master(8, 5, 160, {})
-	export p = Player()
-	p\addUnit(1,1, Entity())
-	print inspect Map.current[1][1]
+	log.state("Entered Game")
+	Map.set(Map.generate(30, 5))
+	export ui = UI.Master(16, 9, 100, {
+
+	})
+	-- export p = Player()
+	-- p\addUnit(1,1, Entity())
+	-- p\addUnit(1,1, Entity())
+	-- p\addUnit(4,1, Entity())
+	-- -- print inspect Map.current[1][1]
+	-- RM.pushCmd(1, -> Map.current[1][1].object\move(5, 1))
+	-- RM.executeCommands()
+	-- RM.pushCmd(1, -> Map.current[1][1].object\move(4, 1))
+	-- RM.executeCommands()
+	-- RM.pushCmd(1, -> Map.current[1][1].object\move(3, 1))
+	-- RM.executeCommands()
+
 
 --LOGIC============================================================
 
 Game.update = (dt) =>
 	ui\update()
+	MU.update(dt)
 
 Game.draw   = ()   =>
 	ui\draw()
-	Game.drawMap()
+	MU.draw()
 
 --INPUT============================================================
 
 Game.mousemoved = (x, y, dx, dy) =>
 	ui\mousemoved(x,y,dx,dy)
+	MU.hoverGS(x, y)
 
 Game.mousereleased = (x, y, button) =>
 	ui\mousemoved(x,y,button)
@@ -38,28 +55,12 @@ Game.textinput = (t) =>
 --POP  ============================================================
 
 Game.resume = () =>
+	log.state("Resumed Game")
 
 Game.leave = () =>
+	log.state("Left Game")
 
 Game.quit = () =>
-
---UI   ============================================================
-
-p = 30
-Game.drawMap = () ->
-	love.graphics.push()
-	love.graphics.translate(10, love.graphics.getHeight()-Map.height*p-10)
-	love.graphics.line(0, 0, Map.width*p, 0, Map.width*p, Map.height*p, 0, Map.height*p, 0, 0)
-	for i=2, #Map.current[1] do
-		love.graphics.line((i-1)*p, 0, (i-1)*p, Map.height*p)
-	for i=2, #Map.current do
-		love.graphics.line(0, (i-1)*p, Map.width*p, (i-1)*p)
-
-	for y, row in ipairs Map.current
-		for x, column in ipairs row
-			if column.object
-				love.graphics.print(column.object.icon, y*p, x*p)
-
-	love.graphics.pop()
+	log.state("Quit Game")
 
 return Game

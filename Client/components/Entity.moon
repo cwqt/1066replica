@@ -17,15 +17,17 @@ class Entity extends Map.Object
 
   move: (tox, toy) =>
     path, length = Map.findPath({@x, @y},{tox, toy})
+    if not path then return
+
     if length <= @range
 
       -- if no delta y
       -- and enemy at end of path, charge
       if length > @chargeDistance
-        print("Charge!")
+        log.debug("Charge!")
 
       if path
-        print("Moving #{@.__class.__name} from #{inspect(path[1])} to #{inspect(path[#path])}")
+        log.debug("Moving #{@.__class.__name} from #{inspect(path[1])} to #{inspect(path[#path])}")
         for i=1, #path do
           -- Command is inserted into a stack, so if the object
           -- is copied (as in moveObject), the object referenced
@@ -42,7 +44,7 @@ class Entity extends Map.Object
             o = Map.current[@y][i].object
             if o and o != self
               if o.isPlayer != @isPlayer and o.isPlayer != nil
-                print("Enemy infront of curent position (#{@x}, #{@y}) at #{o.x}, #{o.y}, attacking!")
+                log.debug("Enemy infront of curent position (#{@x}, #{@y}) at #{o.x}, #{o.y}, attacking!")
                 @attack(o)
                 return
 
@@ -52,20 +54,21 @@ class Entity extends Map.Object
           -- Move object to next position
           Map.moveObject({path[i][1], path[i][2]},{path[i+1][1], path[i+1][2]})
     else
-      print("Path out of range: #{length} > #{@range}")
+      log.error("Path out of range: #{length} > #{@range}")
+      return
 
 
   attack: (object) =>
-    print("Attacking #{object.__class.__name} at #{object.x}, #{object.y}")
+    log.debug("Attacking #{object.__class.__name} at #{object.x}, #{object.y}")
     dmg = math.ceil((@atk^2)/(@atk + object.def))
-    print("Dealing #{dmg} damage")
+    log.debug("Dealing #{dmg} damage")
     object.hp -= dmg
-    print("#{object.__class.__name} has #{object.hp}HP remaining")
+    log.debug("#{object.__class.__name} has #{object.hp}HP remaining")
     if object.hp <= 0
       object\die()
 
   die: () =>
-    print("Unit #{@.__class.__name} lost at #{@x}, #{@y}")
+    log.debug("Unit #{@.__class.__name} lost at #{@x}, #{@y}")
     Map.removeObject(@x, @y)
 
 return Entity
