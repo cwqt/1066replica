@@ -2,7 +2,11 @@ GAME = {}
 GAME.START_TIME = love.timer.getTime()
 GAME.PLAYERS = {}
 GAME.fonts = {}
+GAME.isPlanning = true
 
+GAME.UNITS = {
+	[1]: Entity
+}
 
 F = {
 	title:   "title.ttf"

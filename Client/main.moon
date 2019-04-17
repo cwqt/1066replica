@@ -1,5 +1,4 @@
 io.stdout\setvbuf("no")
-export GAME      = require("GAME")
 
 export M          = require("../libs/moses")     -- table functions
 export L          = require("../libs/lume")      -- lume maths
@@ -25,6 +24,9 @@ export Entity     = require("components.Entity")
 export MainMenu   = require("states.MainMenu")
 export Game       = require("states.Game")
 export UnitSelect = require("states.UnitSelect")
+
+export GAME       = require("GAME")
+
 
 love.load         = () ->
   os.execute("clear")

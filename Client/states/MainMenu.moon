@@ -22,7 +22,7 @@ MainMenu.enter  = (previous) =>
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
-			with UI.Button("Relay", 8,6,2,1, "relay")
+			with UI.Button("Ping", 8,6,2,1, "ping")
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
@@ -36,8 +36,8 @@ MainMenu.enter  = (previous) =>
 	UI.id["connect"].onClick = ->
 		z = NM.startClient(UI.id["ip"].value)
 
-	UI.id["relay"].onClick = ->
-		NM.sendDataToPeer("ACK #{love.timer.getTime()}")
+	UI.id["ping"].onClick = ->
+		NM.sendDataToPeer({201, "#{love.timer.getTime()}"})
 
 	UI.id["sv"].onClick = -> Gamestate.switch(UnitSelect)
 

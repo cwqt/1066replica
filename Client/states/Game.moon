@@ -11,6 +11,13 @@ Game.enter  = (previous)   =>
 	export ui = UI.Master(16, 9, 100, {
 
 	})
+
+	GAME.self = Player(GAME.self)
+	GAME.opponent = Player(GAME.opponent)
+
+	for i=1, 10 do
+		GAME.self\addUnit(GAME.UNITS[1]!)
+
 	-- export p = Player()
 	-- p\addUnit(1,1, Entity())
 	-- p\addUnit(1,1, Entity())

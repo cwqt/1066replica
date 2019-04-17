@@ -1,13 +1,18 @@
 class Player
-  new: () =>
-    @moral = 100
-    @player = #GAME.PLAYERS+1
+  new: (@player) =>
+    @morale = 100
     log.info("Created new Player #{@player}")
-    table.insert(GAME.PLAYERS, @@)
+    @px, @py = 1, 1
+    GAME.PLAYERS[@player] = @@
 
-  addUnit: (x, y, object) =>
+  addUnit: (object) =>
     object.isPlayer = @player
-    Map.addObject(x, y, object)
-    
+    if GAME.isPlanning
+    	-- 5 blocks padding (min.)
+	    Map.addObject(@px, @py, object)
+    	@px += 1
+    	if @px == 5
+    		@px = 1
+    		@py += 1
 
 return Player

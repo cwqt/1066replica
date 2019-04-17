@@ -23,13 +23,22 @@ NM.functions = {
     log.error("Peer lost.")
     NM.Client\close()
 
+
   -- Peer commands >200
   -- Set peer ready
   [200]: () ->
     UnitSelect.peerReady = true
     log.debug("peerReady: #{UnitSelect.peerReady}")
-  [201]: () ->
-  [202]: () ->
+  -- set peer starting units
+  [201]: (msg) ->
+    --{{1, 10}, {4, 3}}
+    --unit1:10, unit4:3
+    for _, t in pairs(msg)
+      for i=1, t[2]
+        GAME.opponent\addUnit(GAME.UNITS[t[1]]!)
+
+  [201]: (msg) ->
+    log.debug(love.timer.getTime()-tonumber(msg))
 }
 
 NM.cmd = {
