@@ -1,5 +1,6 @@
 xxx = {}
 xxx.init = () =>
+	log.state("Initialised xxx")
 xxx.enter  = (previous)   =>
 	log.state("Entered xxx")
 
@@ -24,4 +25,4 @@ xxx.leave = () =>
 xxx.quit = () =>
 	log.state("Quit xxx")
 
-return xx
+return xxx
