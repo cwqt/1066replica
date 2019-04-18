@@ -8,6 +8,11 @@ GAME.UNITS = {
 	[1]: Entity
 }
 
+GAME.COLORS = {
+	[1]: {1,0,0,1},
+	[2]: {0,0,1,1}
+}
+
 F = {
 	title:   "title.ttf"
 	default: "default.ttf"

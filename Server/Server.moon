@@ -6,11 +6,11 @@ Server.functions = {
   -- exchange data with peer
   [128]: (msg, user) ->
     if user.match
-      log.trace("Relaying data from: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{inspect msg}")
+      log.trace("Relay: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{inspect msg}")
       -- Exchange client-side serialised data
       Server.sv\send(129, msg, user.match)
     else
-      log.debug("User has no match!")
+      log.warn("User has no match!")
 
   -- Server receive data
   [129]: (msg, user) ->

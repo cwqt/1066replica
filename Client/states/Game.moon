@@ -7,17 +7,33 @@ Game.init = () =>
 
 Game.enter  = (previous)   =>
 	log.state("Entered Game")
-	Map.set(Map.generate(30, 5))
+	Map.set(Map.generate(14, 4))
 	export ui = UI.Master(16, 9, 100, {
-
+		UI.Container(1,1,5,5, {
+			with UI.Text("", 1,1,5,10, "debug")
+				.text.font = GAME.fonts["mono"][16]
+				.text.color = {1,1,1,1}
+			with UI.Text("", 6,1,5,10, "gsinfo")
+				.text.font = GAME.fonts["mono"][16]
+				.text.color = {1,1,1,1}
+			with UI.Text("", 11,1,5,10, "sgsinfo")
+				.text.font = GAME.fonts["mono"][16]
+				.text.color = {1,1,1,1}
+		})
 	})
 
-	GAME.self = Player(GAME.self)
-	GAME.opponent = Player(GAME.opponent)
+	-- GAME.self = Player(GAME.self)
+	-- GAME.opponent = Player(GAME.opponent)
+	-- for i=1, 10 do
+	-- 	GAME.self\addUnit(GAME.UNITS[1]!)
 
-	for i=1, 10 do
-		GAME.self\addUnit(GAME.UNITS[1]!)
-
+	p1 = Player(1)
+	p2 = Player(2)
+	p1\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
+	p2\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
+	Map.print(Map.current)
+	
+	-- p3\placeUnits(t)
 	-- export p = Player()
 	-- p\addUnit(1,1, Entity())
 	-- p\addUnit(1,1, Entity())
@@ -45,13 +61,14 @@ Game.draw   = ()   =>
 
 Game.mousemoved = (x, y, dx, dy) =>
 	ui\mousemoved(x,y,dx,dy)
-	MU.hoverGS(x, y)
+	MU.mousemoved(x,y,dx,dy)
 
 Game.mousereleased = (x, y, button) =>
 	ui\mousemoved(x,y,button)
 
 Game.mousepressed = (x, y, button) =>
 	ui\mousepressed(x,y,button)
+	MU.mousepressed(x, y, button)
 
 Game.keypressed = (key) =>
 	ui\keypressed(key)

@@ -2,6 +2,9 @@ UnitSelect = {}
 UnitSelect.peerReady = false
 UnitSelect.ready = false
 
+-- Player in here
+UnitSelect.units = {}
+
 UnitSelect.init = () =>
 	log.state("Initialised UnitSelect")
 
@@ -16,11 +19,7 @@ UnitSelect.enter  = (previous)   =>
 			with UI.Button("-", 5,1,2,2, "dec")
 				.text.alignh = "center"
 			UI.Text("",9,5,10,2, 'info')
-			with UI.Button("Enter game",1,5,8,2)
-				.onClick = ->
-					UnitSelect.ready = true
-					UI.id["info"].value = "Waiting for peer"
-					NM.sendDataToPeer({200})
+			UI.Button("Enter game",1,5,8,2, "load")
 		})
 	})
 
@@ -31,12 +30,19 @@ UnitSelect.enter  = (previous)   =>
 
 	UI.id["dec"].onClick = ->
 		v -= 1
-		UI.id["cnt"].value = v 
+		UI.id["cnt"].value = v
+
+	UI.id["load"].onClick = ->
+		UnitSelect.ready = true
+		UI.id["info"].value = "Waiting for peer"
+		NM.sendDataToPeer({200})
+		UnitSelect.units[GAME.self] = {}
 
 --LOGIC============================================================
 UnitSelect.update = (dt) =>
 	ui\update(dt)
 	if UnitSelect.ready and UnitSelect.peerReady
+
 		Gamestate.switch(Game)
 
 UnitSelect.draw   = ()   =>

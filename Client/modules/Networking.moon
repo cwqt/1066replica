@@ -1,35 +1,31 @@
 NM = {}
 
 NM.functions = {
-  -- print
-  [128]: (msg) ->log.trace(msg)
-
-  -- recieve data from peer
+  [128]: (msg) -> log.trace(msg)
+  -- Recieve data from peer
   [129]: (msg) ->
     x = TSerial.unpack(msg)
     log.trace("Server relayed: #{inspect x}")
     -- {Peer command, data}
     -- {200, {1,2,3,4}}
     NM.functions[x[1]](x[2])
-
   -- Set what player I am
   [130]: (msg) ->
     msg = tonumber(msg)
     GAME.self = msg
     GAME.opponent = msg>=2 and 1 or 2
     log.debug("self: #{GAME.self}, opponent: #{GAME.opponent}")
-
+  -- Peer lost
   [131]: () ->
     log.error("Peer lost.")
     NM.Client\close()
 
-
   -- Peer commands >200
-  -- Set peer ready
+  -- Set peer ready (unitselect)
   [200]: () ->
     UnitSelect.peerReady = true
     log.debug("peerReady: #{UnitSelect.peerReady}")
-  -- set peer starting units
+  -- Set peer starting units
   [201]: (msg) ->
     --{{1, 10}, {4, 3}}
     --unit1:10, unit4:3
@@ -37,8 +33,9 @@ NM.functions = {
       for i=1, t[2]
         GAME.opponent\addUnit(GAME.UNITS[t[1]]!)
 
+  -- Ping
   [201]: (msg) ->
-    log.debug(love.timer.getTime()-tonumber(msg))
+    log.debug((love.timer.getTime()-tonumber(msg))*1000 .. "ms")
 }
 
 NM.cmd = {

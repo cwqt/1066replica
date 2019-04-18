@@ -8,6 +8,7 @@ class Entity extends Map.Object
     @range = 5
     @chargeDistance = 4
     @charging = false
+    @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
 
   update: (dt) =>
     super\draw()
@@ -43,7 +44,7 @@ class Entity extends Map.Object
           for i=xlb, xub do
             o = Map.current[@y][i].object
             if o and o != self
-              if o.isPlayer != @isPlayer and o.isPlayer != nil
+              if o.player != @player and o.player != nil
                 log.debug("Enemy infront of curent position (#{@x}, #{@y}) at #{o.x}, #{o.y}, attacking!")
                 @attack(o)
                 return
