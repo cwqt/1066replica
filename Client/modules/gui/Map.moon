@@ -4,12 +4,17 @@ MU.fGS = {1,1}
 MU.pfGS = {1,1}
 MU.mouseOverMap = false
 p = 100
+MU.p = p
+
+MU.load = () ->
+  Map.tx, Map.ty = (love.graphics.getWidth()-(Map.width*p))/2, (love.graphics.getHeight()-Map.height*p-10)
 
 MU.update = (dt) ->
 	s = ""
 	s = "mouseOverMap: #{MU.mouseOverMap}\n"
 	s = s .. "fGS: #{inspect MU.fGS}\n"
 	s = s .. "pfGS: #{inspect MU.pfGS}\n"
+	s = s .. "sGS: #{inspect MU.sGS}\n"
 	UI.id["debug"].value = s
 
 	s = ""
@@ -22,10 +27,14 @@ MU.update = (dt) ->
 		s = inspect(Map.current[MU.sGS[2]][MU.sGS[1]].object, {depth:1})
 	UI.id["sgsinfo"].value = s
 
+	s = ""
+	s = inspect RM.cmdStack
+	UI.id["rm"].value = s
+
 
 MU.draw = () ->
 	love.graphics.push()
-	love.graphics.translate((love.graphics.getWidth()-(Map.width*p))/2, love.graphics.getHeight()-Map.height*p-10)
+	love.graphics.translate(Map.tx, Map.ty)
 	MU.drawMap()
 	love.graphics.pop()
 
@@ -41,7 +50,7 @@ MU.drawPlanning = () ->
 	love.graphics.setColor(1,1,1,1)
 
 MU.drawMap = () ->
-	if GAME.isPlanning then MU.drawPlanning()
+	if Game.isPlanning then MU.drawPlanning()
 
 	love.graphics.setColor(1,1,1,1)
 	-- Grid outline
@@ -52,17 +61,30 @@ MU.drawMap = () ->
 		love.graphics.line(0, (i-1)*p, Map.width*p, (i-1)*p)
 	-- Draw co-ord numbers
 	for y=1, #Map.current
-		for x=1, #Map.current[1] 
-			love.graphics.print("#{x},#{y}", (x-1)*p, (y-1)*p) 
+		for x=1, #Map.current[1]
+			love.graphics.print("#{x},#{y}", (x-1)*p, (y-1)*p)
 
-	MU.drawUnits() 
+	MU.drawUnits()
+
+-- for integer lists only
+M.identical = (a, b) ->
+	for i=1, #a
+		if a[i] == b[i]
+			continue
+		else return false
+	return true
 
 MU.drawUnits = () ->
 	for y=1, #Map.current
 		for x=1, #Map.current[y]
 			if Map.current[y][x].object
 				o = Map.current[y][x].object
+				love.graphics.push()
 				tx, ty = (x-1)*p+p/2, (y-1)*p+p/2
+
+				if Game.isPlanning and M.identical({x, y}, MU.sGS or {})
+					love.graphics.translate((love.mouse.getX()-Map.tx-tx), (love.mouse.getY()-Map.ty-ty))
+
 				love.graphics.setColor(1,1,1,1)
 				love.graphics.circle("fill", tx, ty, 0.4*p)
 				love.graphics.circle("line", tx, ty, 0.4*p, 64)
@@ -77,6 +99,7 @@ MU.drawUnits = () ->
 				love.graphics.setColor(0,0,0,1)
 				-- love.graphics.rectangle("line", (x-1)*p+p/2-.35*p, (y-1)*p+p/2-.35*p, 0.7*p, 0.7*p)
 				love.graphics.setColor(1,1,1,1)
+				love.graphics.pop()
 
 MU.hoverGS = (mx, my) ->
 	tx, ty = (love.graphics.getWidth()-(Map.width*p))/2, love.graphics.getHeight()-Map.height*p-10
@@ -86,7 +109,7 @@ MU.hoverGS = (mx, my) ->
 		MU.mouseOverMap = true
 		gx = math.ceil((mx-tx)/p)
 		gy = math.ceil((my-ty)/p)
-		if not M.same(MU.fGS, {gx, gy})
+		if not M.identical(MU.fGS, {gx, gy})
 			MU.pfGS = MU.fGS
 			MU.fGS = {gx, gy}
 			-- log.trace("Delta #{inspect MU.pfGS} -> #{inspect MU.fGS}")
@@ -95,12 +118,52 @@ MU.mousemoved = (x, y, dx, dy) ->
 	MU.hoverGS(x, y)
 
 MU.mousepressed = (x, y, button) ->
-	if MU.mouseOverMap and button == 1
-		if Map.current[MU.fGS[2]][MU.fGS[1]].object
-			MU.sGS = MU.fGS
+	if not MU.mouseOverMap and button == 1
+			MU.deselectUnit()
 
+	-- Moving game objects around during planning
+	if Game.isPlanning and MU.mouseOverMap 
+		MU.handleMovingObjects()
 
+MU.handleMovingObjects = (using nil) ->
+	-- If we have a selected object, we're placing it
+	if MU.sGS
+		-- Check if we're just trying to place the object back
+		-- where it was initially
+		if M.identical(MU.sGS, MU.fGS)
+			MU.deselectUnit()
+			return
+		else
+			-- Attempt to place selected object at new location
+			-- Check if desired placement location within player margin
+			dx = MU.fGS[1]
+			p = Map.current[MU.sGS[2]][MU.sGS[1]].object.player
+			m = GAME.PLAYERS[p].margin
+			if p % 2 == 0
+				if dx <= Map.width-m
+					return	
+			else
+				if dx >= m+1
+					return
+			success = Map.moveObject(MU.sGS, MU.fGS)
+			if success
+				MU.deselectUnit()
+				return
+	-- If an object exists at the current mouse selection, select it
+	o = Map.current[MU.fGS[2]][MU.fGS[1]] 
+	if o.object and not MU.sGS
+		-- Only be able to select our own units
+		if o.object.player == GAME.self
+			MU.selectUnit(MU.fGS)
+			return
+		
+MU.selectUnit = (unit) ->
+	log.debug("Selected #{inspect unit}")
+	MU.sGS = unit
 
-
+MU.deselectUnit = () ->
+	if MU.sGS
+		log.debug("Deselected #{inspect MU.fGS}")
+		MU.sGS = nil
 
 return MU

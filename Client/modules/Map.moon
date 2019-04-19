@@ -91,12 +91,14 @@ Map.moveObject = (start, finish) ->
   
   if Map.current[toy][tox].object
     log.error("moveObject: Object exists at #{tox}, #{toy}")
-    return
+    return false
   
   copy = M.deepClone(Map.current[fromy][fromx].object)
   Map.current[toy][tox].object = copy
   Map.updateObjectPos(copy, tox, toy)
   Map.current[fromy][fromx].object = nil
+  log.debug("Moved #{Map.current[toy][tox].object.__class.__name} from #{inspect start} to #{inspect finish}")
+  return true
 
 Map.getDirection = (path) ->
   --     |0,-1|
@@ -119,15 +121,13 @@ Map.removeObject = (x, y) ->
 Map.removeObjects = () ->
   if #Map.deleteStack >= 1
     for obj in *Map.deleteStack
-      log.debug("Removed object #{obj}")
+      log.debug("Removed object #{obj.__class.__name}")
       Map.current[obj.y][obj.x].object = nil
 
 
 class Map.Object
   new: (@icon="█") =>
-
   update: (dt) =>
-
   draw: () =>
 
 return Map

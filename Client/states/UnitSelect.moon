@@ -42,7 +42,6 @@ UnitSelect.enter  = (previous)   =>
 UnitSelect.update = (dt) =>
 	ui\update(dt)
 	if UnitSelect.ready and UnitSelect.peerReady
-
 		Gamestate.switch(Game)
 
 UnitSelect.draw   = ()   =>

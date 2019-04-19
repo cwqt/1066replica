@@ -100,7 +100,7 @@ class Master
 		for element in *@elements do element\keyreleased(key)
 
 class Container extends Master
-	new: (@x, @y, @bw, @bh, @elements={}) =>
+	new: (@x, @y, @bw, @bh, @elements={}, @id) =>
 		@active = false
 		@tx, @ty = 0, 0
 		@bw = @bw*2
@@ -123,6 +123,8 @@ class Container extends Master
 
 		for element in *@elements do 
 			element\activate(@bs, @tx, @ty)
+
+		if @id then UI.id[@id] = self
 
 	draw: () =>
 		if @active
@@ -156,6 +158,12 @@ class Container extends Master
 			return true
 		else
 			return false
+
+	destroy: (id) =>
+		for k, v in pairs(@elements)
+			if v.id == id
+				UI.id[id] = nil
+				table.remove(@elements, k)
 
 	-- Pass on input to elements
 	wheelmoved: (x, y) =>
@@ -299,6 +307,7 @@ class Element
 
 	destroy: () =>
 		@timer\destroy()
+		UI.id[@id] = nil
 
 	setTheme: () =>
 		t = M.clone(UI.theme)

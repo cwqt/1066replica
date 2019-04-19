@@ -5,7 +5,12 @@ class Player
     @morale = 100
     log.info("Created new Player #{@player}")
     @px, @py = 0, 1
+    @margin = margin
     GAME.PLAYERS[@player] = self
+
+  addCommand: (command) =>
+    log.debug("Player(#{@player}) added command: #{command}")
+    RM.pushCmd(@player, command)
 
   placeUnits: (objects) =>
     @py = 1
@@ -23,7 +28,7 @@ class Player
     for _, object in pairs(objects)
       object.player = @player
 
-      if GAME.isPlanning
+      if Game.isPlanning
         tx, tw = 1, margin
         if @player % 2 == 0
           tx, tw = Map.width-margin+2, Map.width
@@ -33,7 +38,6 @@ class Player
           if tx-1 == tw
             @py += 1
             tx = (@player % 2 == 0) and Map.width-margin+2 or 1
-            print "nxt"
 
         Map.addObject(tx, @py, object)
 

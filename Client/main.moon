@@ -41,8 +41,7 @@ love.load         = () ->
 
 love.frame = 0
 love.update       = (dt) ->
-  if dt < 1/60 then
-    love.timer.sleep(1/60 - dt)
+  if dt < 1/60 then love.timer.sleep(1/60 - dt)
   NM.update(dt)
   Debugger.update(dt)
   -- love.frame = love.frame + 1
