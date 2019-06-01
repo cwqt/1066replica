@@ -50,7 +50,7 @@ love.update       = (dt) ->
   --   love.profiler.reset()
 
 love.draw         = () ->
-  love.graphics.setBackgroundColor(0.2,0.2,0.2)
+  love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)
   -- love.graphics.setFont(GAME.fonts["mono"][16])
   -- love.graphics.print(love.report or "Please wait...")
   Debugger.draw()
@@ -59,9 +59,9 @@ love.keypressed   = (key, code, isrepeat) ->
   if key == "q" then love.event.quit()
   if key == "/" then UI.dbg = not UI.dbg
 
-love.keyreleased  = (key) ->
+love.keyreleased   = (key) ->
 
-love.mousepressed = (x, y, button) ->
+love.mousepressed  = (x, y, button) ->
 
 love.mousereleased = (x, y, button) ->
 

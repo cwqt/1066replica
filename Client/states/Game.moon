@@ -1,4 +1,6 @@
 MU = require("modules.gui.Map")
+Field = require("modules.gui.Field")
+Notification = require("modules.gui.Notification")
 
 Game = {}
 
@@ -9,6 +11,11 @@ Game.init = () =>
 Game.enter  = (previous)   =>
 	log.state("Entered Game")
 	Map.set(Map.generate(14, 4))
+
+	Game.cdb = with Game.countdownBar(20)
+		.onComplete = -> Game.exitPlanning()
+		\countdown()
+
 	export ui = UI.Master(16, 9, 100, {
 		UI.Container(1,1,8,4, {
 			with UI.Text("", 1,1,5,8, "debug")
@@ -38,6 +45,7 @@ Game.enter  = (previous)   =>
 				.onClick = -> RM.executeCommands()
 		}, "test")
 	})
+
 	UI.id["exitplanning"].onClick = ->
 		Game.exitPlanning()
 		-- UI.id["test"]\destroy("exitplanning")
@@ -51,16 +59,16 @@ Game.enter  = (previous)   =>
 	Player(GAME.self)
 	Player(GAME.opponent)
 
-	Game.cbd = Game.countdownBar(5)
-	Game.cbd\countdown()
-	Game.cbd.onComplete = -> Game.exitPlanning()
-
-
 	-- p1 = Player(1)
 	-- p2 = Player(2)
-	-- p1\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
-	-- p2\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
-	
+	GAME.PLAYERS[GAME.self]\placeUnits({Entity!})
+	GAME.PLAYERS[GAME.opponent]\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
+
+	Field.load()
+
+	export n = with Notification("Round 1 - Select Commands")
+		.color = GAME.COLORS[GAME.self]
+
 	-- p3\placeUnits(t)
 	-- export p = Player()
 	-- p\addUnit(1,1, Entity())
@@ -96,7 +104,11 @@ class Game.countdownBar
 		love.graphics.rectangle("fill", Map.tx, Map.ty-4, @w, 4)
 
 	countdown: () =>
-	  @timer\tween(@time, self, {w: 0}, 'linear', -> @onComplete())
+		@tag = @timer\tween(@time, self, {w: 0}, 'linear', -> @onComplete())
+
+	finish: () =>
+		@timer\cancel(@tag)
+		@timer\tween(0.3, self, {w: 0}, 'linear', -> @onComplete())
 
 	onComplete: () =>
 
@@ -113,12 +125,15 @@ Game.update = (dt) =>
 	ui\update()
 	MU.update(dt)
 	Game.timer\update(dt)
-	Game.cbd\update(dt)
+	Game.cdb\update(dt)
+	n\update(dt)
 
 Game.draw   = ()   =>
+	Field.draw()
 	ui\draw()
 	MU.draw()
-	Game.cbd\draw()
+	Game.cdb\draw()
+	n\draw(0, 10)
 
 Game.enterPlanning = () ->
 	log.debug("Entered Planning stage")
@@ -126,6 +141,7 @@ Game.enterPlanning = () ->
 
 Game.exitPlanning = () ->
 	log.debug("Exited Planning stage")
+	Game.cdb\finish!
 	Game.isPlanning = false
 
 --INPUT============================================================

@@ -10,7 +10,7 @@ MainMenu.enter  = (previous) =>
 	export ui = UI.Master(8, 5, 160, {
 		UI.Container(2,1,6,4, {
 			with UI.Text("alias", 1,2,12,2)
-				.text.font = GAME.fonts.title[216]
+				.text.font = GAME.fonts.title2[216]
 				.text.alignh = "center"
 				.text.alignv = "center"
 				.p = {10,10,10,10}

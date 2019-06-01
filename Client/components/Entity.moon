@@ -20,8 +20,7 @@ class Entity extends Map.Object
     path, length = Map.findPath({@x, @y},{tox, toy})
     if not path then return
 
-    if length <= @range
-
+    if length <= @range 
       -- if no delta y
       -- and enemy at end of path, charge
       if length > @chargeDistance

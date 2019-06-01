@@ -3,7 +3,7 @@ MU.sGS = nil
 MU.fGS = {1,1}
 MU.pfGS = {1,1}
 MU.mouseOverMap = false
-p = 100
+p = 50
 MU.p = p
 
 MU.load = () ->

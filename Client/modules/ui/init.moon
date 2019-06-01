@@ -60,7 +60,7 @@ class Master
 		UI.id = {}
 		love.keyboard.setKeyRepeat(true)
 		@bpw, @bph = @bw*@bs, @bh*@bs
-		love.window.setMode(@bpw, @bph)
+		love.window.setMode(@bpw, @bph, {msaa:4})
 		for container in *@elements do container\activate(@bs)
 
 	update: (dt) =>

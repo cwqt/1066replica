@@ -27,7 +27,7 @@ NM.functions = {
     log.debug("peerReady: #{UnitSelect.peerReady}")
   -- Set peer starting units
   [201]: (msg) ->
-    --{{1, 10}, {4, 3}}
+    --{{1, 10, {def:20}}, {4, 3}}
     --unit1:10, unit4:3
     for _, t in pairs(msg)
       for i=1, t[2]
