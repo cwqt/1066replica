@@ -15,6 +15,9 @@ if [ "$server" -eq 1 ]; then
   lua compiled/main.lua
 elif [ "$client" -eq 1 ]; then
   cd Client/
+  rm -rf compiled
+  mkdir compiled/
+  cp -rf media/ compiled/media 
   moonc -t compiled/ .
   love compiled/
 else

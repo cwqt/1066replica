@@ -1,20 +1,22 @@
 MU = require("modules.gui.Map")
 Field = require("modules.gui.Field")
-Notification = require("modules.gui.Notification")
+Notifications = require("modules.gui.Notifications")
 
 Game = {}
 
 Game.init = () =>
 	log.state("Initialised Game")
+	love.math.setRandomSeed(love.timer.getTime())
 	Game.timer = Timer()
 
 Game.enter  = (previous)   =>
 	log.state("Entered Game")
 	Map.set(Map.generate(14, 4))
 
-	Game.cdb = with Game.countdownBar(20)
+	Game.planningDuration = 10
+
+	Game.cdb = with Game.countdownBar(Game.planningDuration)
 		.onComplete = -> Game.exitPlanning()
-		\countdown()
 
 	export ui = UI.Master(16, 9, 100, {
 		UI.Container(1,1,8,4, {
@@ -51,6 +53,7 @@ Game.enter  = (previous)   =>
 		-- UI.id["test"]\destroy("exitplanning")
 
 	MU.load()
+	Notifications.load()
 	Game.enterPlanning()
 
 	GAME.self = 1
@@ -66,8 +69,8 @@ Game.enter  = (previous)   =>
 
 	Field.load()
 
-	export n = with Notification("Round 1 - Select Commands")
-		.color = GAME.COLORS[GAME.self]
+	RM.nextRound()
+
 
 	-- p3\placeUnits(t)
 	-- export p = Player()
@@ -104,11 +107,11 @@ class Game.countdownBar
 		love.graphics.rectangle("fill", Map.tx, Map.ty-4, @w, 4)
 
 	countdown: () =>
-		@tag = @timer\tween(@time, self, {w: 0}, 'linear', -> @onComplete())
+		@tag = @timer\tween(@time, self, {w: 0}, 'linear', -> @finish())
 
 	finish: () =>
 		@timer\cancel(@tag)
-		@timer\tween(0.3, self, {w: 0}, 'linear', -> @onComplete())
+		@timer\tween(0.3, self, {w: 0}, 'linear')
 
 	onComplete: () =>
 
@@ -126,23 +129,25 @@ Game.update = (dt) =>
 	MU.update(dt)
 	Game.timer\update(dt)
 	Game.cdb\update(dt)
-	n\update(dt)
+	Notifications.update(dt)
 
 Game.draw   = ()   =>
 	Field.draw()
 	ui\draw()
 	MU.draw()
 	Game.cdb\draw()
-	n\draw(0, 10)
+	Notifications.draw()
 
 Game.enterPlanning = () ->
 	log.debug("Entered Planning stage")
 	Game.isPlanning = true
+	Game.cdb\countdown()
+	Notifications.push(1, 'Planning - Position units', GAME.assets["icons"]["move"], Game.planningDuration, GAME.COLOR)
 
 Game.exitPlanning = () ->
 	log.debug("Exited Planning stage")
-	Game.cdb\finish!
 	Game.isPlanning = false
+	Game.cdb\finish()
 
 --INPUT============================================================
 

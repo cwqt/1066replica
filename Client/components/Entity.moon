@@ -8,7 +8,8 @@ class Entity extends Map.Object
     @range = 5
     @chargeDistance = 4
     @charging = false
-    @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
+    @icon_img = GAME.assets["icons"][@.__class.__name]
+    -- @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
 
   update: (dt) =>
     super\draw()

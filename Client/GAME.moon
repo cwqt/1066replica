@@ -8,18 +8,30 @@ GAME.UNITS = {
 	[1]: Entity
 }
 
+GAME.COLOR = {0.1,0.1,0.1,1}
 GAME.COLORS = {
 	[1]: {0.53, 0.10, 0.19, 1},
 	[2]: {0,0,1,1}
 }
 
+GAME.assets = {
+	["icons"]: {
+		["move"]:    love.graphics.newImage("media/img/icons/Move.png")
+		["fortify"]: love.graphics.newImage("media/img/icons/Fortify.png")
+		["fire"]:    love.graphics.newImage("media/img/icons/Fire.png")
+		["testudo"]:    love.graphics.newImage("media/img/icons/Testudo.png")
+		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
+		["spear"]:  love.graphics.newImage("media/img/icons/Spear.png")
+	}
+}
+
 F = {
-	title:   "title.ttf"
-	default: "default.ttf"
-	bold:    "bold.ttf"
-	mono:    "mono.ttf"
-	title2:  "THEROOTS.TTF"
-	text:    "Romanica.ttf"
+	title:   "media/fonts/title.ttf"
+	default: "media/fonts/default.ttf"
+	bold:    "media/fonts/bold.ttf"
+	mono:    "media/fonts/mono.ttf"
+	title2:  "media/fonts/THEROOTS.TTF"
+	text:    "media/fonts/Romanica.ttf"
 }
 
 -- Function to provide fonts in sizes:

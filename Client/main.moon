@@ -28,6 +28,12 @@ export UnitSelect = require("states.UnitSelect")
 
 export GAME       = require("GAME")
 
+export UUID = () ->
+  fn = (x) ->
+    r = love.math.random(16) - 1
+    r = (x == "x") and (r + 1) or (r % 4) + 9
+    return ("0123456789abcdef")\sub(r, r)
+  return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", fn))
 
 love.load         = () ->
   os.execute("clear")
@@ -79,3 +85,11 @@ love.errhand       = (msg) ->
 love.quit          = () ->
   log.fatal("Quitting...")
   love.event.quit()
+
+
+export PRS = (x, y, r, sx, sy) ->
+  love.graphics.push()
+  love.graphics.translate(x, y)
+  love.graphics.rotate(r or 0)
+  love.graphics.scale(sx or 1, sy or sx or 1)
+  love.graphics.translate(-x, -y)

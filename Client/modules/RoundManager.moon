@@ -1,3 +1,5 @@
+Notifications = require("modules.gui.Notifications")
+
 RM = {}
 RM.turn = 0
 RM.executingCommands = false
@@ -13,6 +15,7 @@ RM.pushCmd = (who, command) ->
 
 RM.nextRound = () ->
   RM.turn += 1
+  Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, GAME.COLOR)
 
 RM.executeCommands = (ft=true) ->
   if ft == true then
