@@ -4,6 +4,44 @@ Notifications = require("modules.gui.Notifications")
 
 Game = {}
 
+Game.state = {}
+Game.state.switch = (state) ->
+	if Game.state.current == state
+		log.error("Already in current state!")
+		return
+	if Game.state.current != nil
+		Game.state[Game.state.current].exit()
+		log.debug("Exited Game state '#{Game.state.current}'")
+	Game.state.current = state
+	Game.state[Game.state.current].enter()
+	log.debug("Entered Game state '#{Game.state.current}'")
+
+Game.state['planning'] = {}
+Game.state['planning'].duration = 1
+Game.state['planning'].enter = () ->
+	Notifications.push(1, 'Planning - Position units', GAME.assets["icons"]["move"], Game.state['planning'].duration, GAME.COLOR)
+
+Game.state['planning'].exit = () ->
+
+Game.state['planning'].update = (dt) ->
+Game.state['planning'].draw = () ->
+	MU.drawPlanning()
+
+
+Game.state['command'] = {
+	enter: () ->
+	exit: () ->
+	update: (dt) ->
+	draw: () -> love.graphics.print("penus", 10, 10)
+}
+
+Game.state['action'] = {
+	enter: () ->
+	exit: () ->
+	update: (dt) ->
+	draw: () -> MU.drawPlanning()
+}
+
 Game.init = () =>
 	log.state("Initialised Game")
 	love.math.setRandomSeed(love.timer.getTime())
@@ -13,10 +51,9 @@ Game.enter  = (previous)   =>
 	log.state("Entered Game")
 	Map.set(Map.generate(14, 4))
 
-	Game.planningDuration = 10
-
-	Game.cdb = with Game.countdownBar(Game.planningDuration)
-		.onComplete = -> Game.exitPlanning()
+	Game.cdb = with Game.countdownBar(Game.state['planning'].duration)
+		.onComplete = -> Game.state.switch('command')
+		\countdown!
 
 	export ui = UI.Master(16, 9, 100, {
 		UI.Container(1,1,8,4, {
@@ -49,12 +86,12 @@ Game.enter  = (previous)   =>
 	})
 
 	UI.id["exitplanning"].onClick = ->
-		Game.exitPlanning()
+		Game.state.switch("command")
 		-- UI.id["test"]\destroy("exitplanning")
 
 	MU.load()
 	Notifications.load()
-	Game.enterPlanning()
+	Game.state.switch('planning')
 
 	GAME.self = 1
 	GAME.opponent = 2
@@ -68,7 +105,6 @@ Game.enter  = (previous)   =>
 	GAME.PLAYERS[GAME.opponent]\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
 
 	Field.load()
-
 	RM.nextRound()
 
 
@@ -107,11 +143,12 @@ class Game.countdownBar
 		love.graphics.rectangle("fill", Map.tx, Map.ty-4, @w, 4)
 
 	countdown: () =>
-		@tag = @timer\tween(@time, self, {w: 0}, 'linear', -> @finish())
+		@tag = @timer\tween(@time, self, {w: 0}, 'linear', -> @onComplete!)
 
 	finish: () =>
 		@timer\cancel(@tag)
 		@timer\tween(0.3, self, {w: 0}, 'linear')
+		@onComplete()
 
 	onComplete: () =>
 
@@ -130,24 +167,15 @@ Game.update = (dt) =>
 	Game.timer\update(dt)
 	Game.cdb\update(dt)
 	Notifications.update(dt)
+	Game.state[Game.state.current].update(dt)
 
 Game.draw   = ()   =>
 	Field.draw()
 	ui\draw()
+	Game.state[Game.state.current].draw()
 	MU.draw()
 	Game.cdb\draw()
 	Notifications.draw()
-
-Game.enterPlanning = () ->
-	log.debug("Entered Planning stage")
-	Game.isPlanning = true
-	Game.cdb\countdown()
-	Notifications.push(1, 'Planning - Position units', GAME.assets["icons"]["move"], Game.planningDuration, GAME.COLOR)
-
-Game.exitPlanning = () ->
-	log.debug("Exited Planning stage")
-	Game.isPlanning = false
-	Game.cdb\finish()
 
 --INPUT============================================================
 

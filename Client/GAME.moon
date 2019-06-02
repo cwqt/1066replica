@@ -16,12 +16,12 @@ GAME.COLORS = {
 
 GAME.assets = {
 	["icons"]: {
-		["move"]:    love.graphics.newImage("media/img/icons/Move.png")
-		["fortify"]: love.graphics.newImage("media/img/icons/Fortify.png")
-		["fire"]:    love.graphics.newImage("media/img/icons/Fire.png")
-		["testudo"]:    love.graphics.newImage("media/img/icons/Testudo.png")
+		["Move"]:    love.graphics.newImage("media/img/icons/Move.png")
+		["Fortify"]: love.graphics.newImage("media/img/icons/Fortify.png")
+		["Fire"]:    love.graphics.newImage("media/img/icons/Fire.png")
+		["Testudo"]: love.graphics.newImage("media/img/icons/Testudo.png")
 		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
-		["spear"]:  love.graphics.newImage("media/img/icons/Spear.png")
+		["Spear"]:   love.graphics.newImage("media/img/icons/Spear.png")
 	}
 }
 

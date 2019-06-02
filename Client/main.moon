@@ -63,7 +63,7 @@ love.draw         = () ->
 
 love.keypressed   = (key, code, isrepeat) ->
   if key == "q" then love.event.quit()
-  if key == "/" then UI.dbg = not UI.dbg
+  if key == "/" then UI.dbg = UI.dbg
 
 love.keyreleased   = (key) ->
 
@@ -85,7 +85,6 @@ love.errhand       = (msg) ->
 love.quit          = () ->
   log.fatal("Quitting...")
   love.event.quit()
-
 
 export PRS = (x, y, r, sx, sy) ->
   love.graphics.push()

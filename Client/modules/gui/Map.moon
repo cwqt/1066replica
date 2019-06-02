@@ -39,6 +39,8 @@ MU.draw = () ->
 	love.graphics.pop()
 
 MU.drawPlanning = () ->
+	love.graphics.push()
+	love.graphics.translate(Map.tx, Map.ty)
 	GAME.self = GAME.self or 1
 	x, y, w, h = 0,0,GAME.PLAYERS[GAME.self].margin*p, #Map.current*p
 	if GAME.self % 2 == 0
@@ -48,10 +50,9 @@ MU.drawPlanning = () ->
 	love.graphics.setColor(c)
 	love.graphics.rectangle("fill", x, y, w, h)
 	love.graphics.setColor(1,1,1,1)
+	love.graphics.pop()
 
 MU.drawMap = () ->
-	if Game.isPlanning then MU.drawPlanning()
-
 	love.graphics.setColor(1,1,1,1)
 	-- Grid outline
 	love.graphics.line(Map.width*p, 0, Map.width*p, Map.height*p, 0, Map.height*p)

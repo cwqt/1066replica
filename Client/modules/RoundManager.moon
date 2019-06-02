@@ -43,6 +43,4 @@ RM.executeCommands = (ft=true) ->
         Map.removeObjects()
     RM.executeCommands(false)
 
-
-
 return RM
