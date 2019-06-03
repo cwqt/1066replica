@@ -4,43 +4,21 @@ Notifications = require("modules.gui.Notifications")
 
 Game = {}
 
-Game.state = {}
-Game.state.switch = (state) ->
-	if Game.state.current == state
+Game.phase = {}
+Game.phase.switch = (state) ->
+	if Game.phase.current == state
 		log.error("Already in current state!")
 		return
-	if Game.state.current != nil
-		Game.state[Game.state.current].exit()
-		log.debug("Exited Game state '#{Game.state.current}'")
-	Game.state.current = state
-	Game.state[Game.state.current].enter()
-	log.debug("Entered Game state '#{Game.state.current}'")
+	if Game.phase.current != nil
+		Game.phase[Game.phase.current].exit()
+		log.phase("Exited Game phase '#{Game.phase.current}'")
+	Game.phase.current = state
+	Game.phase[Game.phase.current].enter()
+	log.phase("Entered Game phase '#{Game.phase.current}'")
 
-Game.state['planning'] = {}
-Game.state['planning'].duration = 1
-Game.state['planning'].enter = () ->
-	Notifications.push(1, 'Planning - Position units', GAME.assets["icons"]["move"], Game.state['planning'].duration, GAME.COLOR)
-
-Game.state['planning'].exit = () ->
-
-Game.state['planning'].update = (dt) ->
-Game.state['planning'].draw = () ->
-	MU.drawPlanning()
-
-
-Game.state['command'] = {
-	enter: () ->
-	exit: () ->
-	update: (dt) ->
-	draw: () -> love.graphics.print("penus", 10, 10)
-}
-
-Game.state['action'] = {
-	enter: () ->
-	exit: () ->
-	update: (dt) ->
-	draw: () -> MU.drawPlanning()
-}
+Game.phase['planning'] = require("states.phases.Planning")
+Game.phase['command']  = require("states.phases.Command") 
+Game.phase['action']   = require("states.phases.Action") 
 
 Game.init = () =>
 	log.state("Initialised Game")
@@ -51,8 +29,8 @@ Game.enter  = (previous)   =>
 	log.state("Entered Game")
 	Map.set(Map.generate(14, 4))
 
-	Game.cdb = with Game.countdownBar(Game.state['planning'].duration)
-		.onComplete = -> Game.state.switch('command')
+	Game.cdb = with Game.countdownBar(Game.phase['planning'].duration)
+		.onComplete = -> Game.phase.switch('command')
 		\countdown!
 
 	export ui = UI.Master(16, 9, 100, {
@@ -86,12 +64,12 @@ Game.enter  = (previous)   =>
 	})
 
 	UI.id["exitplanning"].onClick = ->
-		Game.state.switch("command")
+		Game.phase.switch("command")
 		-- UI.id["test"]\destroy("exitplanning")
 
 	MU.load()
 	Notifications.load()
-	Game.state.switch('planning')
+	Game.phase.switch('planning')
 
 	GAME.self = 1
 	GAME.opponent = 2
@@ -105,7 +83,7 @@ Game.enter  = (previous)   =>
 	GAME.PLAYERS[GAME.opponent]\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
 
 	Field.load()
-	RM.nextRound()
+	-- RM.nextRound()
 
 
 	-- p3\placeUnits(t)
@@ -167,12 +145,12 @@ Game.update = (dt) =>
 	Game.timer\update(dt)
 	Game.cdb\update(dt)
 	Notifications.update(dt)
-	Game.state[Game.state.current].update(dt)
+	Game.phase[Game.phase.current].update(dt)
 
 Game.draw   = ()   =>
 	Field.draw()
 	ui\draw()
-	Game.state[Game.state.current].draw()
+	Game.phase[Game.phase.current].draw()
 	MU.draw()
 	Game.cdb\draw()
 	Notifications.draw()
