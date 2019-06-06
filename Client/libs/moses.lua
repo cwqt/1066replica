@@ -292,14 +292,17 @@ function M.at(t, ...)
   return values
 end
 
---- Clones table, deeply (including metatables.
+--- Clones table, deeply (including metatables.)
 -- @name at
 -- @param obj a table
 -- @return a copy of obj
 function M.deepClone(obj)
   if type(obj) ~= 'table' then return obj end
-  res = setmetatable({}, getmetatable(obj))
-  for k, v in pairs(obj) do res[M.deepClone(k)] = M.deepClone(v) end
+  if seen and seen[obj] then return seen[obj] end
+  local s = seen or {}
+  local res = setmetatable({}, getmetatable(obj))
+  s[obj] = res
+  for k, v in pairs(obj) do res[M.deepClone(k, s)] = M.deepClone(v, s) end
   return res
 end
 

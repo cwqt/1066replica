@@ -5,9 +5,14 @@ class Entity extends Map.Object
     @def = 10
     @mrl = 10
     @hp  = 10
+    @states = {
+      ['current']: 'standing'
+      ['standing']: {}
+      ['charging']: {
+        distance: 4
+      }
+    }
     @range = 5
-    @chargeDistance = 4
-    @charging = false
     @icon_img = GAME.assets["icons"][@.__class.__name]
     -- @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
 
@@ -24,7 +29,7 @@ class Entity extends Map.Object
     if length <= @range 
       -- if no delta y
       -- and enemy at end of path, charge
-      if length > @chargeDistance
+      if length > @states['charging'].distance
         log.debug("Charge!")
 
       if path
