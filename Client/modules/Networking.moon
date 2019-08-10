@@ -26,13 +26,21 @@ NM.functions = {
         GAME.self = i
         GAME.opponent = i >= 2 and 1 or 2
         log.debug("self: #{GAME.self}, opponent: #{GAME.opponent}")
+      when "PLAYERS_FINISHED_COMMANDING"
+        RM.requestPeerCommands()
 
   RECEIVED_DATA_FROM_PEER: (data) ->
     d = data
     switch d.type
-      when "RECEIVE_MY_COMMANDS"
-        for _, action in pairs(d)
-          Map.getObjAtPos(action.x, action.y).Reducer(action.type, action.payload)
+      when "REQUEST_PEER_COMMANDS"
+        NM.sendDataToPeer({
+          type: "RECEIVE_PEER_COMMANDS",
+          payload: GAME.PLAYERS[GAME.opponent].roundStack
+        })
+      when "RECEIVE_PEER_COMMANDS"
+        RM.setPeerCommands(data.payload)
+        -- for _, action in pairs(d)
+        --   Map.getObjAtPos(action.x, action.y).Reducer(action.type, action.payload)
 
   CONNECTED: () ->
     log.client("Connected to Server.")

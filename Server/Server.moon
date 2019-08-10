@@ -31,6 +31,17 @@ Server.functions = {
           type: "PONG"
           payload: data.payload
         }))
+      when "USER_COMMANDING_OVER"
+        user.isCommanding = data.payload
+        if (user.isCommanding and user.match.isCommanding) == false
+          Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+            type: "PLAYERS_FINISHED_COMMANDING",
+            payload: true
+          }), user)
+          Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+            type: "PLAYERS_FINISHED_COMMANDING",
+            payload: true
+          }), user.match)
 
   RECEIVED_DATA_FOR_PEER: (data, user) ->
     if user.match
@@ -121,6 +132,10 @@ Server.makeMatches = () ->
           x[2]
         }
       }
+
+      -- Allow reference back to game
+      Server.games[uuid].players[1].gameUUID = uuid
+      Server.games[uuid].players[2].gameUUID = uuid
 
       break
 

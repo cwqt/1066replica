@@ -6,8 +6,8 @@ class Player
     log.info("Created new Player #{@player}")
     @px, @py = 0, 1
     @margin = margin
-    GAME.PLAYERS[@player] = self
     @roundCommands = {}
+    GAME.PLAYERS[@player] = self
 
   pushCommand: (command) =>
     log.debug("Player(#{@player}) added command: #{command}")

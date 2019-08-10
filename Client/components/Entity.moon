@@ -22,6 +22,11 @@ class Entity extends Map.Object
   draw: () =>
     super\draw()
 
+  Reducer: (action) =>
+    -- switch action.type
+      -- when "MOVE"
+        
+
   move: (tox, toy) =>
     path, length = Map.findPath({@x, @y},{tox, toy})
     if not path then return

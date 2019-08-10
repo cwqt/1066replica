@@ -1,6 +1,5 @@
 MainMenu = {}
 
-
 MainMenu.init = () =>
 	log.state("Initialised MainMenu")
 
