@@ -8,6 +8,7 @@ export Gamestate  = require("../libs/gamestate") -- gamestates, duh
 export Timer      = require("../libs/timer")     -- " "
 export ANet       = require("../libs/Affair/network")
 export log        = require("../libs/log")
+export socket     = require("socket")
 require("../libs/Tserial")
 --export Steam     = require('luasteam')
 
@@ -35,6 +36,7 @@ export UUID = () ->
     return ("0123456789abcdef")\sub(r, r)
   return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", fn))
 
+
 love.load         = () ->
   os.execute("clear")
   -- log.debug("Game started: #{love.timer.getTime()}")
@@ -43,7 +45,7 @@ love.load         = () ->
   -- love.profiler.start()
   Debugger.load()
   Gamestate.registerEvents()
-  Gamestate.switch(Game)
+  Gamestate.switch(MainMenu)
 
 love.frame = 0
 love.update       = (dt) ->

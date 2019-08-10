@@ -39,7 +39,7 @@ end
 -- @return a table recreated from the given string
 function TSerial.unpack(s)
 	assert(type(s) == "string", "Can only TSerial.unpack strings.")
-	assert(loadstring("TSerial.table="..s))()
+	assert(load("TSerial.table="..s))()
 	local t = TSerial.table
 	TSerial.table = nil
 	return t

@@ -9,6 +9,7 @@ Planning.enter = () ->
 	Notifications.push(1, 'Planning - Position troops', GAME.assets["icons"]["move"], Planning.duration, GAME.COLOR)
 
 Planning.exit = () ->
+	RM.collect()
 
 Planning.update = (dt) ->
 

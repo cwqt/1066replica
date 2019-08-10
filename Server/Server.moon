@@ -1,49 +1,61 @@
-require("../libs/Tserial")
+require("../libs/TSerial")
 
 Server = {}
+Server.games = {}
+
+OPCODES = {
+  R: {
+    [128]: "RECEIVED_DATA_FOR_PEER",
+    [129]: "RECEIVED_DATA_FOR_SERVER"    
+  }
+  S: {
+    "SEND_DATA_TO_MATCH": 128, -- from peer to peer
+    "SEND_DATA_TO_USER": 129 -- from server to user
+  }
+}
+
+export UUID = () ->
+  fn = (x) ->
+    r = math.random(16) - 1
+    r = (x == "x") and (r + 1) or (r % 4) + 9
+    return ("0123456789abcdef")\sub(r, r)
+  return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", fn))
 
 Server.functions = {
-  -- exchange data with peer
-  [128]: (msg, user) ->
+  RECEIVED_DATA_FOR_SERVER: (data, user) ->
+    log.debug("I received: #{inspect(data)} from #{user.connection\getsockname()}")
+    d = data
+    switch d.type
+      when "PING"
+        Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+          type: "PONG"
+          payload: data.payload
+        }))
+
+  RECEIVED_DATA_FOR_PEER: (data, user) ->
     if user.match
-      log.trace("Relay: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{inspect msg}")
+      log.trace("Relay: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{inspect data}")
       -- Exchange client-side serialised data
-      Server.sv\send(129, msg, user.match)
+      Server.sv\send(OPCODES.S["SEND_DATA_TO_MATCH"], TSerial.pack({msg, user.match}))
     else
       log.warn("User has no match!")
 
-  -- Server receive data
-  [129]: (msg, user) ->
-    log.debug("I received: #{msg} from #{user.connection\getsockname()}")
-}
-
-Server.cmd = {
-  ["received"]: (command, msg, user) ->
-    Server.functions[command](msg, user)
-
-  ["userFullyConnected"]: (user) ->
+  USER_FULLY_CONNECTED: (usr) ->
     Server.attemptMakeMatches()
 
-  ["synchronize"]:        (user) ->
-  ["customDataChanged"]:  (user, value, key, prevValue) ->
-  ["disconnectedUser"]:   (user) ->
-    if user.match
-      Server.sv\send(131, "", user.match)
-      user.match.matched = false
-      user.match.match = nil
-
-  ["authorize"]:          (user, authMsg) ->
+  SYNCHRONIZE: (usr) ->
+  CUSTOM_DATA_CHANGED: (usr, value, key, previousValue) ->
+  DISCONNECTED_USER: (usr, msg) ->
 }
 
 Server.load = () ->
   Server.sv = ANet\startServer(2, 22121)
-  Server.matches = {}
   if Server.sv
-    Server.sv.callbacks.received           = (...) -> Server.cmd["received"](...)
-    Server.sv.callbacks.userFullyConnected = (...) -> Server.cmd["userFullyConnected"](...)
-    Server.sv.callbacks.synchronize        = (...) -> Server.cmd["synchronize"](...)
-    Server.sv.callbacks.customDataChanged  = (...) -> Server.cmd["customDataChanged"](...)
-    Server.sv.callbacks.disconnectedUser   = (...) -> Server.cmd["disconnectedUser"](...)
+    Server.sv.callbacks.received           = (cmd, data, usr) -> Server.functions[OPCODES.R[cmd]](TSerial.unpack(data), usr)
+    Server.sv.callbacks.userFullyConnected = (...)            -> Server.functions["USER_FULLY_CONNECTED"](...)
+    Server.sv.callbacks.synchronize        = (...)            -> Server.functions["SYNCHRONIZE"](...)
+    Server.sv.callbacks.customDataChanged  = (...)            -> Server.functions["CUSTOM_DATA_CHANGED"](...)
+    Server.sv.callbacks.disconnectedUser   = (...)            -> Server.functions["DISCONNECTED_USER"](...)
 
 Server.update = (dt) ->
   ANet\update(dt)
@@ -61,35 +73,66 @@ Server.attemptMakeMatches = () ->
   else
     log.info("#{Server.getUnmatched()} unmatched user(s)...")
 
-
 Server.makeMatches = () ->
   if Server.getUnmatched() <= 1
     log.error("Not enough users left to make a game")
     return
 
-  p = Server.sv\getUsers()
+  -- x = game members
   x = {}
-  for k, client in pairs(p)
-    if client.matched then continue
-    x[#x+1] = client
-    client.matched = true
+  for k, user in pairs(Server.sv\getUsers())
+    -- don't consider them apart of the possible match pool
+    if user.matched then continue
+    -- add user to possible game
+    x[#x+1] = user
+    user.matched = true
+    -- we have a match!
     if #x == 2
+      --link the matches
       x[1].match = x[2]
       x[2].match = x[1]
+
       log.info("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
-      Server.sv\send(128, "Got match: #{client.match.connection\getsockname()}", client)
-      Server.sv\send(128, "Got match: #{client.connection\getsockname()}",       client.match)
-      -- Set who's player 1/2
-      Server.sv\send(130, 1, client)
-      Server.sv\send(130, 2, client.match)
+      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+          type: "ECHO",
+          payload: "Got match: #{user.match.connection\getsockname()} #{user.playerName}"
+        }), user )
+
+      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+          type: "ECHO",
+          payload: "Got match: #{user.match.connection\getsockname()} #{user.match.playerName}"
+        }), user.match )
+
+      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+          type: "SET_PLAYER_SIDE",
+          payload: 1,
+        }), user )
+
+      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+          type: "SET_PLAYER_SIDE",
+          payload: 2
+        }), user.match )
+
+      uuid = UUID()
+      log.info("Created game: #{uuid}")
+      Server.games[uuid] = {
+        players: {
+          x[1],
+          x[2]
+        }
+      }
+
       break
 
   log.debug("Users remaining: #{Server.getUnmatched()}")
   if Server.getUnmatched() == 0
     log.info("Matched all users!")
     return
+  --keep matching unmatched users
   Server.makeMatches()
 
-
+Server.listGames = () ->
+  for k,v in pairs(Server.games)
+    print(k .. v)
 
 return Server

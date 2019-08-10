@@ -17,3 +17,6 @@ Inspired by [1066](https://armorgames.com/play/4594/1066).
 * Map builder
 * User-defined paths (not limited to two directions in one movement)
 
+### Server
+
+`luarocks install luasocket`

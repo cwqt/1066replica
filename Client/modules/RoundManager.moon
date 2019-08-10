@@ -2,45 +2,57 @@ Notifications = require("modules.gui.Notifications")
 
 RM = {}
 RM.turn = 0
-RM.executingCommands = false
-RM.cmdStack = {}
-
---Player 1 and 2
-RM.cmdStack[1] = {}
-RM.cmdStack[2] = {}
-
-RM.pushCmd = (who, command) ->
-  table.insert(RM.cmdStack[who], { command } )
-  -- RM.cmdStack[who][1] = {function: moveXtoY, {1,2,3,4}}
+RM.executingCommands  = false
+RM.playerCommands     = {}
+RM.commandQueue       = {}
 
 RM.nextRound = () ->
   RM.turn += 1
   Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, GAME.COLOR)
 
-RM.executeCommands = (ft=true) ->
-  if ft == true then
-    log.info("Executing commands:")
-    log.debug("\t #{inspect RM.cmdStack}")
+-- collect moves from player insert into cmdStack
+-- once all commands are collected from each player we sort
+-- them into an queue where each players commands are
+-- executed one at a time
+RM.collect = (commands, who) ->
+  RM.playerCommands[who] = commands
 
-  PLAYERS_COUNT = #RM.cmdStack
-  -- Check if any more commands exist
+RM.sort = () ->
+  log.info("Sorting:")
+  log.debug("\t #{inspect RM.unsortedCommands}")
+  -- Recursive sort commands into {[1]:[1], [2]:[1], [1]:[2]}
   c = 0
-  for i=1, PLAYERS_COUNT do c += #RM.cmdStack[i]
-  if c == 0
-    log.info("No more commands, quitting...")
-    -- if not, get out of recursive function
-    return
-  else
-    -- For each player, execute their most recent command
-    for i=1, PLAYERS_COUNT
-      currentPlayer = RM.cmdStack[i]
-      -- Check if player has commands, else remove the player stack
-      if #currentPlayer > 0
-        -- Execute player command and remove it from the table
-        log.debug("\tPlayer #{i}: ")
-        currentPlayer[#currentPlayer][1]()
-        table.remove(currentPlayer, #currentPlayer)
-        Map.removeObjects()
-    RM.executeCommands(false)
+  sortedCommands = {}
+  srt = () ->
+    -- See how many commands remain
+    for _, commandList in ipairs(RM.playerCommands) do
+      c += #commandList 
+    -- We've finished sorting
+    if c == 0 then
+      return sortedCommands
+    -- Loop through each player once, pushing the first-most
+    -- command to the sortedCommands list
+    for i=1, #RM.playerCommands
+      sortedCommands[#sortedCommands] = RM.playerCommands[i][1]
+      table.remove(RM.playerCommands[i], 1)
+    -- Repeat this until the length of all playerCommands = 0
+    srt()
+
+  RM.sortedCommands = srt()
+  log.debug(inspect(RM.sortedCommands))
+
+RM.clear = () ->
+  RM.unsortedCommands = {}
+  RM.sortedCommands   = {}
+
+RM.next = () ->
+  if #RM.commandQueue == 0
+    return false
+  -- {x:1, y:2, type:"MOVE_PIECE", payload: {}}
+  m = RM.commandQueue[1]
+  o = Map.getObjAtPos(m.x, m.y)
+  o["commands"][m.type](table.unpack(m.payload))
+  table.remove(RM.commandQueue, 1)
+  return true
 
 return RM

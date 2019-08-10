@@ -59,7 +59,7 @@ Game.enter  = (previous)   =>
 				.text.alignv = "center"
 				.text.alignh = "center"
 				.m = {0,0,30,10}
-				.onClick = -> RM.executeCommands()
+				-- .onClick = -> ()
 		}, "test")
 	})
 
@@ -82,7 +82,7 @@ Game.enter  = (previous)   =>
 	GAME.PLAYERS[GAME.self]\placeUnits({Entity!})
 	GAME.PLAYERS[GAME.opponent]\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
 
-	Field.load()
+	-- Field.load()
 	-- RM.nextRound()
 
 
@@ -148,7 +148,7 @@ Game.update = (dt) =>
 	Game.phase[Game.phase.current].update(dt)
 
 Game.draw   = ()   =>
-	Field.draw()
+	-- Field.draw()
 	ui\draw()
 	Game.phase[Game.phase.current].draw()
 	MU.draw()

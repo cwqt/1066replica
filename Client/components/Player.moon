@@ -7,10 +7,11 @@ class Player
     @px, @py = 0, 1
     @margin = margin
     GAME.PLAYERS[@player] = self
+    @roundCommands = {}
 
-  addCommand: (command) =>
+  pushCommand: (command) =>
     log.debug("Player(#{@player}) added command: #{command}")
-    RM.pushCmd(@player, command)
+    table.insert(@roundCommands, command)
 
   placeUnits: (objects) =>
     @py = 1

@@ -1,7 +1,7 @@
 Command = {}
 
 Command.enter = () ->
-	RM.nextRound()
+	-- RM.next()
 
 Command.exit = () ->
 

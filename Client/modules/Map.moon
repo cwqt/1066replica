@@ -1,8 +1,14 @@
+Grid        = require("../libs/jumper.grid")
+Pathfinder  = require("../libs/jumper.pathfinder")
+
 Map = {}
 Map.current = {}
+Map.deleteStack = {}
 
-Map.set = (map) ->
-  Map.current = map
+class Map.Object
+  new: (@icon="█") =>
+  update: (dt) =>
+  draw: () =>
 
 Map.generate = (width, height) ->
   t = {}
@@ -14,6 +20,9 @@ Map.generate = (width, height) ->
       t[y][x] = {}
   return t
 
+Map.set = (map) ->
+  Map.current = map
+
 Map.addObject = (x, y, obj) ->
   if Map.current[y][x].object == nil
     Map.current[y][x].object = obj
@@ -21,6 +30,40 @@ Map.addObject = (x, y, obj) ->
     log.info("Inserted #{obj.__class.__name}(#{obj.player}) at #{x}, #{y}")
   else
     log.error("Object already exists at #{x}, #{y}")
+
+Map.getObjAtPos = (x, y) ->
+  return Map.current[y][x].object
+
+Map.copyObject = (x, y) ->
+  return M.deepClone(Map.getObjAtPos(x, y))
+
+Map.moveObject = (start, finish) ->
+  fromx, fromy = start[1], start[2]
+  tox, toy = finish[1], finish[2]
+  
+  if Map.current[toy][tox].object
+    log.error("moveObject: Object exists at #{tox}, #{toy}")
+    return false
+  
+  copy = Map.copyObject(fromx, fromy)
+  Map.current[toy][tox].object = copy
+  Map.updateObjectPos(copy, tox, toy)
+  Map.current[fromy][fromx].object = nil
+  log.debug("Moved #{Map.current[toy][tox].object.__class.__name} from #{inspect start} to #{inspect finish}")
+  return true
+
+Map.updateObjectPos = (object, newx, newy) ->
+  object.x = newx
+  object.y = newy
+
+Map.removeObject = (x, y) ->
+  table.insert(Map.deleteStack, {x:x, y:y})
+
+Map.removeObjects = () ->
+  if #Map.deleteStack >= 1
+    for obj in *Map.deleteStack
+      log.debug("Removed object #{obj.__class.__name}")
+      Map.current[obj.y][obj.x].object = nil
 
 Map.print = (map) ->
   yl = "  "
@@ -48,12 +91,7 @@ Map.getSimplePFMap = (map) ->
       else
         tt[y][x]= 0
   return tt
-
---Map.update = (dt) ->
   
-Grid = require("../libs/jumper.grid")
-Pathfinder = require("../libs/jumper.pathfinder")
-
 Map.findPath = (a, b) ->
   pathFinderMap = Map.getSimplePFMap(Map.current)
   -- Allow movement from start position (e.g. if object at start)
@@ -81,30 +119,6 @@ Map.findPath = (a, b) ->
     log.error("No path found!")
     return nil
 
-Map.updateObjectPos = (object, newx, newy) ->
-  object.x = newx
-  object.y = newy
-
-Map.copyObject = (x, y) ->
-  k = Map.current[y][x].object
-  c = M.deepClone(k)
-  return c
-
-Map.moveObject = (start, finish) ->
-  fromx, fromy = start[1], start[2]
-  tox, toy = finish[1], finish[2]
-  
-  if Map.current[toy][tox].object
-    log.error("moveObject: Object exists at #{tox}, #{toy}")
-    return false
-  
-  copy = Map.copyObject(fromx, fromy)
-  Map.current[toy][tox].object = copy
-  Map.updateObjectPos(copy, tox, toy)
-  Map.current[fromy][fromx].object = nil
-  log.debug("Moved #{Map.current[toy][tox].object.__class.__name} from #{inspect start} to #{inspect finish}")
-  return true
-
 Map.getDirection = (path) ->
   --     |0,-1|
   -- ----+----+---
@@ -118,21 +132,5 @@ Map.getDirection = (path) ->
   dx = ex - sx
   dy = ey - sy
   return {dx, dy}
-
-Map.deleteStack = {}
-Map.removeObject = (x, y) ->
-  table.insert(Map.deleteStack, {x:x, y:y})
-
-Map.removeObjects = () ->
-  if #Map.deleteStack >= 1
-    for obj in *Map.deleteStack
-      log.debug("Removed object #{obj.__class.__name}")
-      Map.current[obj.y][obj.x].object = nil
-
-
-class Map.Object
-  new: (@icon="█") =>
-  update: (dt) =>
-  draw: () =>
 
 return Map

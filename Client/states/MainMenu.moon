@@ -37,7 +37,10 @@ MainMenu.enter  = (previous) =>
 		z = NM.startClient(UI.id["ip"].value)
 
 	UI.id["ping"].onClick = ->
-		NM.sendDataToPeer({201, "#{love.timer.getTime()}"})
+		NM.sendDataToServer({
+			type: "PING",
+			payload: socket.gettime()
+		})
 
 	UI.id["sv"].onClick = -> Gamestate.switch(UnitSelect)
 
