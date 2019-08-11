@@ -25,6 +25,7 @@ export Entity     = require("components.Entity")
 
 export MainMenu   = require("states.MainMenu")
 export Game       = require("states.Game")
+export MWS        = require("states.MutliplayerWaitScreen")
 export UnitSelect = require("states.UnitSelect")
 
 export GAME       = require("GAME")
@@ -39,6 +40,7 @@ export UUID = () ->
 
 love.load         = () ->
   os.execute("clear")
+  love.math.setRandomSeed(love.timer.getTime())
   -- log.debug("Game started: #{love.timer.getTime()}")
   -- love.profiler = require('../libs/profiler') 
   -- love.profiler.hookall("Lua")
@@ -65,7 +67,7 @@ love.draw         = () ->
 
 love.keypressed   = (key, code, isrepeat) ->
   if key == "q" then love.event.quit()
-  if key == "/" then UI.dbg = UI.dbg
+  if key == "/" then UI.dbg = not UI.dbg
 
 love.keyreleased   = (key) ->
 

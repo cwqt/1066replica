@@ -22,10 +22,26 @@ class Entity extends Map.Object
   draw: () =>
     super\draw()
 
-  Reducer: (action) =>
-    -- switch action.type
-      -- when "MOVE"
-        
+  @cmd = {
+    ["MOVE"]: {
+      f: (data) ->
+        @move(data.x, data.y)
+    }
+  }
+
+  -- requestUserInput: (type) =>
+  --   switch type 
+  --     when "TEST"
+  --       sendUserInput("HELLO")
+
+  -- sendUserInput: (input) =>
+  --   NM.sendDataToPeer({
+  --     type: "RECEIVE_DATA_INPUT",
+  --     payload: input
+  --   })
+
+  -- awaitUserInput: () =>
+  --   log.trace("Waiting for peer data for current command")
 
   move: (tox, toy) =>
     path, length = Map.findPath({@x, @y},{tox, toy})
@@ -67,7 +83,6 @@ class Entity extends Map.Object
     else
       log.error("Path out of range: #{length} > #{@range}")
       return
-
 
   attack: (object) =>
     log.debug("Attacking #{object.__class.__name} at #{object.x}, #{object.y}")

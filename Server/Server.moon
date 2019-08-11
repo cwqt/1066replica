@@ -23,37 +23,51 @@ export UUID = () ->
 
 Server.functions = {
   RECEIVED_DATA_FOR_SERVER: (data, user) ->
-    log.debug("I received: #{inspect(data)} from #{user.connection\getsockname()}")
+    log.debug("Received: #{inspect(data)} from #{user.connection\getsockname()}")
     d = data
     switch d.type
+      when "REQUESTING_MATCH"
+        user.match = nil
+        Server.attemptMakeMatches()
+
+      when "USER_UNITSELECT_OVER"
+        user.stillSelectingUnits = data.payload
+        if (user.stillSelectingUnits and user.match.stillSelectingUnits) == true
+          Server.sv\send(OPCODES.S["SEND_DATA_TO_MATCH"], TSerial.pack({
+            type: "REQUEST_PEER_COMMANDS",
+            payload: nil
+          }), user)
+          Server.sv\send(OPCODES.S["SEND_DATA_TO_MATCH"], TSerial.pack({
+            type: "REQUEST_PEER_COMMANDS",
+            payload: nil
+          }), user.match)
+
+      when "USER_COMMANDING_OVER"
+        user.isCommanding = data.payload
+        if (user.isCommanding and user.match.isCommanding) == false
+          Server.distribute("PLAYERS_FINISHED_COMMANDING", true, user)
+        if (user.isCommanding and user.match.isCommanding) == true
+          Server.distribute("PLAYER_START_COMMANDING", nil, user)
+
+
       when "PING"
         Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
           type: "PONG"
           payload: data.payload
         }))
-      when "USER_COMMANDING_OVER"
-        user.isCommanding = data.payload
-        if (user.isCommanding and user.match.isCommanding) == false
-          Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
-            type: "PLAYERS_FINISHED_COMMANDING",
-            payload: true
-          }), user)
-          Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
-            type: "PLAYERS_FINISHED_COMMANDING",
-            payload: true
-          }), user.match)
+
 
   RECEIVED_DATA_FOR_PEER: (data, user) ->
     if user.match
-      log.trace("Relay: #{user.connection\getsockname()} to #{user.match.connection\getsockname()} :: #{inspect data}")
+      log.trace("Relay: #{user.connection\getsockname()} #{inspect data} to #{user.match.connection\getsockname()}")
       -- Exchange client-side serialised data
-      Server.sv\send(OPCODES.S["SEND_DATA_TO_MATCH"], TSerial.pack({msg, user.match}))
+      Server.sv\send(OPCODES.S["SEND_DATA_TO_MATCH"], TSerial.pack(data), user.match)
     else
       log.warn("User has no match!")
 
-  USER_FULLY_CONNECTED: (usr) ->
-    Server.attemptMakeMatches()
-
+  USER_FULLY_CONNECTED: (user) ->
+    user.match = {}
+    
   SYNCHRONIZE: (usr) ->
   CUSTOM_DATA_CHANGED: (usr, value, key, previousValue) ->
   DISCONNECTED_USER: (usr, msg) ->
@@ -73,8 +87,8 @@ Server.update = (dt) ->
 
 Server.getUnmatched = () ->
   c = 0
-  for k, client in pairs(Server.sv\getUsers())
-    if client.match then c+=1
+  for k, user in pairs(Server.sv\getUsers())
+    if user.match then c +=1
   return (Server.sv\getNumUsers() - c)
 
 Server.attemptMakeMatches = () ->
@@ -103,28 +117,14 @@ Server.makeMatches = () ->
       x[1].match = x[2]
       x[2].match = x[1]
 
-      log.info("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
-      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
-          type: "ECHO",
-          payload: "Got match: #{user.match.connection\getsockname()} #{user.playerName}"
-        }), user )
-
-      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
-          type: "ECHO",
-          payload: "Got match: #{user.match.connection\getsockname()} #{user.match.playerName}"
-        }), user.match )
-
-      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
-          type: "SET_PLAYER_SIDE",
-          payload: 1,
-        }), user )
-
-      Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
-          type: "SET_PLAYER_SIDE",
-          payload: 2
-        }), user.match )
-
       uuid = UUID()
+
+      log.info("Matched #{x[1].connection\getsockname()} with #{x[2].connection\getsockname()}")
+      Server.distribute("RECEIVE_MATCH", {
+        {match_name: user.match.playerName, side: 1, gameUUID: uuid}
+        {match_name: user.match.playerName, side: 2, gameUUID: uuid}
+      }, user)
+
       log.info("Created game: #{uuid}")
       Server.games[uuid] = {
         players: {
@@ -136,7 +136,6 @@ Server.makeMatches = () ->
       -- Allow reference back to game
       Server.games[uuid].players[1].gameUUID = uuid
       Server.games[uuid].players[2].gameUUID = uuid
-
       break
 
   log.debug("Users remaining: #{Server.getUnmatched()}")
@@ -145,6 +144,19 @@ Server.makeMatches = () ->
     return
   --keep matching unmatched users
   Server.makeMatches()
+
+Server.distribute = (actionType, payload, user) ->
+  if type(payload) != "table"
+    payload = {payload, payload}
+
+  Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+    type: actionType,
+    payload: payload[1]
+  }), user)
+  Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({
+    type: actionType,
+    payload: payload[2]
+  }), user.match)
 
 Server.listGames = () ->
   for k,v in pairs(Server.games)

@@ -7,10 +7,34 @@ class Player
     @px, @py = 0, 1
     @margin = margin
     @roundCommands = {}
+    
+    @cmd = {
+      ["SET_INITIAL_UNITS"]: {
+        f: (data) ->
+          @placeUnits(data)
+      }
+      ["CREATE_OBJECT"]: {
+        f: (data) ->
+          Map.addObject(
+            data.payload.x,
+            data.payload.y,
+            GAME.returnObjectFromType(data.type, data.payload.payload))
+      }
+      ["DIRECT_MOVE"]: {
+        f: (data) ->
+          Map.moveObject(
+            data.payload.sx, 
+            data.payload.sy,
+            data.payload.ex,
+            data.payload.ey)
+      }
+    }
+
     GAME.PLAYERS[@player] = self
 
   pushCommand: (command) =>
-    log.debug("Player(#{@player}) added command: #{command}")
+    -- print inspect command
+    log.debug("Player(#{@player}) added command: #{command.type}")
     table.insert(@roundCommands, command)
 
   placeUnits: (objects) =>
@@ -40,8 +64,20 @@ class Player
             @py += 1
             tx = (@player % 2 == 0) and Map.width-margin+2 or 1
 
-        Map.addObject(tx, @py, object)
+        -- Map.addObject(tx, @py, object)
+        
+        @cmd["CREATE_OBJECT"]({
+          type: object.type,
+          payload: object.payload,
+          x: tx, y: @py
+        })
 
     @margin = margin
+
+
+
+
+
+
 
 return Player

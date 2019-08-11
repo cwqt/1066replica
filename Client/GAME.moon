@@ -1,13 +1,19 @@
 GAME = {}
 GAME.START_TIME = love.timer.getTime()
 GAME.PLAYERS = {}
-GAME.LOCAL = true
+GAME.isLocal = true
 GAME.fonts = {}
 Game.isPlanning = true
 
 GAME.UNITS = {
-	[1]: Entity
+	["ENTITY"]: Entity
 }
+
+GAME.returnObjectFromType = (str, params) ->
+	if not GAME.UNITS[str]
+		log.error("No such unit #{str} indexed.")
+	else
+		return GAME.UNITS[str](table.unpack(params))
 
 GAME.COLOR = {0.1,0.1,0.1,1}
 GAME.COLORS = {
@@ -24,6 +30,7 @@ GAME.assets = {
 		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
 		["Spear"]:   love.graphics.newImage("media/img/icons/Spear.png")
 	}
+	["bg"]: love.graphics.newImage("media/img/bg.png")
 }
 
 F = {
@@ -31,7 +38,6 @@ F = {
 	default: "media/fonts/default.ttf"
 	bold:    "media/fonts/bold.ttf"
 	mono:    "media/fonts/mono.ttf"
-	title2:  "media/fonts/THEROOTS.TTF"
 	text:    "media/fonts/Romanica.ttf"
 }
 

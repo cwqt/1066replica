@@ -68,7 +68,8 @@ class Master
 
 	drawGrid: () =>
 		if UI.dbg
-			love.graphics.setColor(0,0,0,0.1)
+			love.graphics.setLineStyle("rough")
+			love.graphics.setColor(0,0,0,0.4)
 			love.graphics.rectangle("fill", 0, 0, @bpw, @bph)
 			love.graphics.setColor(1,1,1,0.2)
 			for i=1, @bh+1
@@ -78,6 +79,8 @@ class Master
 			for y=1, @bh
 				for x=1, @bw
 					love.graphics.print(x..","..y, (x-1)*@bs, (y-1)*@bs)
+			love.graphics.setColor(1,1,1,1)
+			love.graphics.setLineStyle("smooth")
 
 	draw: () =>
 		@drawGrid()
@@ -200,7 +203,7 @@ class Element
 		@ty += (@y-1)*@bs
 
 		if @id then UI.id[@id] = self
-		log.info("Created id:#{@id or @.__class.__name}")
+		-- log.info("Created id:#{@id or @.__class.__name}")
 
 	-- m = {5,5,5,5} --[1]u [2]r [3]d [4]l 
 	draw: () =>

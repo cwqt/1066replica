@@ -1,6 +1,6 @@
 UnitSelect = {}
-UnitSelect.peerReady = false
-UnitSelect.ready = false
+UnitSelect.peerDone = false
+UnitSelect.done = false
 
 -- Player in here
 UnitSelect.units = {}
@@ -33,16 +33,40 @@ UnitSelect.enter  = (previous)   =>
 		UI.id["cnt"].value = v
 
 	UI.id["load"].onClick = ->
-		UnitSelect.ready = true
+		-- for i=1, tonumber(UI.id["cnt"].value) do
+		GAME.PLAYERS[GAME.self]\pushCommand({
+			type: "SET_INITIAL_UNITS",
+			payload: {
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			}
+		})
+
+		UnitSelect.done = true
 		UI.id["info"].value = "Waiting for peer"
-		NM.sendDataToPeer({200})
-		UnitSelect.units[GAME.self] = {}
+		NM.sendDataToServer({
+			type: "USER_UNITSELECT_OVER",
+			payload: UnitSelect.done
+		})
+
+		-- NM.sendDataToPeer({
+		-- 	type: "REQUEST_PEER_COMMANDS",
+		-- 	payload: nil
+		-- })
+		-- UnitSelect.units[GAME.self] = {}
 
 --LOGIC============================================================
 UnitSelect.update = (dt) =>
 	ui\update(dt)
-	if UnitSelect.ready and UnitSelect.peerReady
+
+	if UnitSelect.done and UnitSelect.peerDone
 		Gamestate.switch(Game)
+
+UnitSelect.setPeerDone = () =>
+	UnitSelect.peerDone = true
 
 UnitSelect.draw   = ()   =>
 	ui\draw()

@@ -14,38 +14,45 @@ OPCODES = {
 
 NM.functions = {
   RECEIVED_DATA_FROM_SERVER: (data) ->
-    log.trace("Reducer got: #{data.type}")
+    log.trace("Reducer(S) got: #{data.type}")
     switch data.type
       when "PONG"
         f = socket.gettime() - data.payload
         log.trace("ping RTT: " .. string.format("%.3f", f*1000) .. "ms")
       when "ECHO"
         log.info(data.payload)
-      when "SET_PLAYER_SIDE"
-        i = tonumber(data.payload)
+      when "PLAYERS_FINISHED_COMMANDING"
+        RM.requestPeerCommands()
+      when "RECEIVE_MATCH"
+        log.debug("Got match: #{data.payload.gameUUID}")
+        i = tonumber(data.payload.side)
         GAME.self = i
         GAME.opponent = i >= 2 and 1 or 2
         log.debug("self: #{GAME.self}, opponent: #{GAME.opponent}")
-      when "PLAYERS_FINISHED_COMMANDING"
-        RM.requestPeerCommands()
+        MWS.onGetMatch()
+
+      -- when "PLAYER_START_COMMANDING"
+        -- do something
 
   RECEIVED_DATA_FROM_PEER: (data) ->
-    d = data
-    switch d.type
+    log.trace("Reducer(P) got: #{data.type}")
+    switch data.type
       when "REQUEST_PEER_COMMANDS"
         NM.sendDataToPeer({
           type: "RECEIVE_PEER_COMMANDS",
-          payload: GAME.PLAYERS[GAME.opponent].roundStack
+          payload: GAME.PLAYERS[GAME.self].roundCommands
         })
       when "RECEIVE_PEER_COMMANDS"
         RM.setPeerCommands(data.payload)
+        UnitSelect.setPeerDone()
         -- for _, action in pairs(d)
         --   Map.getObjAtPos(action.x, action.y).Reducer(action.type, action.payload)
 
   CONNECTED: () ->
-    log.client("Connected to Server.")
+    -- log.client("Connected to Server.")
 
   DISCONNECTED: () ->
+    os.exit()
 
   NEW_USER: (user) ->
 
@@ -61,6 +68,9 @@ NM.startClient = (ip) ->
     NM.Client.callbacks.disconnected       = (...)       -> NM.functions["DISCONNECTED"](...)
     NM.Client.callbacks.newUser            = (...)       -> NM.functions["NEW_USER"](...)
     NM.Client.callbacks.authorized         = (...)       -> NM.functions["AUTHORIZED"](...)
+    return true
+  else
+    return false
 
 NM.sendDataToPeer = (data) ->
   if NM.Client

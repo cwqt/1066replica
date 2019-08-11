@@ -5,25 +5,39 @@ Notifications = require("modules.gui.Notifications")
 Game = {}
 
 Game.phase = {}
+Game.phase.register = (phase) ->
+	Game.phase[phase] = require("states.phases." .. (phase\gsub('^%l', string.upper)))
+	Game.phase[phase].firstTime = true
+
 Game.phase.switch = (state) ->
 	if Game.phase.current == state
 		log.error("Already in current state!")
 		return
+
 	if Game.phase.current != nil
 		Game.phase[Game.phase.current].exit()
 		log.phase("Exited Game phase '#{Game.phase.current}'")
 	Game.phase.current = state
-	Game.phase[Game.phase.current].enter()
-	log.phase("Entered Game phase '#{Game.phase.current}'")
 
-Game.phase['planning'] = require("states.phases.Planning")
-Game.phase['command']  = require("states.phases.Command") 
-Game.phase['action']   = require("states.phases.Action") 
+	if Game.phase[Game.phase.current].firstTime
+		Game.phase[Game.phase.current].firstTime = false
+		log.phase("Initialised Game phase '#{Game.phase.current}'")
+		Game.phase[Game.phase.current].initialise()
+
+	log.phase("Entered Game phase '#{Game.phase.current}'")
+	Game.phase[Game.phase.current].enter()
 
 Game.init = () =>
 	log.state("Initialised Game")
-	love.math.setRandomSeed(love.timer.getTime())
+	Game.phase.register("planning")
+	Game.phase.register("command")
+	Game.phase.register("action")
 	Game.timer = Timer()
+
+	RM.collect()
+	RM.sort()
+	RM.executeCmdQasPlayer()
+	-- RM.nextRound()
 
 Game.enter  = (previous)   =>
 	log.state("Entered Game")

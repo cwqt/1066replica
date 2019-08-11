@@ -1,5 +1,6 @@
 Action = {}
 
+Action.initialise = () ->
 Action.enter = () ->
 Action.exit = () ->
 Action.update = (dt) ->

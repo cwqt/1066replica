@@ -8,32 +8,49 @@ MainMenu.enter  = (previous) =>
 	export timer = Timer()
 	export ui = UI.Master(8, 5, 160, {
 		UI.Container(2,1,6,4, {
-			with UI.Text("alias", 1,2,12,2)
-				.text.font = GAME.fonts.title2[216]
+			with UI.Text("alias", 1,4,12,2)
+				.text.font = GAME.fonts.title[216]
 				.text.alignh = "center"
 				.text.alignv = "center"
 				.p = {10,10,10,10}
 				.m = {10,10,10,10}
-			with UI.TextInput("localhost", 4,5,4,1, "ip")
-				.text.font = GAME.fonts.default[27]
-				.text.alignv = "center"
-			with UI.Button("Connect", 8,5,2,1, "connect")
+				.text.color = {1,1,1}
+			with UI.Button("Ping", -1,1,2,1, "ping")
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
-			with UI.Button("Ping", 8,6,2,1, "ping")
+			with UI.Button("mutliplayer", 8,7,3,1, "startmulti")
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
-			with UI.Button("Start game", 8,7,2,1, "sv")
+			with UI.Button("local", 3,7,2,1, "startlocal")
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
+			with UI.Button("reconnect", 5,7,3,1, "retry_connect")
+				.text.font = GAME.fonts.default[27]
+				.text.alignh = "center"
+				.text.alignv = "center"
+			with UI.Text("Attempting to connect...", 1, 8, 12, 1, "debug_message")
+				.text.font = GAME.fonts.default[27]
+				.text.color = {1,1,1}
 		})
 	})
 
-	UI.id["connect"].onClick = ->
-		z = NM.startClient(UI.id["ip"].value)
+	-- Attempt to connect to the server
+	isConnected = NM.startClient()
+	if isConnected
+		UI.id["debug_message"].value = "Connected to Server."
+	else
+		UI.id["debug_message"].value = "Cannot connect to Server."
+
+	UI.id["retry_connect"].onClick = ->
+		if isConnected then return
+		isConnected = NM.startClient()
+		if isConnected
+			UI.id["debug_message"].value = "Connected to Server."
+		else
+			UI.id["debug_message"].value = "Couldn't connect."
 
 	UI.id["ping"].onClick = ->
 		NM.sendDataToServer({
@@ -41,7 +58,13 @@ MainMenu.enter  = (previous) =>
 			payload: socket.gettime()
 		})
 
-	UI.id["sv"].onClick = -> Gamestate.switch(UnitSelect)
+	UI.id["startlocal"].onClick = ->
+		Gamestate.switch(UnitSelect)
+
+	UI.id["startmulti"].onClick = ->
+		if isConnected
+			GAME.isLocal = false
+			Gamestate.switch(MWS)
 
 --LOGIC============================================================
 
@@ -50,6 +73,12 @@ MainMenu.update = (dt) =>
 	ui\update(dt)
 
 MainMenu.draw   = ()   =>
+	with love.graphics
+		.push!
+		.scale(1.4)
+		.draw(GAME.assets["bg"])
+		.pop!
+
 	ui\draw()
 
 --INPUT============================================================

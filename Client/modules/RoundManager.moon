@@ -1,7 +1,7 @@
 Notifications = require("modules.gui.Notifications")
 
 RM = {}
-RM.turn = 0
+RM.turn = -1
 RM.executingCommands  = false
 RM.playerCommands     = {}
 RM.commandQueue       = {}
@@ -12,9 +12,13 @@ RM.setCommandingStatusOnServer  = (v) ->
     payload: v
   })
 
+
 RM.nextRound = () ->
   RM.turn += 1
-  Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, GAME.COLOR)
+  if not RM.turn == 0
+    Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, GAME.COLOR)
+    RM.setCommandingStatusOnServer(true)
+
 
 -- collect moves from player insert into cmdStack
 -- once all commands are collected from each player we sort
@@ -27,36 +31,43 @@ RM.nextRound = () ->
 RM.collect = () ->
   for k, player in pairs(GAME.PLAYERS) do
     RM.playerCommands[k] = {}
-    for _, command in pairs(player.roundStack) do
+    for _, command in pairs(player.roundCommands) do
       table.insert(RM.playerCommands[k], command)
 
+
 RM.sort = () ->
-  log.info("Sorting:")
-  log.debug("\t #{inspect RM.unsortedCommands}")
+  log.info("Sorting playerCommands")
   -- Recursive sort commands into {[p1]:[c1], [p2]:[c1], [p1]:[c2], [p2]:[c2]}
-  c = 0
   sortedCommands = {}
   srt = () ->
-    -- See how many commands remain
-    for _, commandList in ipairs(RM.playerCommands) do
-      c += #commandList 
-    -- We've finished sorting
-    if c == 0 then
-      return sortedCommands
+    c = 0
     -- Loop through each player once, pushing the first-most
     -- command to the sortedCommands list
-    for i=1, #RM.playerCommands
-      sortedCommands[#sortedCommands] = RM.playerCommands[i][1]
-      table.remove(RM.playerCommands[i], 1)
-    -- Repeat this until the length of all playerCommands = 0
+    for key, player in pairs(RM.playerCommands) do
+      for _, command in pairs(player) do
+        c += 1
+      if c == 0
+        return sortedCommands
+      else
+        table.insert(sortedCommands, player[1])
+        table.remove(player, 1)
     srt()
+  log.debug('Sorted playerCommands')
+  RM.commandQueue = srt()
 
-  RM.sortedCommands = srt()
-  log.debug(inspect(RM.sortedCommands))
 
 RM.clear = () ->
-  RM.unsortedCommands = {}
-  RM.sortedCommands   = {}
+  RM.playerCommands = {}
+  RM.commandQueue   = {}
+
+
+RM.executeCmdQasPlayer = () ->
+  if #RM.commandQueue == 0
+    return false
+  for i, command in pairs(RM.commandQueue) do
+    k = (i%2) > 0 and 1 or 2
+    GAME.PLAYERS[k]["cmd"][command.type].f(command.payload)
+
 
 RM.next = () ->
   if #RM.commandQueue == 0
@@ -64,9 +75,10 @@ RM.next = () ->
   -- {x:1, y:2, type:"MOVE_PIECE", payload: {}}
   m = RM.commandQueue[1]
   o = Map.getObjAtPos(m.x, m.y)
-  o["commands"][m.type](table.unpack(m.payload))
+  o["cmd"][m.type](table.unpack(m.payload))
   table.remove(RM.commandQueue, 1)
   return true
+
 
 RM.requestPeerCommands = () ->
   NM.sendDataToPeer({
@@ -74,8 +86,9 @@ RM.requestPeerCommands = () ->
     payload: nil
   })
 
+
 RM.setPeerCommands = (payload) ->
-  for _, command in pairs(payload)
-    GAME.PLAYERS[GAME.opponent].pushCommand(command)
+  for i=1, #payload
+    GAME.PLAYERS[GAME.opponent]\pushCommand(payload[i])
 
 return RM
