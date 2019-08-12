@@ -41,7 +41,6 @@ Game.init = () =>
 
 Game.enter  = (previous)   =>
 	log.state("Entered Game")
-	Map.set(Map.generate(14, 4))
 
 	Game.cdb = with Game.countdownBar(Game.phase['planning'].duration)
 		.onComplete = -> Game.phase.switch('command')
@@ -84,42 +83,6 @@ Game.enter  = (previous)   =>
 	MU.load()
 	Notifications.load()
 	Game.phase.switch('planning')
-
-	GAME.self = 1
-	GAME.opponent = 2
-
-	Player(GAME.self)
-	Player(GAME.opponent)
-
-	-- p1 = Player(1)
-	-- p2 = Player(2)
-	GAME.PLAYERS[GAME.self]\placeUnits({Entity!})
-	GAME.PLAYERS[GAME.opponent]\placeUnits({GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!,GAME.UNITS[1]!})
-
-	-- Field.load()
-	-- RM.nextRound()
-
-
-	-- p3\placeUnits(t)
-	-- export p = Player()
-	-- p\addUnit(1,1, Entity())
-	-- p\addUnit(1,1, Entity())
-	-- p\addUnit(4,1, Entity())
-	-- -- print inspect Map.current[1][1]
-
-	-- GAME.self = 1
-	-- GAME.opponent = 2
-	-- GAME.PLAYERS[GAME.self]\addCommand(-> Map.current[1][1].object\move(5, 1))
-	-- GAME.PLAYERS[GAME.opponent]\addCommand(-> Map.current[1][11].object\move(11, 3))
-	-- GAME.PLAYERS[GAME.opponent]\addCommand(-> Map.current[1][12].object\move(11, 4))
-
-	-- RM.pushCmd(1, -> Map.current[1][1].object\move(5, 1))
-	-- RM.executeCommands()
-	-- RM.pushCmd(1, -> Map.current[1][1].object\move(4, 1))
-	-- RM.executeCommands()
-	-- RM.pushCmd(1, -> Map.current[1][1].object\move(3, 1))
-	-- RM.executeCommands()
-
 
 class Game.countdownBar
 	new: (@time) =>

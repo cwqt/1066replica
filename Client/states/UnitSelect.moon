@@ -7,6 +7,8 @@ UnitSelect.units = {}
 
 UnitSelect.init = () =>
 	log.state("Initialised UnitSelect")
+	map = Map.generate(15, 5)
+	Map.set(map)
 
 UnitSelect.enter  = (previous)   =>
 	log.state("Entered UnitSelect")
@@ -33,43 +35,128 @@ UnitSelect.enter  = (previous)   =>
 		UI.id["cnt"].value = v
 
 	UI.id["load"].onClick = ->
-		-- for i=1, tonumber(UI.id["cnt"].value) do
-		GAME.PLAYERS[GAME.self]\pushCommand({
-			type: "SET_INITIAL_UNITS",
-			payload: {
+		UnitSelect.done()
+
+--LOGIC============================================================
+UnitSelect.update = (dt) =>
+	ui\update(dt)
+	if UnitSelect.done and UnitSelect.peerDone
+		Gamestate.switch(Game)
+
+UnitSelect.draw   = ()   =>
+	ui\draw()
+
+UnitSelect.setPeerDone = () =>
+	UnitSelect.peerDone = true
+
+UnitSelect.done = () =>
+	-- get entties from unit select bit
+	GAME.PLAYERS[GAME.self]\pushCommand({
+		type: "SET_INITIAL_UNITS",
+		payload: {
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
 				type: "CREATE_OBJECT",
 				payload: {
 					type: "ENTITY",
 					payload: nil						
 				}
 			}
-		})
+		}
+	})
+	GAME.PLAYERS[GAME.opponent]\pushCommand({
+		type: "SET_INITIAL_UNITS",
+		payload: {
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			}
+		}
+	})
 
-		UnitSelect.done = true
+	UnitSelect.done = true
+	if not GAME.isLocal
 		UI.id["info"].value = "Waiting for peer"
 		NM.sendDataToServer({
 			type: "USER_UNITSELECT_OVER",
 			payload: UnitSelect.done
 		})
-
-		-- NM.sendDataToPeer({
-		-- 	type: "REQUEST_PEER_COMMANDS",
-		-- 	payload: nil
-		-- })
-		-- UnitSelect.units[GAME.self] = {}
-
---LOGIC============================================================
-UnitSelect.update = (dt) =>
-	ui\update(dt)
-
-	if UnitSelect.done and UnitSelect.peerDone
+	else
 		Gamestate.switch(Game)
-
-UnitSelect.setPeerDone = () =>
-	UnitSelect.peerDone = true
-
-UnitSelect.draw   = ()   =>
-	ui\draw()
 
 --INPUT============================================================
 UnitSelect.mousemoved = (x, y, dx, dy) =>

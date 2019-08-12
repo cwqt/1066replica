@@ -12,16 +12,20 @@ class Map.Object
 
 Map.generate = (width, height) ->
   t = {}
-  Map.height = height
-  Map.width  = width
+  t.height = height
+  t.width  = width
   for y=1, height do
     t[y] = {}
     for x=1, width do
       t[y][x] = {}
+  log.info("Generated map #{width}:#{height}")
   return t
 
 Map.set = (map) ->
+  Map.height  = map.height
+  Map.width   = map.width
   Map.current = map
+  log.info("Set map #{map}")
 
 Map.addObject = (x, y, obj) ->
   if Map.current[y][x].object == nil
@@ -68,7 +72,7 @@ Map.removeObjects = () ->
 Map.print = (map) ->
   yl = "  "
   -- We can assume it's a square map
-  for i=1, #Map.current[1] do yl = yl..i.." "
+  for i=1, #map[1] do yl = yl..i.." "
   print(yl)
   ys = string.rep("+-", #map[1]) .. "+"
   for y=1, #map do

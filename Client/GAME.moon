@@ -5,15 +5,22 @@ GAME.isLocal = true
 GAME.fonts = {}
 Game.isPlanning = true
 
-GAME.UNITS = {
-	["ENTITY"]: Entity
-}
+GAME.instantiatePlayers = (_self, opponent) ->
+	log.debug("self: #{_self}, opponent: #{opponent}")
+	GAME.self     = _self
+	GAME.opponent = opponent
+	GAME.PLAYERS[_self]    = Player(_self)
+	GAME.PLAYERS[opponent] = Player(opponent)
 
 GAME.returnObjectFromType = (str, params) ->
 	if not GAME.UNITS[str]
 		log.error("No such unit #{str} indexed.")
 	else
-		return GAME.UNITS[str](table.unpack(params))
+		return GAME.UNITS[str](params)
+
+GAME.UNITS = {
+	["ENTITY"]: Entity
+}
 
 GAME.COLOR = {0.1,0.1,0.1,1}
 GAME.COLORS = {
@@ -42,12 +49,6 @@ F = {
 }
 
 -- Function to provide fonts in sizes:
--- 8
--- 27
--- 64
--- 125
--- 216
--- 343
 sizes = {16, 27, 50, 100, 216}
 for k, _ in pairs(F) do GAME.fonts[k] = {}
 for k, font in pairs(F)

@@ -19,7 +19,7 @@ MainMenu.enter  = (previous) =>
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
-			with UI.Button("mutliplayer", 8,7,3,1, "startmulti")
+			with UI.Button("multi-player", 8,7,3,1, "startmulti")
 				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
 				.text.alignv = "center"
@@ -59,6 +59,7 @@ MainMenu.enter  = (previous) =>
 		})
 
 	UI.id["startlocal"].onClick = ->
+		GAME.instantiatePlayers(1,2)
 		Gamestate.switch(UnitSelect)
 
 	UI.id["startmulti"].onClick = ->

@@ -61,31 +61,37 @@ RM.clear = () ->
   RM.commandQueue   = {}
 
 
+RM.nextUntilDone = () ->
+  while #RM.commandQueue != 0
+    RM.next()
+
+-- executeCmdQasPlayer and .next are functionally
+-- equiv. except operate on Players rather than indivdual
+-- entities
 RM.executeCmdQasPlayer = () ->
   if #RM.commandQueue == 0
     return false
   for i, command in pairs(RM.commandQueue) do
     k = (i%2) > 0 and 1 or 2
-    GAME.PLAYERS[k]["cmd"][command.type].f(command.payload)
-
+    log.trace("Running command: #{command.type}")
+    GAME.PLAYERS[k]["cmd"][command.type].f(command.payload, command.x, command.y)
 
 RM.next = () ->
   if #RM.commandQueue == 0
     return false
   -- {x:1, y:2, type:"MOVE_PIECE", payload: {}}
+  log.trace("Running command: #{m.type}")
   m = RM.commandQueue[1]
   o = Map.getObjAtPos(m.x, m.y)
   o["cmd"][m.type](table.unpack(m.payload))
   table.remove(RM.commandQueue, 1)
   return true
 
-
 RM.requestPeerCommands = () ->
   NM.sendDataToPeer({
     type: "REQUEST_PEER_COMMANDS",
     payload: nil
   })
-
 
 RM.setPeerCommands = (payload) ->
   for i=1, #payload

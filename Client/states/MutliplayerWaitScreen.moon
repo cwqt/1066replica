@@ -19,13 +19,12 @@ MWS.enter  = (previous)   =>
 		payload: nil
 	})
 
-MWS.onGetMatch = () ->
+MWS.onGetMatch = (side) ->
 	MWS.Timer\after 0.5, ->
 		UI.id["debug_message"].value = "Got match!"
-		Player(GAME.self)
-		Player(GAME.opponent)
 
 	MWS.Timer\after 1, ->
+		GAME.instantiatePlayers(side, side>=2 and 1 or 2)
 		Gamestate.switch(UnitSelect)
 
 --LOGIC============================================================

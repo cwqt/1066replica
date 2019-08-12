@@ -26,13 +26,7 @@ NM.functions = {
       when "RECEIVE_MATCH"
         log.debug("Got match: #{data.payload.gameUUID}")
         i = tonumber(data.payload.side)
-        GAME.self = i
-        GAME.opponent = i >= 2 and 1 or 2
-        log.debug("self: #{GAME.self}, opponent: #{GAME.opponent}")
-        MWS.onGetMatch()
-
-      -- when "PLAYER_START_COMMANDING"
-        -- do something
+        MWS.onGetMatch(i)
 
   RECEIVED_DATA_FROM_PEER: (data) ->
     log.trace("Reducer(P) got: #{data.type}")

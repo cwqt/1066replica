@@ -1,4 +1,4 @@
-margin = 5
+margin = 6
 
 class Player
   new: (@player) =>
@@ -10,15 +10,14 @@ class Player
     
     @cmd = {
       ["SET_INITIAL_UNITS"]: {
-        f: (data) ->
-          @placeUnits(data)
+        f: (units) ->
+          @placeUnits(units)
       }
       ["CREATE_OBJECT"]: {
-        f: (data) ->
-          Map.addObject(
-            data.payload.x,
-            data.payload.y,
-            GAME.returnObjectFromType(data.type, data.payload.payload))
+        f: (payload, x, y) ->
+          o = GAME.returnObjectFromType(payload.type, payload.payload or {})
+          o.player = @player
+          Map.addObject(x, y, o)
       }
       ["DIRECT_MOVE"]: {
         f: (data) ->
@@ -30,54 +29,54 @@ class Player
       }
     }
 
-    GAME.PLAYERS[@player] = self
-
   pushCommand: (command) =>
     -- print inspect command
     log.debug("Player(#{@player}) added command: #{command.type}")
     table.insert(@roundCommands, command)
 
   placeUnits: (objects) =>
-    @py = 1
-    c = 0
-    for y=1, #Map.current
-      for x=1, margin
-        if Map.current[y][x].object
-          c += 1
+    -- Defines a simple map for positions in which objects
+    -- should initially be placed, top to bottom, incrementing
+    -- column when at end of row
+    c = 1
+    placementMap = {}
+    virtualMap = Map.generate(margin, Map.height)
+    for x=1, @margin do
+      for y=1, Map.height do
+        virtualMap[y][x] = { object: {icon: "x"} }
+        c += 1
+        if c > #objects
+          placementMap = virtualMap
+          break
+      if c > #objects then break
 
-    totalFreeSpaces = #Map.current*margin - c
-    while #objects > totalFreeSpaces
-      margin += 1
-      totalFreeSpaces = #Map.current*margin - c
+    -- If we're the opponent, our objects need to be basically flipped
+    -- and then later offset by the Map.width - @margin
+    if @player == GAME.opponent
+      log.info("Flipping placement map")
+      for y=1, Map.height do
+        placementMap[y] = M.reverse(placementMap[y])
 
-    for _, object in pairs(objects)
-      object.player = @player
+    -- Give each CREATE_OBJECT an x & y position
+    t = {}
+    for y=1, Map.height do
+      for x=1, @margin do
+        if placementMap[y][x].object and #objects > 0
+          m = {
+            -- For opponent, offset to opposite side of board
+            x: @player == GAME.opponent and x+(Map.width - @margin) or x,
+            y: y,
+            type: objects[1].type,
+            payload: objects[1].payload
+          }
+          table.insert(t, m)
+          table.remove(objects, 1)
+        else
+          continue
 
-      if Game.isPlanning
-        tx, tw = 1, margin
-        if @player % 2 == 0
-          tx, tw = Map.width-margin+2, Map.width
-
-        while Map.current[@py][tx].object
-          tx += 1
-          if tx-1 == tw
-            @py += 1
-            tx = (@player % 2 == 0) and Map.width-margin+2 or 1
-
-        -- Map.addObject(tx, @py, object)
-        
-        @cmd["CREATE_OBJECT"]({
-          type: object.type,
-          payload: object.payload,
-          x: tx, y: @py
-        })
-
-    @margin = margin
-
-
-
-
-
-
+    -- Insert CREATE_OBJECTs with defined x,y pos for 
+    -- entities to be later created 
+    for _, command in pairs(t) do
+      @pushCommand(command)
 
 return Player
