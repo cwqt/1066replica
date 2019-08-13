@@ -50,9 +50,10 @@ class Player
           break
       if c > #objects then break
 
-    -- If we're the opponent, our objects need to be basically flipped
+    -- Player 2 is ALWAYS on the right
+    -- our objects need to be basically flipped
     -- and then later offset by the Map.width - @margin
-    if @player == GAME.opponent
+    if @player == 2
       log.info("Flipping placement map")
       for y=1, Map.height do
         placementMap[y] = M.reverse(placementMap[y])
@@ -63,8 +64,8 @@ class Player
       for x=1, @margin do
         if placementMap[y][x].object and #objects > 0
           m = {
-            -- For opponent, offset to opposite side of board
-            x: @player == GAME.opponent and x+(Map.width - @margin) or x,
+            -- For player 2 ALWAYS offset to opposite side of board
+            x: @player == 2 and x+(Map.width - @margin) or x,
             y: y,
             type: objects[1].type,
             payload: objects[1].payload

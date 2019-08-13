@@ -46,32 +46,28 @@ Game.enter  = (previous)   =>
 		.onComplete = -> Game.phase.switch('command')
 		\countdown!
 
-	export ui = UI.Master(16, 9, 100, {
-		UI.Container(1,1,8,4, {
-			with UI.Text("", 1,1,5,8, "debug")
+	export ui = UI.Master(8, 5, 140, {
+		UI.Container(1,1,8,2, {
+			with UI.Text("", 1,1,3,4, "debug")
 				.text.font = GAME.fonts["mono"][16]
 				.text.color = {1,1,1,1}
-			with UI.Text("", 6,1,5,8, "gsinfo")
+			with UI.Text("", 4,1,3,4, "gsinfo")
 				.text.font = GAME.fonts["mono"][16]
 				.text.color = {1,1,1,1}
-			with UI.Text("", 11,1,5,8, "sgsinfo")
+			with UI.Text("", 7,1,3,4, "sgsinfo")
 				.text.font = GAME.fonts["mono"][16]
 				.text.color = {1,1,1,1}
-			with UI.Text("", 16,1,5,8, "rm")
+			with UI.Text("", 10,1,3,4, "rm")
 				.text.font = GAME.fonts["mono"][16]
 				.text.color = {1,1,1,1}
 		})
-		UI.Container(2,5, 14, 1, {
-			with UI.Button("Exit planning", 1,1,5,2, "exitplanning")
+		UI.Container(1,3,8,1, {
+			with UI.Button("Exit planning", 1,2,3,1, "exitplanning")
 				.text.font = GAME.fonts["default"][27]
-				.text.alignv = "center"
 				.text.alignh = "center"
-				.m = {0,0,30,0}
-			with UI.Button("End round", 6,1,5,2, "nextround")
+			with UI.Button("End round", 4,2,3,1, "nextround")
 				.text.font = GAME.fonts["default"][27]
-				.text.alignv = "center"
 				.text.alignh = "center"
-				.m = {0,0,30,10}
 				-- .onClick = -> ()
 		}, "test")
 	})

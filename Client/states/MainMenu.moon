@@ -6,7 +6,7 @@ MainMenu.init = () =>
 MainMenu.enter  = (previous) =>
 	log.state("Entered MainMenu")
 	export timer = Timer()
-	export ui = UI.Master(8, 5, 160, {
+	export ui = UI.Master(8, 5, 140, {
 		UI.Container(2,1,6,4, {
 			with UI.Text("alias", 1,4,12,2)
 				.text.font = GAME.fonts.title[216]

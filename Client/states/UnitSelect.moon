@@ -1,6 +1,6 @@
 UnitSelect = {}
-UnitSelect.peerDone = false
-UnitSelect.done = false
+UnitSelect.peerDone   = false
+UnitSelect.playerDone = false
 
 -- Player in here
 UnitSelect.units = {}
@@ -12,15 +12,19 @@ UnitSelect.init = () =>
 
 UnitSelect.enter  = (previous)   =>
 	log.state("Entered UnitSelect")
-	export ui = UI.Master(16, 9, 100, {
-		UI.Container(1,4,5,5, {
-			UI.Text("Entity",1,1,4,2)
-			UI.Text("0",9,1,2,2, "cnt")
-			with UI.Button("+", 7,1,2,2, "inc")
+	export ui = UI.Master(8, 5, 140, {
+		UI.Container(2,1,6,4, {
+			with UI.Text("Entity",1,3,3,1)
+				.text.font = GAME.fonts.default[27]
+			with UI.Text("0",3,3,1,1, "cnt")
+				.text.font = GAME.fonts.default[27]
+			with UI.Button("+", 4,3,1,1, "inc")
+				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
-			with UI.Button("-", 5,1,2,2, "dec")
+			with UI.Button("-", 5,3,1,1, "dec")
+				.text.font = GAME.fonts.default[27]
 				.text.alignh = "center"
-			UI.Text("",9,5,10,2, 'info')
+			UI.Text("",1,5,10,2, 'info')
 			UI.Button("Enter game",1,5,8,2, "load")
 		})
 	})
@@ -40,7 +44,7 @@ UnitSelect.enter  = (previous)   =>
 --LOGIC============================================================
 UnitSelect.update = (dt) =>
 	ui\update(dt)
-	if UnitSelect.done and UnitSelect.peerDone
+	if UnitSelect.playerDone and UnitSelect.peerDone
 		Gamestate.switch(Game)
 
 UnitSelect.draw   = ()   =>
@@ -50,6 +54,7 @@ UnitSelect.setPeerDone = () =>
 	UnitSelect.peerDone = true
 
 UnitSelect.done = () =>
+	if UnitSelect.playerDone then return
 	-- get entties from unit select bit
 	GAME.PLAYERS[GAME.self]\pushCommand({
 		type: "SET_INITIAL_UNITS",
@@ -99,61 +104,13 @@ UnitSelect.done = () =>
 			}
 		}
 	})
-	GAME.PLAYERS[GAME.opponent]\pushCommand({
-		type: "SET_INITIAL_UNITS",
-		payload: {
-			{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			}
-		}
-	})
 
-	UnitSelect.done = true
+	UnitSelect.playerDone = true
 	if not GAME.isLocal
 		UI.id["info"].value = "Waiting for peer"
 		NM.sendDataToServer({
 			type: "USER_UNITSELECT_OVER",
-			payload: UnitSelect.done
+			payload: UnitSelect.playerDone
 		})
 	else
 		Gamestate.switch(Game)
