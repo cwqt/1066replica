@@ -56,6 +56,18 @@ UnitSelect.setPeerDone = () =>
 UnitSelect.done = () =>
 	if UnitSelect.playerDone then return
 	-- get entties from unit select bit
+	GAME.PLAYERS[GAME.opponent]\pushCommand({
+		type: "SET_INITIAL_UNITS",
+		payload: {
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			}
+		}
+	})
 	GAME.PLAYERS[GAME.self]\pushCommand({
 		type: "SET_INITIAL_UNITS",
 		payload: {

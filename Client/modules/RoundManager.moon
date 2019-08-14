@@ -4,7 +4,6 @@ RM = {}
 RM.turn = -1
 RM.executingCommands  = false
 RM.playerCommands     = {}
-RM.commandQueue       = {}
 
 RM.setCommandingStatusOnServer  = (v) ->
   NM.sendDataToServer({
@@ -12,13 +11,11 @@ RM.setCommandingStatusOnServer  = (v) ->
     payload: v
   })
 
-
 RM.nextRound = () ->
   RM.turn += 1
   if not RM.turn == 0
     Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, GAME.COLOR)
     RM.setCommandingStatusOnServer(true)
-
 
 -- collect moves from player insert into cmdStack
 -- once all commands are collected from each player we sort
@@ -34,58 +31,44 @@ RM.collect = () ->
     for _, command in pairs(player.roundCommands) do
       table.insert(RM.playerCommands[k], command)
 
-
-RM.sort = () ->
-  log.info("Sorting playerCommands")
-  -- Recursive sort commands into {[p1]:[c1], [p2]:[c1], [p1]:[c2], [p2]:[c2]}
-  sortedCommands = {}
-  srt = () ->
-    c = 0
-    -- Loop through each player once, pushing the first-most
-    -- command to the sortedCommands list
-    for key, player in pairs(RM.playerCommands) do
-      for _, command in pairs(player) do
-        c += 1
-      if c == 0
-        return sortedCommands
-      else
-        table.insert(sortedCommands, player[1])
-        table.remove(player, 1)
-    srt()
-  log.debug('Sorted playerCommands')
-  RM.commandQueue = srt()
-
-
-RM.clear = () ->
-  RM.playerCommands = {}
-  RM.commandQueue   = {}
-
-
 RM.nextUntilDone = () ->
-  while #RM.commandQueue != 0
-    RM.next()
+  while true
+    isEnd = RM.next()
+    break if isEnd
 
 -- executeCmdQasPlayer and .next are functionally
 -- equiv. except operate on Players rather than indivdual
 -- entities
 RM.executeCmdQasPlayer = () ->
-  if #RM.commandQueue == 0
-    return false
-  for i, command in pairs(RM.commandQueue) do
-    k = (i%2) > 0 and 1 or 2
-    log.trace("Running command: #{command.type}")
-    GAME.PLAYERS[k]["cmd"][command.type].f(command.payload, command.x, command.y)
+  c = 0
+  while true
+    c += 1
+    k = (c % 2) > 0 and 1 or 2
+    m = RM.playerCommands[k][1]
+    if m == nil then continue
+    GAME.PLAYERS[k]["cmd"][m.type].f(m.payload, m.x, m.y)
+    table.remove(RM.playerCommands[k], 1)
+    break if #RM.playerCommands[1] + #RM.playerCommands[2] == 0
 
 RM.next = () ->
-  if #RM.commandQueue == 0
-    return false
-  -- {x:1, y:2, type:"MOVE_PIECE", payload: {}}
-  log.trace("Running command: #{m.type}")
-  m = RM.commandQueue[1]
-  o = Map.getObjAtPos(m.x, m.y)
-  o["cmd"][m.type](table.unpack(m.payload))
-  table.remove(RM.commandQueue, 1)
-  return true
+  c = 0
+  -- Keep repeating p1's commands if #p2 == 0
+  recurse = () ->
+    if (#RM.playerCommands[1] + #RM.playerCommands[2]) == 0
+      return true --empty
+
+    -- Flip-flop between p1 and p2 commands, executing first
+    -- and unshifting it from p(n) array
+    c += 1
+    k = (c % 2) > 0 and 1 or 2
+    m = RM.playerCommands[k][1]
+    if m == nil then recurse()
+    o = Map.getObjAtPos(m.x, m.y)
+    o["cmd"][m.type](table.unpack(m.payload))
+    table.remove(RM.playerCommands[k], 1)
+    return false -- not empty 
+
+  return recurse()
 
 RM.requestPeerCommands = () ->
   NM.sendDataToPeer({

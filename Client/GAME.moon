@@ -3,7 +3,6 @@ GAME.START_TIME = love.timer.getTime()
 GAME.PLAYERS = {}
 GAME.isLocal = true
 GAME.fonts = {}
-Game.isPlanning = true
 
 GAME.instantiatePlayers = (_self, opponent) ->
 	log.debug("self: #{_self}, opponent: #{opponent}")
@@ -30,11 +29,11 @@ GAME.COLORS = {
 
 GAME.assets = {
 	["icons"]: {
+		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
 		["Move"]:    love.graphics.newImage("media/img/icons/Move.png")
 		["Fortify"]: love.graphics.newImage("media/img/icons/Fortify.png")
 		["Fire"]:    love.graphics.newImage("media/img/icons/Fire.png")
 		["Testudo"]: love.graphics.newImage("media/img/icons/Testudo.png")
-		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
 		["Spear"]:   love.graphics.newImage("media/img/icons/Spear.png")
 	}
 	["bg"]: love.graphics.newImage("media/img/bg.png")

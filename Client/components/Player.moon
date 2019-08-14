@@ -6,6 +6,7 @@ class Player
     log.info("Created new Player #{@player}")
     @px, @py = 0, 1
     @margin = margin
+    @units = {}
     @roundCommands = {}
     
     @cmd = {
@@ -18,6 +19,7 @@ class Player
           o = GAME.returnObjectFromType(payload.type, payload.payload or {})
           o.player = @player
           Map.addObject(x, y, o)
+          @units[o.uuid] = o
       }
       ["DIRECT_MOVE"]: {
         f: (data) ->

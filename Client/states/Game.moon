@@ -35,7 +35,6 @@ Game.init = () =>
 	Game.timer = Timer()
 
 	RM.collect()
-	RM.sort()
 	RM.executeCmdQasPlayer()
 	-- RM.nextRound()
 
@@ -127,6 +126,10 @@ Game.draw   = ()   =>
 	MU.draw()
 	Game.cdb\draw()
 	Notifications.draw()
+
+Game.isPlanning 	 = () => return Game.phase.current == "planning" and true or false
+Game.isCommanding  = () => return Game.phase.current == "command" and true or false
+Game.isAction 		 = () => return Game.phase.current == "action" and true or false
 
 --INPUT============================================================
 

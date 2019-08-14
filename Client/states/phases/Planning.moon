@@ -3,15 +3,14 @@ MU = require("modules.gui.Map")
 
 Planning = {}
 
-Planning.duration = 8
+Planning.duration = 60
 
 Planning.initialise = () ->
 	RM.collect()
-	RM.sort()
 	RM.executeCmdQasPlayer()
 
 Planning.enter = () ->
-	Notifications.push(1, 'Planning - Position troops', GAME.assets["icons"]["move"], Planning.duration, GAME.COLOR)
+	-- Notifications.push(1, 'Planning - Position troops', GAME.assets["icons"]["move"], Planning.duration, GAME.COLOR)
 
 Planning.exit = () ->
 	-- RM.collect()

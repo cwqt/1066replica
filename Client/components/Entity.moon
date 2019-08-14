@@ -12,6 +12,7 @@ class Entity extends Map.Object
         distance: 4
       }
     }
+    @command = {}
     @range = 5
     @icon_img = GAME.assets["icons"][@.__class.__name]
     -- @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")

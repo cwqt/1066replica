@@ -51,9 +51,10 @@ love.load         = () ->
 
 love.frame = 0
 love.update       = (dt) ->
-  if dt < 1/60 then love.timer.sleep(1/60 - dt)
+  -- if dt < 1/60 then love.timer.sleep(1/60 - dt)
   NM.update(dt)
   Debugger.update(dt)
+  lb.update(dt)
   -- love.frame = love.frame + 1
   -- if love.frame % 10 == 0 then
   --   love.report = love.profiler.report('time', 20)
@@ -72,12 +73,17 @@ love.keypressed   = (key, code, isrepeat) ->
 love.keyreleased   = (key) ->
 
 love.mousepressed  = (x, y, button) ->
+  log.error "MOUSE CLICKED"
 
 love.mousereleased = (x, y, button) ->
+  log.error "MOUSE RELEASED"
+
 
 love.mousemoved    = (x, y, dx, dy) ->
 
 love.wheelmoved    = (x, y) ->
+
+love.focus = (f) ->
 
 love.textinput     = (t) ->
 

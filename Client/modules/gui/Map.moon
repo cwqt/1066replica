@@ -83,7 +83,7 @@ MU.drawUnits = () ->
 				love.graphics.push()
 				tx, ty = (x-1)*p+p/2, (y-1)*p+p/2
 
-				if Game.isPlanning and M.identical({x, y}, MU.sGS or {})
+				if Game\isPlanning() and M.identical({x, y}, MU.sGS or {})
 					love.graphics.translate((love.mouse.getX()-Map.tx-tx), (love.mouse.getY()-Map.ty-ty))
 
 				love.graphics.setColor(1,1,1,1)
@@ -123,7 +123,7 @@ MU.mousepressed = (x, y, button) ->
 			MU.deselectUnit()
 
 	-- Moving game objects around during planning
-	if Game.isPlanning and MU.mouseOverMap 
+	if Game\isPlanning() and MU.mouseOverMap 
 		MU.handleMovingObjects()
 
 MU.handleMovingObjects = (using nil) ->
@@ -150,6 +150,7 @@ MU.handleMovingObjects = (using nil) ->
 			if success
 				MU.deselectUnit()
 				return
+
 	-- If an object exists at the current mouse selection, select it
 	o = Map.current[MU.fGS[2]][MU.fGS[1]] 
 	if o.object and not MU.sGS

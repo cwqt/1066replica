@@ -42,3 +42,8 @@ Inspired by [1066](https://armorgames.com/play/4594/1066).
 	}
 }
 ```
+
+
+### bugs
+
+* love.mousereleased not resolved after mousepress after state change until clicked again

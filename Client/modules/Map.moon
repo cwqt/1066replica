@@ -5,10 +5,7 @@ Map = {}
 Map.current = {}
 Map.deleteStack = {}
 
-class Map.Object
-  new: (@icon="█") =>
-  update: (dt) =>
-  draw: () =>
+Map.Object = require("../components/Object")
 
 Map.generate = (width, height) ->
   t = {}
