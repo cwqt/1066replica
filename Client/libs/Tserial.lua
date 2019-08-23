@@ -44,3 +44,5 @@ function TSerial.unpack(s)
 	TSerial.table = nil
 	return t
 end
+
+return TSerial

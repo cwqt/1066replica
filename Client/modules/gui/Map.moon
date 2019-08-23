@@ -41,11 +41,11 @@ MU.draw = () ->
 MU.drawPlanning = () ->
 	love.graphics.push()
 	love.graphics.translate(Map.tx, Map.ty)
-	GAME.self = GAME.self or 1
-	x, y, w, h = 0,0,GAME.PLAYERS[GAME.self].margin*p, #Map.current*p
-	if GAME.self % 2 == 0
-		x = (Map.width-GAME.PLAYERS[GAME.self].margin)*p
-	c = M.clone(GAME.COLORS[GAME.self])
+	G.self = G.self or 1
+	x, y, w, h = 0,0,G.PLAYERS[G.self].margin*p, #Map.current*p
+	if G.self % 2 == 0
+		x = (Map.width-G.PLAYERS[G.self].margin)*p
+	c = M.clone(G.COLORS[G.self])
 	c[4] = 0.5
 	love.graphics.setColor(c)
 	love.graphics.rectangle("fill", x, y, w, h)
@@ -89,7 +89,7 @@ MU.drawUnits = () ->
 				love.graphics.setColor(1,1,1,1)
 				love.graphics.circle("fill", tx, ty, 0.4*p)
 				love.graphics.circle("line", tx, ty, 0.4*p, 64)
-				love.graphics.setColor(GAME.COLORS[o.player])
+				love.graphics.setColor(G.COLORS[o.player])
 				love.graphics.circle("fill", tx, ty, 0.35*p)
 				love.graphics.circle("line", tx, ty, 0.35*p, 64)
 				love.graphics.setColor(1,1,1,1)
@@ -139,7 +139,7 @@ MU.handleMovingObjects = (using nil) ->
 			-- Check if desired placement location within player margin
 			dx = MU.fGS[1]
 			p = Map.current[MU.sGS[2]][MU.sGS[1]].object.player
-			m = GAME.PLAYERS[p].margin
+			m = G.PLAYERS[p].margin
 			if p % 2 == 0
 				if dx <= Map.width-m
 					return	
@@ -148,6 +148,12 @@ MU.handleMovingObjects = (using nil) ->
 					return
 			success = Map.moveObject(MU.sGS, MU.fGS)
 			if success
+				o = Map.getObjAtPos(unpack(MU.fGS))
+				o\pushCommand({
+					type: "DIRECT_MOVE",
+					payload: MU.fGS,
+					x: o.x, y: o.y
+				})
 				MU.deselectUnit()
 				return
 
@@ -155,7 +161,7 @@ MU.handleMovingObjects = (using nil) ->
 	o = Map.current[MU.fGS[2]][MU.fGS[1]] 
 	if o.object and not MU.sGS
 		-- Only be able to select our own units
-		if o.object.player == GAME.self
+		if o.object.player == G.self
 			MU.selectUnit(MU.fGS)
 			return
 		

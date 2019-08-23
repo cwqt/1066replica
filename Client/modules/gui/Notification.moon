@@ -1,7 +1,7 @@
 class Notification
 	new: (@text, @icon, @direction, @color) =>
 		@color = @color or {0.4, 0.4, 0.4, 1}
-		@width = GAME.fonts.text[27]\getWidth(@text) + 20
+		@width = G.fonts.text[27]\getWidth(@text) + 20
 		@height = 40
 
 		if @icon
@@ -51,7 +51,7 @@ class Notification
 		-- love.graphics.setColor(0,0,0,1)
 		-- love.graphics.rectangle('line', @padding, @padding, @width, @height)
 		love.graphics.setColor(1,1,1,1)
-		love.graphics.setFont(GAME.fonts.text[27])
+		love.graphics.setFont(G.fonts.text[27])
 		p = 10
 		if @icon
 			if @direction == -1
@@ -62,7 +62,7 @@ class Notification
 				love.graphics.print(@text, p, p)
 		else
 			love.graphics.print(@text, 2*p, p)
-		love.graphics.setFont(GAME.fonts.mono[16])
+		love.graphics.setFont(G.fonts.mono[16])
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.pop()
 

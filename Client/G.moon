@@ -1,33 +1,34 @@
-GAME = {}
-GAME.START_TIME = love.timer.getTime()
-GAME.PLAYERS = {}
-GAME.isLocal = true
-GAME.fonts = {}
+G = {}
+G.START_TIME = love.timer.getTime()
+G.PLAYERS = {}
+G.isLocal = true
+G.fonts = {}
 
-GAME.instantiatePlayers = (_self, opponent) ->
+G.instantiatePlayers = (_self, opponent) ->
 	log.debug("self: #{_self}, opponent: #{opponent}")
-	GAME.self     = _self
-	GAME.opponent = opponent
-	GAME.PLAYERS[_self]    = Player(_self)
-	GAME.PLAYERS[opponent] = Player(opponent)
+	G.self     = _self
+	G.opponent = opponent
+	G.PLAYERS[_self]    = Player(_self)
+	G.PLAYERS[opponent] = Player(opponent)
 
-GAME.returnObjectFromType = (str, params) ->
-	if not GAME.UNITS[str]
+G.returnObjectFromType = (str, params) ->
+	if not G.UNITS[str]
 		log.error("No such unit #{str} indexed.")
 	else
-		return GAME.UNITS[str](params)
+		return G.UNITS[str](params)
 
-GAME.UNITS = {
-	["ENTITY"]: Entity
+G.UNITS = {
+	["MAP_OBJECT"]: Map.Object
+	["ENTITY"]: Entity,
 }
 
-GAME.COLOR = {0.1,0.1,0.1,1}
-GAME.COLORS = {
+G.COLOR = {0.1,0.1,0.1,1}
+G.COLORS = {
 	[1]: {0.53, 0.10, 0.19, 1},
 	[2]: {0,0,1,1}
 }
 
-GAME.assets = {
+G.assets = {
 	["icons"]: {
 		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
 		["Move"]:    love.graphics.newImage("media/img/icons/Move.png")
@@ -49,10 +50,19 @@ F = {
 
 -- Function to provide fonts in sizes:
 sizes = {16, 27, 50, 100, 216}
-for k, _ in pairs(F) do GAME.fonts[k] = {}
+for k, _ in pairs(F) do G.fonts[k] = {}
 for k, font in pairs(F)
 	for _, size in pairs(sizes)
-		GAME.fonts[k][size] = love.graphics.newFont(font, size)
+		G.fonts[k][size] = love.graphics.newFont(font, size)
 
-return GAME
+
+G.UUID = () ->
+  fn = (x) ->
+    r = love.math.random(16) - 1
+    r = (x == "x") and (r + 1) or (r % 4) + 9
+    return ("0123456789abcdef")\sub(r, r)
+  return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", fn))
+
+
+return G
  

@@ -23,7 +23,7 @@ Notifications.draw = () ->
 			notification\draw(x, 10+65*(c-1))
 
 Notifications.push = (side, text, icon, duration=3, color) ->
-	uuid = UUID()
+	uuid = G.UUID!
 	dir = -1
 	if (side%2)==0 then dir = 1 
 	n = Notification(text, icon, dir, color)

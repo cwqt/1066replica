@@ -1,6 +1,6 @@
 Command = {}
 
-Command.initialise = () ->
+Command.init = () ->
 
 Command.enter = () ->
 	-- RM.next()

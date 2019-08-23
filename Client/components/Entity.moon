@@ -14,7 +14,7 @@ class Entity extends Map.Object
     }
     @command = {}
     @range = 5
-    @icon_img = GAME.assets["icons"][@.__class.__name]
+    @icon_img = G.assets["icons"][@.__class.__name]
     -- @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
 
   update: (dt) =>
@@ -43,6 +43,13 @@ class Entity extends Map.Object
 
   -- awaitUserInput: () =>
   --   log.trace("Waiting for peer data for current command")
+
+  pushCommand: (command) =>
+    log.debug("#{@@.__name}(#{@uuid\sub(1,8)}) added: #{command.type}")
+    @command = command
+
+  popCommand: () =>
+    @command = {}
 
   move: (tox, toy) =>
     path, length = Map.findPath({@x, @y},{tox, toy})

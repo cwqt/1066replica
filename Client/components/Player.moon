@@ -16,7 +16,7 @@ class Player
       }
       ["CREATE_OBJECT"]: {
         f: (payload, x, y) ->
-          o = GAME.returnObjectFromType(payload.type, payload.payload or {})
+          o = G.returnObjectFromType(payload.type, payload.payload or {})
           o.player = @player
           Map.addObject(x, y, o)
           @units[o.uuid] = o
@@ -30,6 +30,12 @@ class Player
             data.payload.ey)
       }
     }
+
+  collect: () =>
+    for _, unit in pairs(@units)
+      if unit.command.type
+        table.insert(@roundCommands, unit.command)
+    return @roundCommands
 
   pushCommand: (command) =>
     -- print inspect command

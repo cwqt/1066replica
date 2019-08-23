@@ -12,6 +12,7 @@ if [ "$server" -eq 1 ]; then
   cd Server/
   rm -rf compiled/
   moonc -t compiled/ .
+  cp libs compiled/libs
   lua compiled/main.lua
 elif [ "$client" -eq 1 ]; then
   cd Client/

@@ -1,6 +1,8 @@
 xxx = {}
 xxx.init = () =>
+	self.__name__ = "xxx"
 	log.state("Initialised xxx")
+
 xxx.enter  = (previous)   =>
 	log.state("Entered xxx")
 

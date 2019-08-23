@@ -34,11 +34,12 @@ class Debugger.graph
     love.graphics.pop()
 
 Debugger.load = () ->
+  x = love.graphics.getWidth()+210
   Debugger.graphs = {
-    Debugger.graph("FPS", 1490, 15, -> return love.timer.getFPS())
-    Debugger.graph("DT (ms)", 1490, 95, -> return love.timer.getDelta()*1000)
-    Debugger.graph("MEM (kb)", 1490, 175, -> return collectgarbage('count'))
-    Debugger.graph("Draws", 1490, 255, -> return love.graphics.getStats().fonts)
+    Debugger.graph("FPS", x, 15, -> return love.timer.getFPS())
+    Debugger.graph("DT (ms)", x, 95, -> return love.timer.getDelta()*1000)
+    Debugger.graph("MEM (kb)", x, 175, -> return collectgarbage('count'))
+    Debugger.graph("Draws", x, 255, -> return love.graphics.getStats().fonts)
   }
 
 Debugger.update = (dt) ->

@@ -42,13 +42,24 @@ Server.functions = {
             payload: nil
           }), user.match)
 
+      when "USER_PLANNING_OVER"
+        user.isPlanning = data.payload
+        if (user.isPlanning and user.match.isPlanning) == true
+          Server.sv\send(OPCODES.S["SEND_DATA_TO_MATCH"], TSerial.pack({
+            type: "REQUEST_PEER_COMMANDS",
+            payload: nil
+          }), user)
+          Server.sv\send(OPCODES.S["SEND_DATA_TO_MATCH"], TSerial.pack({
+            type: "REQUEST_PEER_COMMANDS",
+            payload: nil
+          }), user.match)
+
       when "USER_COMMANDING_OVER"
         user.isCommanding = data.payload
         if (user.isCommanding and user.match.isCommanding) == false
           Server.distribute("PLAYERS_FINISHED_COMMANDING", true, user)
         if (user.isCommanding and user.match.isCommanding) == true
           Server.distribute("PLAYER_START_COMMANDING", nil, user)
-
 
       when "PING"
         Server.sv\send(OPCODES.S["SEND_DATA_TO_USER"], TSerial.pack({

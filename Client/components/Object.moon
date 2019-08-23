@@ -1,6 +1,6 @@
 class Object
   new: (@icon="█") =>
-  	@uuid = UUID!
+  	@uuid = G.UUID!
   	@player = 0
 
   update: (dt) =>

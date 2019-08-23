@@ -6,6 +6,7 @@ UnitSelect.playerDone = false
 UnitSelect.units = {}
 
 UnitSelect.init = () =>
+	self.__name__ = "UnitSelect"
 	log.state("Initialised UnitSelect")
 	map = Map.generate(15, 5)
 	Map.set(map)
@@ -15,17 +16,17 @@ UnitSelect.enter  = (previous)   =>
 	export ui = UI.Master(8, 5, 140, {
 		UI.Container(2,1,6,4, {
 			with UI.Text("Entity",1,3,3,1)
-				.text.font = GAME.fonts.default[27]
+				.text.font = G.fonts.default[27]
 			with UI.Text("0",3,3,1,1, "cnt")
-				.text.font = GAME.fonts.default[27]
+				.text.font = G.fonts.default[27]
 			with UI.Button("+", 4,3,1,1, "inc")
-				.text.font = GAME.fonts.default[27]
+				.text.font = G.fonts.default[27]
 				.text.alignh = "center"
 			with UI.Button("-", 5,3,1,1, "dec")
-				.text.font = GAME.fonts.default[27]
+				.text.font = G.fonts.default[27]
 				.text.alignh = "center"
 			UI.Text("",1,5,10,2, 'info')
-			UI.Button("Enter game",1,5,8,2, "load")
+			UI.Button("Enter G",1,5,8,2, "load")
 		})
 	})
 
@@ -56,28 +57,10 @@ UnitSelect.setPeerDone = () =>
 UnitSelect.done = () =>
 	if UnitSelect.playerDone then return
 	-- get entties from unit select bit
-	GAME.PLAYERS[GAME.opponent]\pushCommand({
+	G.PLAYERS[G.self]\pushCommand({
 		type: "SET_INITIAL_UNITS",
 		payload: {
 			{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			}
-		}
-	})
-	GAME.PLAYERS[GAME.self]\pushCommand({
-		type: "SET_INITIAL_UNITS",
-		payload: {
-			{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
 				type: "CREATE_OBJECT",
 				payload: {
 					type: "ENTITY",
@@ -118,7 +101,7 @@ UnitSelect.done = () =>
 	})
 
 	UnitSelect.playerDone = true
-	if not GAME.isLocal
+	if not G.isLocal
 		UI.id["info"].value = "Waiting for peer"
 		NM.sendDataToServer({
 			type: "USER_UNITSELECT_OVER",

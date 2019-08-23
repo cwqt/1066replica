@@ -34,13 +34,23 @@ NM.functions = {
       when "REQUEST_PEER_COMMANDS"
         NM.sendDataToPeer({
           type: "RECEIVE_PEER_COMMANDS",
-          payload: GAME.PLAYERS[GAME.self].roundCommands
+          payload: G.PLAYERS[G.self].roundCommands
         })
+
       when "RECEIVE_PEER_COMMANDS"
         RM.setPeerCommands(data.payload)
-        UnitSelect.setPeerDone()
-        -- for _, action in pairs(d)
-        --   Map.getObjAtPos(action.x, action.y).Reducer(action.type, action.payload)
+        switch Gamestate.current().__name__
+          when "UnitSelect"
+            UnitSelect.setPeerDone()
+            return
+          when "Game"
+            switch PM.getCurrentPhase().__name__
+              when "Planning" 
+                RM.setPeerCommands()
+              when "Command" 
+                print 'hello'
+              when "Action" 
+                print 'hello'
 
   CONNECTED: () ->
     -- log.client("Connected to Server.")

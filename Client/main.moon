@@ -1,16 +1,16 @@
 io.stdout\setvbuf("no")
 
-export M          = require("../libs/moses")     -- table functions
-export L          = require("../libs/lume")      -- lume maths
-export inspect    = require("../libs/inspect")   -- table pretty print
-export lb         = require("../libs/lovebird")  -- online debugger
-export Gamestate  = require("../libs/gamestate") -- gamestates, duh
-export Timer      = require("../libs/timer")     -- " "
-export ANet       = require("../libs/Affair/network")
-export log        = require("../libs/log")
-export socket     = require("socket")
-require("../libs/Tserial")
---export Steam     = require('luasteam')
+export M          = require("libs.moses")     -- table functions
+export L          = require("libs.lume")      -- lume maths
+export inspect    = require("libs.inspect")   -- table pretty print
+export lb         = require("libs.lovebird")  -- online debugger
+export Gamestate  = require("libs.gamestate") -- gamestates, duh
+export Timer      = require("libs.timer")     -- " "
+export ANet       = require("libs.Affair/network")
+export log        = require("libs.log")       -- logging
+export TSerial    = require("libs.TSerial")   -- serialisation
+export deep       = require("libs.deep")      -- z-indexer
+export socket     = require("socket")         -- socket.gettime()
 
 export Map        = require("modules.Map")
 export RM         = require("modules.RoundManager")
@@ -18,6 +18,7 @@ export NM         = require("modules.Networking")
 export UI         = require("modules.ui")
 export CD         = require("modules.CollDet")
 export UM         = require("modules.UnitManager")
+export PM         = require("modules.PhaseManager")
 export Debugger   = require("modules.Debugger")
 
 export Player     = require("components.Player")
@@ -28,21 +29,13 @@ export Game       = require("states.Game")
 export MWS        = require("states.MutliplayerWaitScreen")
 export UnitSelect = require("states.UnitSelect")
 
-export GAME       = require("GAME")
-
-export UUID = () ->
-  fn = (x) ->
-    r = love.math.random(16) - 1
-    r = (x == "x") and (r + 1) or (r % 4) + 9
-    return ("0123456789abcdef")\sub(r, r)
-  return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", fn))
-
+export G          = require("G")
 
 love.load         = () ->
   os.execute("clear")
   love.math.setRandomSeed(love.timer.getTime())
   -- log.debug("Game started: #{love.timer.getTime()}")
-  -- love.profiler = require('../libs/profiler') 
+  -- love.profiler = require('libs.profiler') 
   -- love.profiler.hookall("Lua")
   -- love.profiler.start()
   Debugger.load()
@@ -54,7 +47,7 @@ love.update       = (dt) ->
   -- if dt < 1/60 then love.timer.sleep(1/60 - dt)
   NM.update(dt)
   Debugger.update(dt)
-  lb.update(dt)
+  -- lb.update(dt)
   -- love.frame = love.frame + 1
   -- if love.frame % 10 == 0 then
   --   love.report = love.profiler.report('time', 20)
@@ -73,10 +66,11 @@ love.keypressed   = (key, code, isrepeat) ->
 love.keyreleased   = (key) ->
 
 love.mousepressed  = (x, y, button) ->
-  log.error "MOUSE CLICKED"
+  -- log.error "MOUSE CLICKED"
 
 love.mousereleased = (x, y, button) ->
-  log.error "MOUSE RELEASED"
+  --bug here with changing state 2 fast
+  -- log.error "MOUSE RELEASED"
 
 
 love.mousemoved    = (x, y, dx, dy) ->

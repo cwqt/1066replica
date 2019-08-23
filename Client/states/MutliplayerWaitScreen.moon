@@ -1,5 +1,6 @@
 MWS = {}
 MWS.init = () =>
+	self.__name__ = "MWS"
 	log.state("Initialised MWS")
 	
 MWS.enter  = (previous)   =>
@@ -8,7 +9,7 @@ MWS.enter  = (previous)   =>
 	export ui = UI.Master(8, 5, 160, {
 		UI.Container(2,2,6,3, {
 			with UI.Text("Waiting for server to provide match...", 1, 1, 12, 6, "debug_message")
-				.text.font = GAME.fonts.default[27]
+				.text.font = G.fonts.default[27]
 				.text.color = {1,1,1}
 				.text.alignh = "center"
 				.text.alignv = "center"
@@ -24,7 +25,7 @@ MWS.onGetMatch = (side) ->
 		UI.id["debug_message"].value = "Got match!"
 
 	MWS.Timer\after 1, ->
-		GAME.instantiatePlayers(side, side>=2 and 1 or 2)
+		G.instantiatePlayers(side, side>=2 and 1 or 2)
 		Gamestate.switch(UnitSelect)
 
 --LOGIC============================================================

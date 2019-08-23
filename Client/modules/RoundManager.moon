@@ -14,7 +14,7 @@ RM.setCommandingStatusOnServer  = (v) ->
 RM.nextRound = () ->
   RM.turn += 1
   if not RM.turn == 0
-    Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, GAME.COLOR)
+    Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, G.COLOR)
     RM.setCommandingStatusOnServer(true)
 
 -- collect moves from player insert into cmdStack
@@ -22,14 +22,16 @@ RM.nextRound = () ->
 -- them into an queue where each players commands are
 -- executed one at a time
 --{
-  -- [GAME.self]     = {command1, command2, commandn ...}
-  -- [GAME.opponent] = {commandn...}
+  -- [G.self]     = {command1, command2, commandn ...}
+  -- [G.opponent] = {commandn...}
 --}
 RM.collect = () ->
-  for k, player in pairs(GAME.PLAYERS) do
+  for k, player in pairs(G.PLAYERS) do
     RM.playerCommands[k] = {}
-    for _, command in pairs(player.roundCommands) do
+    roundCommands = player\collect()
+    for _, command in pairs(roundCommands) do
       table.insert(RM.playerCommands[k], command)
+    player.commands = {}
 
 RM.nextUntilDone = () ->
   while true
@@ -46,7 +48,7 @@ RM.executeCmdQasPlayer = () ->
     k = (c % 2) > 0 and 1 or 2
     m = RM.playerCommands[k][1]
     if m == nil then continue
-    GAME.PLAYERS[k]["cmd"][m.type].f(m.payload, m.x, m.y)
+    G.PLAYERS[k]["cmd"][m.type].f(m.payload, m.x, m.y)
     table.remove(RM.playerCommands[k], 1)
     break if #RM.playerCommands[1] + #RM.playerCommands[2] == 0
 
@@ -78,6 +80,6 @@ RM.requestPeerCommands = () ->
 
 RM.setPeerCommands = (payload) ->
   for i=1, #payload
-    GAME.PLAYERS[GAME.opponent]\pushCommand(payload[i])
+    G.PLAYERS[G.opponent]\pushCommand(payload[i])
 
 return RM
