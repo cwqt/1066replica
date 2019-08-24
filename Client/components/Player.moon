@@ -7,7 +7,7 @@ class Player
     @px, @py = 0, 1
     @margin = margin
     @units = {}
-    @roundCommands = {}
+    @commands = {}
     
     @cmd = {
       ["SET_INITIAL_UNITS"]: {
@@ -17,30 +17,21 @@ class Player
       ["CREATE_OBJECT"]: {
         f: (payload, x, y) ->
           o = G.returnObjectFromType(payload.type, payload.payload or {})
-          o.player = @player
+          o.belongsTo = @player
           Map.addObject(x, y, o)
-          @units[o.uuid] = o
+          table.insert(@units, o.uuid)
+          -- @units[o.uuid] = o
       }
       ["DIRECT_MOVE"]: {
-        f: (data) ->
-          Map.moveObject(
-            data.payload.sx, 
-            data.payload.sy,
-            data.payload.ex,
-            data.payload.ey)
+        f: (payload, x, y) ->
+          Map.moveObject(x, y, payload.x, payload.y)
       }
     }
-
-  collect: () =>
-    for _, unit in pairs(@units)
-      if unit.command.type
-        table.insert(@roundCommands, unit.command)
-    return @roundCommands
 
   pushCommand: (command) =>
     -- print inspect command
     log.debug("Player(#{@player}) added command: #{command.type}")
-    table.insert(@roundCommands, command)
+    table.insert(@commands, command)
 
   placeUnits: (objects) =>
     -- Defines a simple map for positions in which objects

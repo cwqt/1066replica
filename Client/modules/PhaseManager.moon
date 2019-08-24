@@ -28,4 +28,8 @@ PM.switch = (phase) ->
 PM.getCurrentPhase = () ->
 	return PM[PM.current]
 
+PM.mousepressed  	= (x, y, button) 	-> PM.getCurrentPhase().mousepressed(x, y, button)
+PM.mousereleased 	= (x, y, button) 	-> PM.getCurrentPhase().mousereleased(x, y, button)
+PM.keypressed 		= (key) 					-> PM.getCurrentPhase().keypressed(key)
+
 return PM

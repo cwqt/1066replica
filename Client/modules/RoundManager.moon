@@ -15,7 +15,8 @@ RM.nextRound = () ->
   RM.turn += 1
   if not RM.turn == 0
     Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, G.COLOR)
-    RM.setCommandingStatusOnServer(true)
+    if not G.isLocal
+      RM.setCommandingStatusOnServer(true)
 
 -- collect moves from player insert into cmdStack
 -- once all commands are collected from each player we sort
@@ -26,17 +27,11 @@ RM.nextRound = () ->
   -- [G.opponent] = {commandn...}
 --}
 RM.collect = () ->
+  -- Move commands here
   for k, player in pairs(G.PLAYERS) do
-    RM.playerCommands[k] = {}
-    roundCommands = player\collect()
-    for _, command in pairs(roundCommands) do
-      table.insert(RM.playerCommands[k], command)
-    player.commands = {}
-
-RM.nextUntilDone = () ->
-  while true
-    isEnd = RM.next()
-    break if isEnd
+    RM.playerCommands[k] = player.commands
+  -- Clean players up
+  RM.clear!
 
 -- executeCmdQasPlayer and .next are functionally
 -- equiv. except operate on Players rather than indivdual
@@ -44,18 +39,20 @@ RM.nextUntilDone = () ->
 RM.executeCmdQasPlayer = () ->
   c = 0
   while true
+    break if #RM.playerCommands[1] + #RM.playerCommands[2] == 0
     c += 1
     k = (c % 2) > 0 and 1 or 2
     m = RM.playerCommands[k][1]
     if m == nil then continue
     G.PLAYERS[k]["cmd"][m.type].f(m.payload, m.x, m.y)
     table.remove(RM.playerCommands[k], 1)
-    break if #RM.playerCommands[1] + #RM.playerCommands[2] == 0
+    --Executed all
 
 RM.next = () ->
   c = 0
   -- Keep repeating p1's commands if #p2 == 0
   recurse = () ->
+    -- Executed all
     if (#RM.playerCommands[1] + #RM.playerCommands[2]) == 0
       return true --empty
 
@@ -64,13 +61,17 @@ RM.next = () ->
     c += 1
     k = (c % 2) > 0 and 1 or 2
     m = RM.playerCommands[k][1]
-    if m == nil then recurse()
+    if m == nil then recurse!
     o = Map.getObjAtPos(m.x, m.y)
     o["cmd"][m.type](table.unpack(m.payload))
     table.remove(RM.playerCommands[k], 1)
     return false -- not empty 
 
-  return recurse()
+  return recurse!
+
+RM.clear = () ->
+  for _, player in ipairs(G.PLAYERS) do
+    player.commands = {}
 
 RM.requestPeerCommands = () ->
   NM.sendDataToPeer({

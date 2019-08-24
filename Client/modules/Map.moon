@@ -38,19 +38,16 @@ Map.getObjAtPos = (x, y) ->
 Map.copyObject = (x, y) ->
   return M.deepClone(Map.getObjAtPos(x, y))
 
-Map.moveObject = (start, finish) ->
-  fromx, fromy = start[1], start[2]
-  tox, toy = finish[1], finish[2]
-  
-  if Map.current[toy][tox].object
-    log.error("moveObject: Object exists at #{tox}, #{toy}")
+Map.moveObject = (sx, sy, ex, ey) ->
+  if Map.current[ey][ex].object
+    log.error("moveObject: Object exists at #{ex}, #{ey}")
     return false
   
-  copy = Map.copyObject(fromx, fromy)
-  Map.current[toy][tox].object = copy
-  Map.updateObjectPos(copy, tox, toy)
-  Map.current[fromy][fromx].object = nil
-  log.debug("Moved #{Map.current[toy][tox].object.__class.__name} from #{inspect start} to #{inspect finish}")
+  copy = Map.copyObject(sx, sy)
+  Map.current[ey][ex].object = copy
+  Map.updateObjectPos(copy, ex, ey)
+  Map.current[sy][sx].object = nil
+  log.debug("Moved #{Map.current[ey][ex].object.__class.__name} from #{inspect start} to #{inspect finish}")
   return true
 
 Map.updateObjectPos = (object, newx, newy) ->

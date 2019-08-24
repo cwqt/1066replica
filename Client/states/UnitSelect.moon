@@ -26,7 +26,7 @@ UnitSelect.enter  = (previous)   =>
 				.text.font = G.fonts.default[27]
 				.text.alignh = "center"
 			UI.Text("",1,5,10,2, 'info')
-			UI.Button("Enter G",1,5,8,2, "load")
+			UI.Button("Enter game",1,5,8,2, "load")
 		})
 	})
 
@@ -40,6 +40,7 @@ UnitSelect.enter  = (previous)   =>
 		UI.id["cnt"].value = v
 
 	UI.id["load"].onClick = ->
+		UI.id["info"].value = 'Waiting for peer...'
 		UnitSelect.done()
 
 --LOGIC============================================================
@@ -61,24 +62,6 @@ UnitSelect.done = () =>
 		type: "SET_INITIAL_UNITS",
 		payload: {
 			{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
 				type: "CREATE_OBJECT",
 				payload: {
 					type: "ENTITY",

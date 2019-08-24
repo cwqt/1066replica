@@ -3,11 +3,11 @@ MU.sGS = nil
 MU.fGS = {1,1}
 MU.pfGS = {1,1}
 MU.mouseOverMap = false
-p = 50
-MU.p = p
+MU.p = 50
 
 MU.load = () ->
-  Map.tx, Map.ty = (love.graphics.getWidth()-(Map.width*p))/2, (love.graphics.getHeight()-Map.height*p-10)
+  Map.tx = (love.graphics.getWidth()-(Map.width*MU.p))/2
+  Map.ty = love.graphics.getHeight()-Map.height*MU.p-10
 
 MU.update = (dt) ->
 	s = ""
@@ -15,6 +15,8 @@ MU.update = (dt) ->
 	s = s .. "fGS: #{inspect MU.fGS}\n"
 	s = s .. "pfGS: #{inspect MU.pfGS}\n"
 	s = s .. "sGS: #{inspect MU.sGS}\n"
+	s = s .. "Phase: #{PM.current}\n"
+	s = s .. "Turn: #{RM.turn}\n"
 	UI.id["debug"].value = s
 
 	s = ""
@@ -28,44 +30,36 @@ MU.update = (dt) ->
 	UI.id["sgsinfo"].value = s
 
 	s = ""
-	s = inspect RM.cmdStack
-	UI.id["rm"].value = s
-
+	s = inspect(G.PLAYERS[G.self].commands, {depth:2})
+	UI.id["player"].value = s
 
 MU.draw = () ->
-	love.graphics.push()
-	love.graphics.translate(Map.tx, Map.ty)
-	MU.drawMap()
-	love.graphics.pop()
-
-MU.drawPlanning = () ->
-	love.graphics.push()
-	love.graphics.translate(Map.tx, Map.ty)
-	G.self = G.self or 1
-	x, y, w, h = 0,0,G.PLAYERS[G.self].margin*p, #Map.current*p
-	if G.self % 2 == 0
-		x = (Map.width-G.PLAYERS[G.self].margin)*p
-	c = M.clone(G.COLORS[G.self])
-	c[4] = 0.5
-	love.graphics.setColor(c)
-	love.graphics.rectangle("fill", x, y, w, h)
-	love.graphics.setColor(1,1,1,1)
-	love.graphics.pop()
+	with love.graphics
+		.push!
+		.translate(Map.tx, Map.ty)
+		MU.drawMap!
+		.pop!
 
 MU.drawMap = () ->
-	love.graphics.setColor(1,1,1,1)
-	-- Grid outline
-	love.graphics.line(Map.width*p, 0, Map.width*p, Map.height*p, 0, Map.height*p)
-	for i=1, #Map.current[1] do
-		love.graphics.line((i-1)*p, 0, (i-1)*p, Map.height*p)
-	for i=1, #Map.current do
-		love.graphics.line(0, (i-1)*p, Map.width*p, (i-1)*p)
-	-- Draw co-ord numbers
-	for y=1, #Map.current
-		for x=1, #Map.current[1]
-			love.graphics.print("#{x},#{y}", (x-1)*p, (y-1)*p)
+	with love.graphics
+		.push!
+		.scale(MU.p, MU.p)
+		.setLineWidth(1/MU.p)
+		.setColor(1,1,1,1)
+		-- Grid outline
+		.line(Map.width, 0, Map.width, Map.height, 0, Map.height)
+		for i=1, #Map.current[1] do
+			.line(i-1, 0, i-1, Map.height)
+		for i=1, #Map.current do
+			.line(0, i-1, Map.width, i-1)
+		.pop!
 
-	MU.drawUnits()
+		-- Draw co-ord numbers
+		for y=1, #Map.current
+			for x=1, #Map.current[1]
+				.print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)
+
+	MU.drawUnits!
 
 -- for integer lists only
 M.identical = (a, b) ->
@@ -81,35 +75,35 @@ MU.drawUnits = () ->
 			if Map.current[y][x].object
 				o = Map.current[y][x].object
 				love.graphics.push()
-				tx, ty = (x-1)*p+p/2, (y-1)*p+p/2
+				tx, ty = (x-1)*MU.p+MU.p/2, (y-1)*MU.p+MU.p/2
 
 				if Game\isPlanning() and M.identical({x, y}, MU.sGS or {})
 					love.graphics.translate((love.mouse.getX()-Map.tx-tx), (love.mouse.getY()-Map.ty-ty))
 
 				love.graphics.setColor(1,1,1,1)
-				love.graphics.circle("fill", tx, ty, 0.4*p)
-				love.graphics.circle("line", tx, ty, 0.4*p, 64)
-				love.graphics.setColor(G.COLORS[o.player])
-				love.graphics.circle("fill", tx, ty, 0.35*p)
-				love.graphics.circle("line", tx, ty, 0.35*p, 64)
+				love.graphics.circle("fill", tx, ty, 0.4*MU.p)
+				love.graphics.circle("line", tx, ty, 0.4*MU.p, 64)
+				love.graphics.setColor(G.COLORS[o.belongsTo])
+				love.graphics.circle("fill", tx, ty, 0.35*MU.p)
+				love.graphics.circle("line", tx, ty, 0.35*MU.p, 64)
 				love.graphics.setColor(1,1,1,1)
 				--assume image 1:1
 				iw = o.icon_img\getWidth()
-				s = 0.55*p/iw
-				love.graphics.draw(o.icon_img, (x-1)*p+p/2-.275*p, (y-1)*p+p/2-.275*p, 0, s, s)
+				s = 0.55*MU.p/iw
+				love.graphics.draw(o.icon_img, (x-1)*MU.p+MU.p/2-.275*MU.p, (y-1)*MU.p+MU.p/2-.275*MU.p, 0, s, s)
 				love.graphics.setColor(0,0,0,1)
 				-- love.graphics.rectangle("line", (x-1)*p+p/2-.35*p, (y-1)*p+p/2-.35*p, 0.7*p, 0.7*p)
 				love.graphics.setColor(1,1,1,1)
 				love.graphics.pop()
 
 MU.hoverGS = (mx, my) ->
-	tx, ty = (love.graphics.getWidth()-(Map.width*p))/2, love.graphics.getHeight()-Map.height*p-10
-	if not CD.CheckMouseOver(0, 0, Map.width*p, Map.height*p, tx, ty)
+	tx, ty = (love.graphics.getWidth()-(Map.width*MU.p))/2, love.graphics.getHeight()-Map.height*MU.p-10
+	if not CD.CheckMouseOver(0, 0, Map.width*MU.p, Map.height*MU.p, tx, ty)
 		MU.mouseOverMap = false
 	else
 		MU.mouseOverMap = true
-		gx = math.ceil((mx-tx)/p)
-		gy = math.ceil((my-ty)/p)
+		gx = math.ceil((mx-tx)/MU.p)
+		gy = math.ceil((my-ty)/MU.p)
 		if not M.identical(MU.fGS, {gx, gy})
 			MU.pfGS = MU.fGS
 			MU.fGS = {gx, gy}
@@ -120,52 +114,10 @@ MU.mousemoved = (x, y, dx, dy) ->
 
 MU.mousepressed = (x, y, button) ->
 	if not MU.mouseOverMap and button == 1
-			MU.deselectUnit()
-
-	-- Moving game objects around during planning
-	if Game\isPlanning() and MU.mouseOverMap 
-		MU.handleMovingObjects()
-
-MU.handleMovingObjects = (using nil) ->
-	-- If we have a selected object, we're placing it
-	if MU.sGS
-		-- Check if we're just trying to place the object back
-		-- where it was initially
-		if M.identical(MU.sGS, MU.fGS)
-			MU.deselectUnit()
-			return
-		else
-			-- Attempt to place selected object at new location
-			-- Check if desired placement location within player margin
-			dx = MU.fGS[1]
-			p = Map.current[MU.sGS[2]][MU.sGS[1]].object.player
-			m = G.PLAYERS[p].margin
-			if p % 2 == 0
-				if dx <= Map.width-m
-					return	
-			else
-				if dx >= m+1
-					return
-			success = Map.moveObject(MU.sGS, MU.fGS)
-			if success
-				o = Map.getObjAtPos(unpack(MU.fGS))
-				o\pushCommand({
-					type: "DIRECT_MOVE",
-					payload: MU.fGS,
-					x: o.x, y: o.y
-				})
-				MU.deselectUnit()
-				return
-
-	-- If an object exists at the current mouse selection, select it
-	o = Map.current[MU.fGS[2]][MU.fGS[1]] 
-	if o.object and not MU.sGS
-		-- Only be able to select our own units
-		if o.object.player == G.self
-			MU.selectUnit(MU.fGS)
-			return
+		MU.deselectUnit()
 		
 MU.selectUnit = (unit) ->
+	Map.getObjAtPos(unpack(unit))\popCommand!
 	log.debug("Selected #{inspect unit}")
 	MU.sGS = unit
 

@@ -19,10 +19,6 @@ Game.init = () =>
 Game.enter  = (previous)   =>
 	log.state("Entered Game")
 
-	Game.cdb = with Game.countdownBar(PM['Planning'].duration)
-		.onComplete = -> PM.switch('Command')
-		\countdown!
-
 	export ui = UI.Master(8, 5, 140, {
 		UI.Container(1,1,8,2, {
 			with UI.Text("", 1,1,3,4, "debug")
@@ -34,59 +30,27 @@ Game.enter  = (previous)   =>
 			with UI.Text("", 7,1,3,4, "sgsinfo")
 				.text.font = G.fonts["mono"][16]
 				.text.color = {1,1,1,1}
-			with UI.Text("", 10,1,3,4, "rm")
+			with UI.Text("", 10,1,6,4, "player")
 				.text.font = G.fonts["mono"][16]
 				.text.color = {1,1,1,1}
 		})
 		UI.Container(1,3,8,1, {
-			with UI.Button("Finish planning", 1,2,3,1, "finishplanning")
+			with UI.Button("End planning", 1,2,3,1, "finishplanning")
 				.text.font = G.fonts["default"][27]
 				.text.alignh = "center"
-			with UI.Button("End round", 4,2,3,1, "nextround")
+			with UI.Button("End cmd", 4,2,3,1, "nextround")
 				.text.font = G.fonts["default"][27]
 				.text.alignh = "center"
 				-- .onClick = -> ()
 		}, "test")
 	})
 
-	UI.id["finishplanning"].onClick = ->
-		PM["Planning"].done()
-		-- PM.switch("command")
-		-- UI.id["test"]\destroy("exitplanning")
+	UI.id["finishplanning"].onClick = -> PM["Planning"].done()
+	UI.id["nextround"].onClick = -> PM["Command"].done()
 
 	MU.load()
 	Notifications.load()
 	PM.switch('Planning')
-
-class Game.countdownBar
-	new: (@time) =>
-		@timer = Timer()
-		@otime = @time
-		@w = Map.width*MU.p
-		@ow = @w
-
-	update: (dt) =>
-		@timer\update(dt)
-
-	draw: () =>
-		love.graphics.rectangle("fill", Map.tx, Map.ty-4, @w, 4)
-
-	countdown: () =>
-		@tag = @timer\tween(@time, self, {w: 0}, 'linear', -> @onComplete!)
-
-	finish: () =>
-		@timer\cancel(@tag)
-		@timer\tween(0.3, self, {w: 0}, 'linear')
-		@onComplete()
-
-	onComplete: () =>
-
-	setTime: (x) =>
-		@time = x
-		@otime = @time
-
-	reset: () =>
-		@w = @ow
 
 --LOGIC============================================================
 
@@ -94,7 +58,6 @@ Game.update = (dt) =>
 	ui\update()
 	MU.update(dt)
 	Game.timer\update(dt)
-	Game.cdb\update(dt)
 	Notifications.update(dt)
 	PM[PM.current].update(dt)
 
@@ -103,7 +66,6 @@ Game.draw   = ()   =>
 	ui\draw()
 	PM[PM.current].draw()
 	MU.draw()
-	Game.cdb\draw()
 	Notifications.draw()
 
 Game.isPlanning 	 = () => return PM.current == "Planning" and true or false
@@ -118,13 +80,16 @@ Game.mousemoved = (x, y, dx, dy) =>
 
 Game.mousereleased = (x, y, button) =>
 	ui\mousereleased(x,y,button)
+	PM.mousereleased(x, y, button)
 
 Game.mousepressed = (x, y, button) =>
 	ui\mousepressed(x,y,button)
 	MU.mousepressed(x, y, button)
+	PM.mousepressed(x, y, button)
 
 Game.keypressed = (key) =>
 	ui\keypressed(key)
+	PM.keypressed(x, y, button)
 
 Game.textinput = (t) =>
 	ui\textinput(t)

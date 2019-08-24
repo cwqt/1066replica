@@ -12,7 +12,6 @@ class Entity extends Map.Object
         distance: 4
       }
     }
-    @command = {}
     @range = 5
     @icon_img = G.assets["icons"][@.__class.__name]
     -- @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
@@ -27,6 +26,15 @@ class Entity extends Map.Object
     ["MOVE"]: {
       f: (data) ->
         @move(data.x, data.y)
+      icon: G.assets["icons"]["Move"]
+    }
+    ["TEST1"]: {
+      f: () ->
+      icon: G.assets["icons"]["Fortify"]
+    }
+    ["TEST2"]: {
+      f: () ->
+      icon: G.assets["icons"]["Fire"]
     }
   }
 
@@ -45,11 +53,15 @@ class Entity extends Map.Object
   --   log.trace("Waiting for peer data for current command")
 
   pushCommand: (command) =>
+    --cmdIndex == position in Player command list
+    @cmdIndex = #G.PLAYERS[@belongsTo].commands + 1
+    table.insert(G.PLAYERS[@belongsTo].commands, command)
     log.debug("#{@@.__name}(#{@uuid\sub(1,8)}) added: #{command.type}")
-    @command = command
 
   popCommand: () =>
-    @command = {}
+    if @cmdIndex
+      table.remove(G.PLAYERS[@belongsTo].commands, @cmdIndex)
+      log.debug("#{@@.__name}(#{@uuid\sub(1,8)}) popped: #{@cmdIndex}")
 
   move: (tox, toy) =>
     path, length = Map.findPath({@x, @y},{tox, toy})

@@ -18,7 +18,7 @@ G.returnObjectFromType = (str, params) ->
 		return G.UNITS[str](params)
 
 G.UNITS = {
-	["MAP_OBJECT"]: Map.Object
+	["MAP_OBJECT"]: Map.Object,
 	["ENTITY"]: Entity,
 }
 
