@@ -68,6 +68,8 @@ MainMenu.enter  = (previous) =>
 			G.isLocal = false
 			Gamestate.switch(MWS)
 
+	UI.id["startlocal"].onClick()
+
 --LOGIC============================================================
 
 MainMenu.update = (dt) =>

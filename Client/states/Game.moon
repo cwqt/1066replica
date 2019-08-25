@@ -77,6 +77,7 @@ Game.isAction 		 = () => return PM.current == "Action" and true or false
 Game.mousemoved = (x, y, dx, dy) =>
 	ui\mousemoved(x,y,dx,dy)
 	MU.mousemoved(x,y,dx,dy)
+	PM.mousemoved(x,y,dx,dy)
 
 Game.mousereleased = (x, y, button) =>
 	ui\mousereleased(x,y,button)

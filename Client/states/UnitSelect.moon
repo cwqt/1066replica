@@ -43,6 +43,8 @@ UnitSelect.enter  = (previous)   =>
 		UI.id["info"].value = 'Waiting for peer...'
 		UnitSelect.done()
 
+	UnitSelect.done()
+
 --LOGIC============================================================
 UnitSelect.update = (dt) =>
 	ui\update(dt)
@@ -67,13 +69,26 @@ UnitSelect.done = () =>
 					type: "ENTITY",
 					payload: nil						
 				}
-			},{
-				type: "CREATE_OBJECT",
-				payload: {
-					type: "ENTITY",
-					payload: nil						
-				}
-			},{
+			},
+			-- {
+			-- 	type: "CREATE_OBJECT",
+			-- 	payload: {
+			-- 		type: "ENTITY",
+			-- 		payload: nil						
+			-- 	}
+			-- },{
+			-- 	type: "CREATE_OBJECT",
+			-- 	payload: {
+			-- 		type: "ENTITY",
+			-- 		payload: nil						
+			-- 	}
+			-- }
+		}
+	})
+	G.PLAYERS[G.opponent]\pushCommand({
+		type: "SET_INITIAL_UNITS",
+		payload: {
+			{
 				type: "CREATE_OBJECT",
 				payload: {
 					type: "ENTITY",
@@ -82,6 +97,7 @@ UnitSelect.done = () =>
 			}
 		}
 	})
+
 
 	UnitSelect.playerDone = true
 	if not G.isLocal

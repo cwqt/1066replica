@@ -28,6 +28,8 @@ G.COLORS = {
 	[2]: {0,0,1,1}
 }
 
+G.image = love.graphics.newImage("media/ase/entity-move.png") 
+
 G.assets = {
 	["icons"]: {
 		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
@@ -36,6 +38,7 @@ G.assets = {
 		["Fire"]:    love.graphics.newImage("media/img/icons/Fire.png")
 		["Testudo"]: love.graphics.newImage("media/img/icons/Testudo.png")
 		["Spear"]:   love.graphics.newImage("media/img/icons/Spear.png")
+		["point"]:   love.graphics.newImage("media/img/icons/point.png")
 	}
 	["bg"]: love.graphics.newImage("media/img/bg.png")
 }
@@ -47,7 +50,6 @@ F = {
 	mono:    "media/fonts/mono.ttf"
 	text:    "media/fonts/Romanica.ttf"
 }
-
 -- Function to provide fonts in sizes:
 sizes = {16, 27, 50, 100, 216}
 for k, _ in pairs(F) do G.fonts[k] = {}
@@ -56,6 +58,7 @@ for k, font in pairs(F)
 		G.fonts[k][size] = love.graphics.newFont(font, size)
 
 
+--helper functions
 G.UUID = () ->
   fn = (x) ->
     r = love.math.random(16) - 1
@@ -63,6 +66,18 @@ G.UUID = () ->
     return ("0123456789abcdef")\sub(r, r)
   return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", fn))
 
+G.pushRotate = (x, y, r) ->
+  love.graphics.push()
+  love.graphics.translate(x, y)
+  love.graphics.rotate(r or 0)
+  love.graphics.translate(-x, -y)
+
+G.pushRotateScale = (x, y, r, sx, sy) ->
+  love.graphics.push()
+  love.graphics.translate(x, y)
+  love.graphics.rotate(r or 0)
+  love.graphics.scale(sx or 1, sy or sx or 1)
+  love.graphics.translate(-x, -y)
 
 return G
  

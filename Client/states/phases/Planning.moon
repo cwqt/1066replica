@@ -53,6 +53,7 @@ Planning.handleMovingObjects = (using nil) ->
 	p = MU.sGSo.belongsTo
 	-- Only be able to move objects that belong to us
 	if not p == G.self then return 
+	
 	m = G.PLAYERS[p].margin
 	-- Don't allow placements outside player margin
 	if p % 2 == 0
@@ -75,6 +76,7 @@ Planning.handleMovingObjects = (using nil) ->
 		MU.deselectGS()
 		return
 
+Planning.mousemoved = (x, y, dx, dy) ->
 Planning.mousepressed = (x, y, button) ->
 	-- Moving game objects around during planning
 	if MU.mouseOverMap and MU.sGSo

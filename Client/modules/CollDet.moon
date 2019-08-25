@@ -25,4 +25,11 @@ CollDet.CheckMouseOverCircle = (x, y, r, ox, oy) ->
   dist = (x - mx)^2 + (y - my)^2
   return dist <= (r + 1)^2
 
+CollDet.CheckMouseOverArc = (x, y, r, a1, a2) ->
+  angle = math.atan(y/x)
+  radius = math.sqrt(x^2 + y^2)
+  -- Then Angle must be between StartingAngle and EndingAngle, and Radius between 0 and your Radius.
+  -- if a1 < angle and angle < a2
+
+
 return CollDet

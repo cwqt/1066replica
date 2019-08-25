@@ -10,6 +10,7 @@ export ANet       = require("libs.Affair/network")
 export log        = require("libs.log")       -- logging
 export TSerial    = require("libs.TSerial")   -- serialisation
 export deep       = require("libs.deep")      -- z-indexer
+export anim8      = require("libs.anim8")
 export socket     = require("socket")         -- socket.gettime()
 
 export Map        = require("modules.Map")
@@ -71,7 +72,6 @@ love.mousepressed  = (x, y, button) ->
 love.mousereleased = (x, y, button) ->
   --bug here with changing state 2 fast
   -- log.error "MOUSE RELEASED"
-
 
 love.mousemoved    = (x, y, dx, dy) ->
 

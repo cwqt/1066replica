@@ -18,6 +18,8 @@ MU.update = (dt) ->
 	s = s .. "sGS: #{inspect MU.sGS}\n"
 	s = s .. "Phase: #{PM.current}\n"
 	s = s .. "Turn: #{RM.turn}\n"
+	s = s .. "Show cmdUI: #{PM['Command'].canDrawCommandUi}"
+	s = s .. "mouseInUi: #{PM['Command'].mouseOverCommandUi}"
 	UI.id["debug"].value = s
 
 	s = ""
@@ -38,7 +40,8 @@ MU.draw = () ->
 	with love.graphics
 		.push!
 		.translate(Map.tx, Map.ty)
-		MU.drawMap!
+		-- MU.drawMap!
+		MU.drawUnits!
 		.pop!
 
 MU.drawMap = () ->
@@ -60,8 +63,6 @@ MU.drawMap = () ->
 			for x=1, #Map.current[1]
 				.print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)
 
-	MU.drawUnits!
-
 -- for integer lists only
 M.identical = (a, b) ->
 	for i=1, #a
@@ -78,7 +79,7 @@ MU.drawUnits = () ->
 			if Map.current[y][x].object
 				o = Map.current[y][x].object
 				love.graphics.push()
-				tx, ty = (x-1)*MU.p+MU.p/2, (y-1)*MU.p+MU.p/2
+				tx, ty = MU.getUnitCenterPxPos(x, y)
 
 				if Game\isPlanning() and M.identical({x, y}, MU.sGS or {})
 					love.graphics.translate((love.mouse.getX()-Map.tx-tx), (love.mouse.getY()-Map.ty-ty))
@@ -116,7 +117,10 @@ MU.mousemoved = (x, y, dx, dy) ->
 	MU.hoverGS(x, y)
 
 MU.mousepressed = (x, y, button) ->
-	if not MU.mouseOverMap then return
+	if not MU.mouseOverMap then
+		MU.deselectGS!
+		return
+
 	if button == 1
 		-- Select the object if none selected
 		if MU.sGS == nil
@@ -127,10 +131,15 @@ MU.mousepressed = (x, y, button) ->
 			MU.deselectGS!
 			return
 
+MU.getUnitCenterPxPos = (x, y) ->
+	tx = (x-1)*MU.p+MU.p/2
+	ty = (y-1)*MU.p+MU.p/2
+	return tx, ty
+
 MU.selectGS = (gs) ->
+	o = Map.getObjAtPos(unpack(gs))
 	log.debug("Selected #{inspect unit}")
 	MU.sGS = gs
-	o = Map.getObjAtPos(unpack(MU.sGS))
 	if o then
 		log.debug("Selected #{o.__class.__name}")
 		MU.sGSo = o

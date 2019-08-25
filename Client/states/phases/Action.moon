@@ -20,6 +20,7 @@ Action.done = () ->
 	Game.timer\after 0.01, ->
 		PM.switch("Command")
 
+Action.mousemoved = (x, y, dx, dy) ->
 Action.mousepressed = (x, y, button) ->
 Action.mousereleased = (x, y, button) ->
 Action.keypressed = (key) ->
