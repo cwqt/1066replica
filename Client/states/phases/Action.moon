@@ -15,10 +15,10 @@ Action.update = (dt) ->
 Action.draw = () ->
 
 Action.done = () ->
+	--avoid weird bug where command phase
+	--entered twice
 	Game.timer\after 0.01, ->
-		--avoid weird bug where command phase
-		--entered twice
-		PM.switch("Action")
+		PM.switch("Command")
 
 Action.mousepressed = (x, y, button) ->
 Action.mousereleased = (x, y, button) ->

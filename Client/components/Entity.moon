@@ -15,28 +15,26 @@ class Entity extends Map.Object
     @range = 5
     @icon_img = G.assets["icons"][@.__class.__name]
     -- @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
+    @cmd = {
+      ["MOVE"]: {
+        f: (data) -> @move(data.x, data.y)
+        icon: G.assets["icons"]["Move"]
+      }
+      ["TEST1"]: {
+        f: () -> print('test1')
+        icon: G.assets["icons"]["Fortify"]
+      }
+      ["TEST2"]: {
+        f: () -> print('gottem2')
+        icon: G.assets["icons"]["Fire"]
+      }
+    }
 
   update: (dt) =>
     super\draw()
 
   draw: () =>
     super\draw()
-
-  @cmd = {
-    ["MOVE"]: {
-      f: (data) ->
-        @move(data.x, data.y)
-      icon: G.assets["icons"]["Move"]
-    }
-    ["TEST1"]: {
-      f: () ->
-      icon: G.assets["icons"]["Fortify"]
-    }
-    ["TEST2"]: {
-      f: () ->
-      icon: G.assets["icons"]["Fire"]
-    }
-  }
 
   -- requestUserInput: (type) =>
   --   switch type 
@@ -118,4 +116,3 @@ class Entity extends Map.Object
     Map.removeObject(@x, @y)
 
 return Entity
-

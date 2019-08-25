@@ -47,50 +47,37 @@ Planning.draw = () ->
 		.pop!
 
 Planning.handleMovingObjects = (using nil) ->
-	-- If we have a selected object, we're placing it
-	if MU.sGS
-		-- Check if we're just trying to place the object back
-		-- where it was initially
-		if M.identical(MU.sGS, MU.fGS)
-			MU.deselectUnit()
+	-- Attempt to place selected object at new location
+	-- Check if desired placement location within player margin
+	dx = MU.fGS[1]
+	p = MU.sGSo.belongsTo
+	-- Only be able to move objects that belong to us
+	if not p == G.self then return 
+	m = G.PLAYERS[p].margin
+	-- Don't allow placements outside player margin
+	if p % 2 == 0
+		if dx <= Map.width-m
+			return	
+	else
+		if dx >= m+1
 			return
-		else
-			-- Attempt to place selected object at new location
-			-- Check if desired placement location within player margin
-			dx = MU.fGS[1]
-			p = Map.current[MU.sGS[2]][MU.sGS[1]].object.belongsTo
-			m = G.PLAYERS[p].margin
-			if p % 2 == 0
-				if dx <= Map.width-m
-					return	
-			else
-				if dx >= m+1
-					return
 
-			sx, sy = unpack(MU.sGS)
-			ex, ey = unpack(MU.fGS)
-			success = Map.moveObject(sx, sy, ex, ey)
-			if success
-				o = Map.getObjAtPos(unpack(MU.fGS))
-				o\pushCommand({
-					type: "DIRECT_MOVE",
-					payload: {x: ex, y: ey},
-					x: o.x, y: o.y
-				})
-				MU.deselectUnit()
-				return
-
-	-- If an object exists at the current mouse selection, select it
-	o = Map.current[MU.fGS[2]][MU.fGS[1]] 
-	if o.object and not MU.sGS
-		-- Only be able to select our own units
-		if o.object.belongsTo == G.self
-			MU.selectUnit(MU.fGS)
-			return
+	sx, sy = unpack(MU.sGS)
+	ex, ey = unpack(MU.fGS)
+	success = Map.moveObject(sx, sy, ex, ey)
+	if success
+		o = Map.getObjAtPos(unpack(MU.fGS))
+		o\pushCommand({
+			type: "DIRECT_MOVE",
+			payload: {x: ex, y: ey},
+			x: o.x, y: o.y
+		})
+		MU.deselectGS()
+		return
 
 Planning.mousepressed = (x, y, button) ->
 	-- Moving game objects around during planning
-	if MU.mouseOverMap 
+	if MU.mouseOverMap and MU.sGSo
 		Planning.handleMovingObjects!
 
 Planning.mousereleased = (x, y, button) ->

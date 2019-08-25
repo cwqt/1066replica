@@ -1,5 +1,6 @@
 MU = {}
 MU.sGS = nil
+MU.sGSo = nil
 MU.fGS = {1,1}
 MU.pfGS = {1,1}
 MU.mouseOverMap = false
@@ -69,6 +70,8 @@ M.identical = (a, b) ->
 		else return false
 	return true
 
+MU.drawUnit = (o) ->
+
 MU.drawUnits = () ->
 	for y=1, #Map.current
 		for x=1, #Map.current[y]
@@ -113,17 +116,30 @@ MU.mousemoved = (x, y, dx, dy) ->
 	MU.hoverGS(x, y)
 
 MU.mousepressed = (x, y, button) ->
-	if not MU.mouseOverMap and button == 1
-		MU.deselectUnit()
-		
-MU.selectUnit = (unit) ->
-	Map.getObjAtPos(unpack(unit))\popCommand!
-	log.debug("Selected #{inspect unit}")
-	MU.sGS = unit
+	if not MU.mouseOverMap then return
+	if button == 1
+		-- Select the object if none selected
+		if MU.sGS == nil
+			MU.selectGS(MU.fGS)
+			return
+		-- Check if we're trying to put it down in same place
+		if M.identical(MU.sGS, MU.fGS)
+			MU.deselectGS!
+			return
 
-MU.deselectUnit = () ->
+MU.selectGS = (gs) ->
+	log.debug("Selected #{inspect unit}")
+	MU.sGS = gs
+	o = Map.getObjAtPos(unpack(MU.sGS))
+	if o then
+		log.debug("Selected #{o.__class.__name}")
+		MU.sGSo = o
+		MU.sGSo\popCommand!
+
+MU.deselectGS = () ->
 	if MU.sGS
-		log.debug("Deselected #{inspect MU.fGS}")
+		log.debug("Deselected #{inspect MU.sGS}")
 		MU.sGS = nil
+		MU.sGSo = nil
 
 return MU
