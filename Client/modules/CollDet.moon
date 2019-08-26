@@ -29,7 +29,12 @@ CollDet.checkMouseOverCircle = (x, y, r, ox, oy) ->
 CollDet.isPointWithinSegment = (px, py, x, y, radius, a1, a2, offset) ->
   r = math.sqrt((px - x)^2 + (py - y)^2)
   a = math.atan2(py-y, px-x)
-  --map atan2 to 0-360, offset essentially rotates the unit circle
+  --map atan2 to 0-360
+  --offset rotates unit circle to remove instance wherein:
+  -- / -30
+  -- ------------ 0
+  --\ 30
+  -- \  will not meet criteria for a1<a and a<a2
   a = math.rad((math.deg(a) + offset + 360) % 360)
   if a1 < a and a < a2
     if 0 < r and r < radius
