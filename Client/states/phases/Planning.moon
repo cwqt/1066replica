@@ -3,7 +3,7 @@ MU = require("modules.gui.Map")
 
 Planning = {}
 
-Planning.duration = 3
+Planning.duration = 30
 
 Planning.init = () ->
 	RM.collect!
@@ -11,11 +11,11 @@ Planning.init = () ->
 
 Planning.enter = () ->
 	RM.nextRound()
-	Notifications.push 1,
-		'Planning - Position troops',
-		G.assets["icons"]["move"],
-		Planning.duration/2,
-		G.COLOR
+	-- Notifications.push 1,
+	-- 	'Planning - Position troops',
+	-- 	G.assets["icons"]["move"],
+	-- 	Planning.duration/2,
+	-- 	G.COLOR
 
 Planning.done = () ->
 	if not G.isLocal

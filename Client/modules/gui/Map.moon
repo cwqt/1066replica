@@ -18,8 +18,8 @@ MU.update = (dt) ->
 	s = s .. "sGS: #{inspect MU.sGS}\n"
 	s = s .. "Phase: #{PM.current}\n"
 	s = s .. "Turn: #{RM.turn}\n"
-	s = s .. "Show cmdUI: #{PM['Command'].canDrawCommandUi}"
-	s = s .. "mouseInUi: #{PM['Command'].mouseOverCommandUi}"
+	s = s .. "ui.canDraw: #{PM['Command'].ui.canDraw}\n"
+	s = s .. "mouseInUi: #{PM['Command'].ui.mouseIsOver}"
 	UI.id["debug"].value = s
 
 	s = ""
@@ -102,7 +102,7 @@ MU.drawUnits = () ->
 
 MU.hoverGS = (mx, my) ->
 	tx, ty = (love.graphics.getWidth()-(Map.width*MU.p))/2, love.graphics.getHeight()-Map.height*MU.p-10
-	if not CD.CheckMouseOver(0, 0, Map.width*MU.p, Map.height*MU.p, tx, ty)
+	if not CD.checkMouseOver(0, 0, Map.width*MU.p, Map.height*MU.p, tx, ty)
 		MU.mouseOverMap = false
 	else
 		MU.mouseOverMap = true

@@ -1,10 +1,12 @@
 MU = require("modules.gui.Map")
 
 Command = {}
-Command.uiRadius = 80
-Command.canDrawCommandUi = false
-Command.mouseOverCommandUi = false
-Command.hoveredSegment = nil
+Command.ui = {}
+Command.ui.radius = 80
+Command.ui.canDraw = false
+Command.ui.mouseIsOver = false
+Command.ui.hoveredSegment = nil
+Command.ui.cmdUiOrder = nil
 
 Command.init = () ->
 
@@ -16,30 +18,58 @@ Command.exit = () ->
 Command.update = (dt) ->
 
 Command.draw = () ->
-	if Command.canDrawCommandUi
+	if Command.ui.canDraw
+		Command.ui.detectMouseOverSegment!
+		love.graphics.print(Command.ui.seg or 0, love.mouse.getX()+20, love.mouse.getY())
 		with love.graphics
 			.push!
 			.translate(Map.tx, Map.ty)
-			Command.drawObjectCommandUi!
+			Command.ui.draw!
 			.pop!
 
 Command.done = () ->
 	PM.switch("Action")
 
 Command.mousemoved = (x, y, dx, dy) ->
-	Command.detectMouseOverUi!
-	if Command.mouseOverCommandUi
-		Command.getMouseHoverSegment!
+	Command.ui.detectMouseOver!
+	if not Command.ui.mouseIsOver
+		Command.ui.seg = 0
+	-- if Command.ui.mouseIsOver
+		-- Command.ui.detectMouseOverSegment!
 
 Command.mousepressed = (x, y, button) ->
 	if button == 1 and MU.sGSo
-		Command.canDrawCommandUi = not Command.canDrawCommandUi
+		Command.ui.canDraw = not Command.ui.canDraw
 
 Command.mousereleased = (x, y, button) ->
 
 Command.keypressed = (key) ->
 
-Command.drawObjectCommandUi = () ->
+Command.ui.detectMouseOver = () ->
+	o = MU.sGSo
+	if o then
+		tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
+		Command.ui.mouseIsOver = CD.checkMouseOverCircle(tx, ty, Command.ui.radius, Map.tx, Map.ty)
+
+Command.ui.detectMouseOverSegment = () ->
+	o = MU.sGSo
+	tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
+	order = M.count(o.cmd)
+	degOffset = {[3]:30, [4]: 45}
+	angle = 360/order
+	mx, my = love.mouse.getPosition()
+	position = 0
+	for i=1, order do
+		a1 = angle*(i-1)
+		a2 = angle*i
+		print a1, a2
+		position = CD.isPointWithinSegment(mx, my, tx+Map.tx+300, ty+Map.ty, Command.ui.radius, math.rad(a1), math.rad(a2), degOffset[order] or 0)
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.arc('line', tx+Map.tx+300, ty+Map.ty, Command.ui.radius, math.rad(a1-degOffset[order]), math.rad(a2-degOffset[order]))
+		if position
+			Command.ui.seg = i
+
+Command.ui.draw = () ->
 	o = MU.sGSo
 	tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
 	t = {}
@@ -52,36 +82,42 @@ Command.drawObjectCommandUi = () ->
 		with love.graphics
 			.push!
 			.translate(tx, ty)
-			Command.drawCommandSegment(#t,i,t[i])
+			Command.ui.drawSegment(#t,i,t[i])
 			.pop!
 
-Command.detectMouseOverUi = () ->
-	o = MU.sGSo
-	if o
-		tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
-		Command.mouseOverCommandUi = CD.CheckMouseOverCircle(tx, ty, Command.uiRadius, Map.tx, Map.ty)
-
-Command.getMouseHoverSegment = (order, tx, ty) ->
-
-Command.drawCommandSegment = (order, position, command) ->
+Command.ui.drawSegment = (order, position, command) ->
+	degOffset = {[3]:30, [4]: 45}
 	angle = 360/order
-	rotfactor = angle*position
+	-- arc begins from x plane horizontal, angle deg offset
+	rotFactor = degOffset[order] - angle*position
 	with love.graphics
-		.setColor(0,0,0,1)      -- start, end angle
+		.setColor(0,0,0,1)
 		.push!
-		G.pushRotate(0,0, math.rad(rotfactor))
-		G.pushRotate(0,0, -math.rad(90 + angle/2))
+		-- Rotate each sector to its position in the 'pie-chart'
+		G.pushRotate(0,0, math.rad(rotFactor))
+		-- Create a bit of margin between them
+		.push!
 		.translate(2,2)
-		.arc("fill", 0, 0, Command.uiRadius, 0, math.rad(angle))
+		.arc("fill", 0, 0, Command.ui.radius, 0, math.rad(angle))
+		.pop!
 
 		.setColor(1,1,1,1)
-		-- rotate images so that they're always facing upwards
-		-- and not rotated
-		.translate(-65, -65)
-		G.pushRotateScale(100, 100, math.rad(45 - (position-1)*90), 0.15, 0.15)
-		.draw(command.icon, 0, 0)
+		.push!
+		-- Move the center to the center of the arc (plus some padding)
+		xof = Command.ui.radius/2 + 10 + 2
+		.translate(xof, 0)
+		--Rotate about the point of the sector center, inverse prev. translation
+		G.pushRotate(-xof ,0, math.rad(angle/2))
+		-- Scale down icons from 200x200 to 30x30
+		.scale(0.15, 0.15)
+		-- Invert the sector rotation such that each icon is facing upwards
+		G.pushRotate(0, 0, math.rad(-angle/2 - rotFactor))
+		-- Inverse translation to center image in sector center
+		.draw(command.icon, -100, -100)
 		.pop!
 		.pop!
+		.pop!
+
 		.pop!
 		.pop!
 

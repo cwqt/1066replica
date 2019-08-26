@@ -22,15 +22,15 @@ class Entity extends Map.Object
       }
       ["TEST1"]: {
         f: () -> print('test1')
-        icon: G.assets["icons"]["Fortify"]
+        icon: G.assets["icons"]["Fire"]
       }
       ["TEST2"]: {
         f: () -> print('gottem2')
-        icon: G.assets["icons"]["Fire"]
+        icon: G.assets["icons"]["Testudo"]
       }
       ["TEST3"]: {
         f: () -> print('gottem2')
-        icon: G.assets["icons"]["Testudo"]
+        icon: G.assets["icons"]["Fortify"]
       }
     }
 
