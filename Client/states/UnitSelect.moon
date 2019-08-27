@@ -70,6 +70,20 @@ UnitSelect.done = () =>
 					payload: nil						
 				}
 			},
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},
 			-- {
 			-- 	type: "CREATE_OBJECT",
 			-- 	payload: {

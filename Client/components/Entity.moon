@@ -14,25 +14,25 @@ class Entity extends Map.Object
     }
     @range = 5
     @icon_img = G.assets["icons"][@.__class.__name]
-    -- @icon_img = love.graphics.newImage("media/img/icons/#{@.__class.__name}.png")
     @cmd = {
       ["MOVE"]: {
         f: (data) -> @move(data.x, data.y)
+        i: require("components.behaviours.Move")
         icon: G.assets["icons"]["Move"]
       }
-      ["TEST1"]: {
+      ["FIRE"]: {
         f: () -> print('test1')
         icon: G.assets["icons"]["Fire"]
       }
-      ["TEST2"]: {
+      ["TESTUDO"]: {
         f: () -> print('gottem2')
         icon: G.assets["icons"]["Testudo"]
       }
-      ["TEST3"]: {
+      ["FORTIFY"]: {
         f: () -> print('gottem2')
         icon: G.assets["icons"]["Fortify"]
       }
-      ["TEST4"]: {
+      ["SPEAR"]: {
         f: () -> print('gottem2')
         icon: G.assets["icons"]["Spear"]
       }
@@ -57,6 +57,17 @@ class Entity extends Map.Object
 
   -- awaitUserInput: () =>
   --   log.trace("Waiting for peer data for current command")
+
+  requestCommandInput: (_type) =>
+    @cmd[_type].i.init(self)
+    PM["Command"].handlingUserInput = true
+    PM["Command"].handlingCommand = _type
+    PM["Command"].ui.canDraw = false
+
+  requestCommandFinish: () =>
+    PM["Command"].handlingUserInput = false
+    PM["Command"].handlingCommand = nil
+
 
   pushCommand: (command) =>
     --cmdIndex == position in Player command list

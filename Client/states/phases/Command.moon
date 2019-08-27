@@ -1,5 +1,3 @@
-MU = require("modules.gui.Map")
-
 Command = {}
 Command.ui = {}
 Command.ui.radius = 80
@@ -8,7 +6,10 @@ Command.ui.mouseIsOver = false
 Command.ui.hoveredSegment = nil
 Command.ui.cmdUiOrder = nil
 Command.ui.degOffsets = {[2]:90, [3]:30, [4]: 45, [5]: 54}
-Command.ui.cSeg = 0
+Command.ui.currentHoveredSeg = 0
+
+Command.handlingUserInput = false
+Command.handlingCommand = nil
 
 Command.init = () ->
 
@@ -18,8 +19,14 @@ Command.enter = () ->
 Command.exit = () ->
 
 Command.update = (dt) ->
+	if Command.handlingUserInput
+		MU.sGSo.cmd[Command.handlingCommand].i.update(dt)
 
 Command.draw = () ->
+	if Command.handlingUserInput
+		MU.sGSo.cmd[Command.handlingCommand].i.draw()
+		return
+
 	if Command.ui.canDraw
 		with love.graphics
 			.push!
@@ -32,13 +39,44 @@ Command.done = () ->
 
 Command.mousemoved = (x, y, dx, dy) ->
 	Command.ui.detectMouseOver!
-	-- if not Command.ui.mouseIsOver
-	-- if Command.ui.mouseIsOver
-		-- Command.ui.detectMouseOverSegment!
+
+	if Command.handlingUserInput
+		MU.sGSo.cmd[Command.handlingCommand].i.mousemoved(x, y, dx, dy)
 
 Command.mousepressed = (x, y, button) ->
-	if button == 1 and MU.sGSo
-		Command.ui.canDraw = not Command.ui.canDraw
+	if button == 1
+		-- Don't deal with Ui since requesting data
+		if Command.handlingCommand
+			MU.sGSo.cmd[Command.handlingCommand].i.mousepressed(x, y, button)
+			return
+
+		-- Untoggle command ui if click off ui
+		if Command.ui.canDraw and not Command.ui.mouseIsOver
+			Command.ui.canDraw = false
+			MU.deselectGS!
+			return
+
+		-- Set the clicked square command in object
+		if Command.ui.mouseIsOver
+			if Command.ui.currentHoveredSeg != 0
+				-- Command.ui.currentHoverSeg is an int that corresponds to 
+				-- nth index of hovered segment in Object.cmd table
+				-- e.g. cmd = {"MOVE", "FIRE", "FORTIFY"}
+				-- cmd["MOVE"] == 1
+				-- cmd["FIRE"] == 2
+				t = [key for key, _ in pairs(MU.sGSo.cmd)]
+				MU.sGSo\requestCommandInput(t[Command.ui.currentHoveredSeg])
+				return
+
+		-- Select object if non selected and one exists at 
+		-- current focused grid square
+		if MU.mouseOverMap
+			if MU.sGSo == nil
+				MU.selectGS(MU.fGS)
+			-- If object exists, open the ui
+			if MU.sGSo
+				Command.ui.canDraw = true
+
 
 Command.mousereleased = (x, y, button) ->
 
@@ -66,6 +104,10 @@ Command.ui.draw = () ->
 			Command.ui.drawSegment(#t,i,t[i])
 			.pop!
 
+Command.onGSChange = () ->
+	if Command.handlingUserInput
+		MU.sGSo.cmd[Command.handlingCommand].i.onGSChange()
+
 Command.ui.detectMouseOverSegment = (order, position) ->
 	o = MU.sGSo
 	tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
@@ -91,7 +133,7 @@ Command.ui.drawSegment = (order, position, command) ->
 	rotFactor = angle*(position-1) - degOffset[order]
 	with love.graphics
 		if Command.ui.detectMouseOverSegment(order, position)
-			Command.ui.cSeg = position
+			Command.ui.currentHoveredSeg = position
 			.setColor(0.3,0.3,0.3,1)
 		else
 			.setColor(0,0,0,1)
@@ -123,6 +165,9 @@ Command.ui.drawSegment = (order, position, command) ->
 		.pop!
 		.pop!
 		.pop!
+
+
+
 
 
 return Command

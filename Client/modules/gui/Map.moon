@@ -20,17 +20,17 @@ MU.update = (dt) ->
 	s = s .. "Turn: #{RM.turn}\n"
 	s = s .. "ui.canDraw: #{PM['Command'].ui.canDraw}\n"
 	s = s .. "mouseInUi: #{PM['Command'].ui.mouseIsOver}\n"
-	s = s .. "ui.cSeg: #{PM['Command'].ui.cSeg}\n"
+	s = s .. "ui.cSeg: #{PM['Command'].ui.currentHoveredSeg}\n"
+	s = s .. "handlingInput: #{PM['Command'].handlingUserInput}\n"
 	UI.id["debug"].value = s
 
 	s = ""
-	if Map.current[MU.fGS[2]][MU.fGS[1]].object
-		s = inspect(Map.current[MU.fGS[2]][MU.fGS[1]].object, {depth:1})
+	fo = Map.getObjAtPos(unpack(MU.fGS))
+	if fo then s = inspect(fo, {depth:1})
 	UI.id["gsinfo"].value = s
 
 	s = ""
-	if MU.sGS
-		s = inspect(Map.current[MU.sGS[2]][MU.sGS[1]].object, {depth:1})
+	if MU.sGS then s = inspect(MU.sGSo, {depth:1})
 	UI.id["sgsinfo"].value = s
 
 	s = ""
@@ -41,7 +41,7 @@ MU.draw = () ->
 	with love.graphics
 		.push!
 		.translate(Map.tx, Map.ty)
-		-- MU.drawMap!
+		MU.drawMap!
 		MU.drawUnits!
 		.pop!
 
@@ -64,11 +64,15 @@ MU.drawMap = () ->
 			for x=1, #Map.current[1]
 				.print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)
 
+				
+				clrStack = Map.current[y][x].colorStack
+				.setColor(unpack(clrStack[#clrStack]))
+				.rectangle("fill", (x-1)*MU.p, (y-1)*MU.p, MU.p, MU.p)
+
 -- for integer lists only
 M.identical = (a, b) ->
 	if a == nil or b == nil
 		return false
-
 	for i=1, #a
 		if a[i] == b[i]
 			continue
@@ -104,6 +108,9 @@ MU.drawUnits = () ->
 				love.graphics.setColor(1,1,1,1)
 				love.graphics.pop()
 
+MU.onGSChange = () ->
+	PM[PM.current].onGSChange()
+
 MU.hoverGS = (mx, my) ->
 	tx, ty = (love.graphics.getWidth()-(Map.width*MU.p))/2, love.graphics.getHeight()-Map.height*MU.p-10
 	if not CD.checkMouseOver(0, 0, Map.width*MU.p, Map.height*MU.p, tx, ty)
@@ -115,29 +122,18 @@ MU.hoverGS = (mx, my) ->
 		if not M.identical(MU.fGS, {gx, gy})
 			MU.pfGS = MU.fGS
 			MU.fGS = {gx, gy}
-			-- log.trace("Delta #{inspect MU.pfGS} -> #{inspect MU.fGS}")
+			MU.onGSChange!
+					-- log.trace("Delta #{inspect MU.pfGS} -> #{inspect MU.fGS}")
 
 MU.mousemoved = (x, y, dx, dy) ->
 	MU.hoverGS(x, y)
+	-- MU.pfGS.colorStack[#Map.current[y][x].colorStack] = nil
+
 
 MU.mousepressed = (x, y, button) ->
-	if not MU.mouseOverMap then
+	if not MU.mouseOverMap and not PM["Command"].ui.mouseIsOver then
 		MU.deselectGS!
 		return
-
-	-- if button == 1
-	-- 	-- Select the object if none selected
-	-- 	if MU.sGS == nil
-	-- 		MU.selectGS(MU.fGS)
-	-- 		return
-		
-	-- 	-- if not Map.getObjAtPos(unpack(MU.fGS))
-	-- 	-- 	MU.deselectGS!
-
-	-- 	-- Check if we're trying to deselect selected
-	-- 	if M.identical(MU.sGS, MU.fGS)
-	-- 		MU.deselectGS!
-	-- 		return
 
 MU.getUnitCenterPxPos = (x, y) ->
 	tx = (x-1)*MU.p+MU.p/2

@@ -24,5 +24,6 @@ Action.mousemoved = (x, y, dx, dy) ->
 Action.mousepressed = (x, y, button) ->
 Action.mousereleased = (x, y, button) ->
 Action.keypressed = (key) ->
+Action.onGSChange = () ->
 
 return Action

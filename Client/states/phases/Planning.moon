@@ -1,6 +1,3 @@
-Notifications = require("modules.gui.Notifications")
-MU = require("modules.gui.Map")
-
 Planning = {}
 
 Planning.duration = 30
@@ -80,8 +77,8 @@ Planning.mousemoved = (x, y, dx, dy) ->
 Planning.mousepressed = (x, y, button) ->
 	if button == 1
 		if MU.sGSo == nil
-			MU.selectGS(MU.fGS)
-			return
+				MU.selectGS(MU.fGS)
+				return
 
 		if M.identical(MU.sGS, MU.fGS) then
 			MU.deselectGS!
@@ -95,5 +92,7 @@ Planning.mousepressed = (x, y, button) ->
 
 Planning.mousereleased = (x, y, button) ->
 Planning.keypressed = (key) ->
+Planning.onGSChange = () ->
+
 
 return Planning 

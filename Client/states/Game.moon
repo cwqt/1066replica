@@ -1,7 +1,3 @@
-MU = require("modules.gui.Map")
-Field = require("modules.gui.Field")
-Notifications = require("modules.gui.Notifications")
-
 Game = {}
 
 Game.init = () =>
@@ -49,7 +45,7 @@ Game.enter  = (previous)   =>
 	UI.id["nextround"].onClick = -> PM["Command"].done()
 
 	MU.load()
-	Notifications.load()
+	-- Notifications.load()
 	PM.switch('Planning')
 
 --LOGIC============================================================
@@ -58,7 +54,7 @@ Game.update = (dt) =>
 	ui\update()
 	MU.update(dt)
 	Game.timer\update(dt)
-	Notifications.update(dt)
+	-- Notifications.update(dt)
 	PM[PM.current].update(dt)
 
 Game.draw   = ()   =>
@@ -66,7 +62,7 @@ Game.draw   = ()   =>
 	ui\draw()
 	PM[PM.current].draw()
 	MU.draw()
-	Notifications.draw()
+	-- Notifications.draw()
 
 Game.isPlanning 	 = () => return PM.current == "Planning" and true or false
 Game.isCommanding  = () => return PM.current == "Command" and true or false

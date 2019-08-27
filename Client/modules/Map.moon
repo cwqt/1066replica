@@ -19,6 +19,11 @@ Map.generate = (width, height) ->
   return t
 
 Map.set = (map) ->
+  log.debug inspect map
+  for y=1, map.height do
+    for x=1, map.width do
+      map[y][x].colorStack = { {0,0,0,0} }
+
   Map.height  = map.height
   Map.width   = map.width
   Map.current = map
@@ -32,8 +37,11 @@ Map.addObject = (x, y, obj) ->
   else
     log.error("Object already exists at #{x}, #{y}")
 
+Map.getGSAtPos = (x, y) ->
+  return Map.current[y][x]
+
 Map.getObjAtPos = (x, y) ->
-  return Map.current[y][x].object
+  return Map.getGSAtPos(x, y).object
 
 Map.copyObject = (x, y) ->
   return M.deepClone(Map.getObjAtPos(x, y))
@@ -81,33 +89,37 @@ Map.print = (map) ->
   print(" "..ys)
 
 Map.getSimplePFMap = (map) ->
-  tt = M.clone(map)
-  for y=1, #tt do
-    for x=1, #tt[y] do
-      if tt[y][x].object != nil
+  tt = {}
+  -- shallow clone
+  for y=1, map.height
+    tt[y] = {}
+    for x=1, map.width
+      tt[y][x] = {}
+
+  for y=1, map.height do
+    for x=1, map.width do
+      if Map.getObjAtPos(x, y) != nil
         tt[y][x] = 1
       else
         tt[y][x]= 0
+
   return tt
   
-Map.findPath = (a, b) ->
+Map.findPath = (sx, sy, ex, ey) ->
   pathFinderMap = Map.getSimplePFMap(Map.current)
   -- Allow movement from start position (e.g. if object at start)
-  pathFinderMap[a[2]][a[1]] = 0
+  pathFinderMap[sy][sx] = 0
   
   grid = Grid(pathFinderMap)
   myFinder = Pathfinder(grid, 'JPS', 0)
   myFinder\setMode("ORTHOGONAL")
-  startx, starty = unpack(a)
-  endx, endy = unpack(b)
-  path, length = myFinder\getPath(startx, starty, endx, endy)
+  path, length = myFinder\getPath(sx, sy, ex, ey)
   
   if path then
     path\filter()
     log.debug(('Path found! Length: %.2f')\format(length))
-    for node, count in path\iter() do
-      log.debug(('x: %d, y: %d')\format(node.x, node.y))
-    
+    -- for node, count in path\iter() do
+    --   log.debug(('x: %d, y: %d')\format(node.x, node.y))    
     t = {}
     path\fill()
     for node, _ in path\iter() do

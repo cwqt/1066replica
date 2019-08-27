@@ -20,6 +20,7 @@ export UI         = require("modules.ui")
 export CD         = require("modules.CollDet")
 export UM         = require("modules.UnitManager")
 export PM         = require("modules.PhaseManager")
+export MU         = require("modules.gui.Map")
 export Debugger   = require("modules.Debugger")
 
 export Player     = require("components.Player")
