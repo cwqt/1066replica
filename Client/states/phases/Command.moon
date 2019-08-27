@@ -7,6 +7,8 @@ Command.ui.canDraw = false
 Command.ui.mouseIsOver = false
 Command.ui.hoveredSegment = nil
 Command.ui.cmdUiOrder = nil
+Command.ui.degOffsets = {[2]:90, [3]:30, [4]: 45, [5]: 54}
+Command.ui.cSeg = 0
 
 Command.init = () ->
 
@@ -19,8 +21,6 @@ Command.update = (dt) ->
 
 Command.draw = () ->
 	if Command.ui.canDraw
-		Command.ui.detectMouseOverSegment!
-		love.graphics.print(Command.ui.seg or 0, love.mouse.getX()+20, love.mouse.getY())
 		with love.graphics
 			.push!
 			.translate(Map.tx, Map.ty)
@@ -32,8 +32,7 @@ Command.done = () ->
 
 Command.mousemoved = (x, y, dx, dy) ->
 	Command.ui.detectMouseOver!
-	if not Command.ui.mouseIsOver
-		Command.ui.seg = 0
+	-- if not Command.ui.mouseIsOver
 	-- if Command.ui.mouseIsOver
 		-- Command.ui.detectMouseOverSegment!
 
@@ -51,24 +50,6 @@ Command.ui.detectMouseOver = () ->
 		tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
 		Command.ui.mouseIsOver = CD.checkMouseOverCircle(tx, ty, Command.ui.radius, Map.tx, Map.ty)
 
-Command.ui.detectMouseOverSegment = () ->
-	o = MU.sGSo
-	tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
-	order = M.count(o.cmd)
-	degOffset = {[3]:30, [4]: 45}
-	angle = 360/order
-	mx, my = love.mouse.getPosition()
-	position = 0
-	for i=1, order do
-		a1 = angle*(i-1)
-		a2 = angle*i
-		print a1, a2
-		position = CD.isPointWithinSegment(mx, my, tx+Map.tx+300, ty+Map.ty, Command.ui.radius, math.rad(a1), math.rad(a2), degOffset[order] or 0)
-		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.arc('line', tx+Map.tx+300, ty+Map.ty, Command.ui.radius, math.rad(a1-degOffset[order]), math.rad(a2-degOffset[order]))
-		if position
-			Command.ui.seg = i
-
 Command.ui.draw = () ->
 	o = MU.sGSo
 	tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
@@ -85,13 +66,36 @@ Command.ui.draw = () ->
 			Command.ui.drawSegment(#t,i,t[i])
 			.pop!
 
+Command.ui.detectMouseOverSegment = (order, position) ->
+	o = MU.sGSo
+	tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
+	degOffset = Command.ui.degOffsets
+	angle = 360/order
+	mx, my = love.mouse.getPosition()
+
+	a1 = angle*(position-1)
+	a2 = angle*position
+	position = CD.isPointWithinSegment(mx, my, tx+Map.tx, ty+Map.ty, Command.ui.radius, math.rad(a1), math.rad(a2), degOffset[order])
+	if position
+		return true
+
 Command.ui.drawSegment = (order, position, command) ->
-	degOffset = {[3]:30, [4]: 45}
+	degOffset = Command.ui.degOffsets
 	angle = 360/order
 	-- arc begins from x plane horizontal, angle deg offset
-	rotFactor = degOffset[order] - angle*position
+	a1 = angle*(position-1)
+	a2 = angle*position
+	degOffset = Command.ui.degOffsets
+	angle = 360/order
+	-- arc begins from x plane horizontal, angle deg offset
+	rotFactor = angle*(position-1) - degOffset[order]
 	with love.graphics
-		.setColor(0,0,0,1)
+		if Command.ui.detectMouseOverSegment(order, position)
+			Command.ui.cSeg = position
+			.setColor(0.3,0.3,0.3,1)
+		else
+			.setColor(0,0,0,1)
+
 		.push!
 		-- Rotate each sector to its position in the 'pie-chart'
 		G.pushRotate(0,0, math.rad(rotFactor))
@@ -117,8 +121,8 @@ Command.ui.drawSegment = (order, position, command) ->
 		.pop!
 		.pop!
 		.pop!
+		.pop!
+		.pop!
 
-		.pop!
-		.pop!
 
 return Command

@@ -13,19 +13,18 @@ log.usecolor = true
 log.outfile = nil
 log.level = "trace"
 
-
 local modes = {
   { name = "trace",  color = "\27[34m", },
   { name = "debug",  color = "\27[36m", },
   { name = "info",   color = "\27[32m", },
   { name = "warn",   color = "\27[33m", },
   { name = "error",  color = "\27[31m", },
-  { name = "fatal",  color = "\27[35m", },
+  { name = "fatal",  color = "\27[1;35m", },
   { name = "client", color = "\27[45m", },
   { name = "server", color = "\27[41m", },
   { name = "net",    color = "\27[44m", },
   { name = "state",  color = "\27[40m", },
-  { name = "phase",  color = "\27[1;35m"}
+  { name = "phase",  color = "\27[35m"  }
 }
 
 

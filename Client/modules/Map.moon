@@ -47,7 +47,7 @@ Map.moveObject = (sx, sy, ex, ey) ->
   Map.current[ey][ex].object = copy
   Map.updateObjectPos(copy, ex, ey)
   Map.current[sy][sx].object = nil
-  log.debug("Moved #{Map.current[ey][ex].object.__class.__name} from #{inspect start} to #{inspect finish}")
+  log.debug("Moved #{Map.current[ey][ex].object.__class.__name} from #{sx},#{sy} to #{ex},#{ey}")
   return true
 
 Map.updateObjectPos = (object, newx, newy) ->

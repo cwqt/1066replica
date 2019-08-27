@@ -33,7 +33,7 @@ CollDet.isPointWithinSegment = (px, py, x, y, radius, a1, a2, offset) ->
   --offset rotates unit circle to remove instance wherein:
   -- / -30
   -- ------------ 0
-  --\ 30
+  --\ 30  not within 0 < x < 360
   -- \  will not meet criteria for a1<a and a<a2
   a = math.rad((math.deg(a) + offset + 360) % 360)
   if a1 < a and a < a2

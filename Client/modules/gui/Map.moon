@@ -19,7 +19,8 @@ MU.update = (dt) ->
 	s = s .. "Phase: #{PM.current}\n"
 	s = s .. "Turn: #{RM.turn}\n"
 	s = s .. "ui.canDraw: #{PM['Command'].ui.canDraw}\n"
-	s = s .. "mouseInUi: #{PM['Command'].ui.mouseIsOver}"
+	s = s .. "mouseInUi: #{PM['Command'].ui.mouseIsOver}\n"
+	s = s .. "ui.cSeg: #{PM['Command'].ui.cSeg}\n"
 	UI.id["debug"].value = s
 
 	s = ""
@@ -65,6 +66,9 @@ MU.drawMap = () ->
 
 -- for integer lists only
 M.identical = (a, b) ->
+	if a == nil or b == nil
+		return false
+
 	for i=1, #a
 		if a[i] == b[i]
 			continue
@@ -121,15 +125,19 @@ MU.mousepressed = (x, y, button) ->
 		MU.deselectGS!
 		return
 
-	if button == 1
-		-- Select the object if none selected
-		if MU.sGS == nil
-			MU.selectGS(MU.fGS)
-			return
-		-- Check if we're trying to put it down in same place
-		if M.identical(MU.sGS, MU.fGS)
-			MU.deselectGS!
-			return
+	-- if button == 1
+	-- 	-- Select the object if none selected
+	-- 	if MU.sGS == nil
+	-- 		MU.selectGS(MU.fGS)
+	-- 		return
+		
+	-- 	-- if not Map.getObjAtPos(unpack(MU.fGS))
+	-- 	-- 	MU.deselectGS!
+
+	-- 	-- Check if we're trying to deselect selected
+	-- 	if M.identical(MU.sGS, MU.fGS)
+	-- 		MU.deselectGS!
+	-- 		return
 
 MU.getUnitCenterPxPos = (x, y) ->
 	tx = (x-1)*MU.p+MU.p/2
@@ -138,16 +146,14 @@ MU.getUnitCenterPxPos = (x, y) ->
 
 MU.selectGS = (gs) ->
 	o = Map.getObjAtPos(unpack(gs))
-	log.debug("Selected #{inspect unit}")
-	MU.sGS = gs
 	if o then
-		log.debug("Selected #{o.__class.__name}")
+		MU.sGS = gs
+		log.debug("Selected #{inspect MU.sGS} :: #{o.__class.__name}")
 		MU.sGSo = o
-		MU.sGSo\popCommand!
 
 MU.deselectGS = () ->
 	if MU.sGS
-		log.debug("Deselected #{inspect MU.sGS}")
+		log.debug("Deselected #{inspect MU.sGS} :: #{MU.sGSo.__class.__name}")
 		MU.sGS = nil
 		MU.sGSo = nil
 

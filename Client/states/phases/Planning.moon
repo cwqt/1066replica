@@ -78,9 +78,20 @@ Planning.handleMovingObjects = (using nil) ->
 
 Planning.mousemoved = (x, y, dx, dy) ->
 Planning.mousepressed = (x, y, button) ->
-	-- Moving game objects around during planning
-	if MU.mouseOverMap and MU.sGSo
-		Planning.handleMovingObjects!
+	if button == 1
+		if MU.sGSo == nil
+			MU.selectGS(MU.fGS)
+			return
+
+		if M.identical(MU.sGS, MU.fGS) then
+			MU.deselectGS!
+			return
+
+		-- Moving game objects around during planning
+		if MU.mouseOverMap and MU.sGSo
+			MU.sGSo\popCommand!
+			Planning.handleMovingObjects!
+			return
 
 Planning.mousereleased = (x, y, button) ->
 Planning.keypressed = (key) ->

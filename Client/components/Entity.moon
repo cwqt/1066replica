@@ -32,6 +32,10 @@ class Entity extends Map.Object
         f: () -> print('gottem2')
         icon: G.assets["icons"]["Fortify"]
       }
+      ["TEST4"]: {
+        f: () -> print('gottem2')
+        icon: G.assets["icons"]["Spear"]
+      }
     }
 
   update: (dt) =>
