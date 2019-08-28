@@ -36,11 +36,8 @@ export G          = require("G")
 love.load         = () ->
   os.execute("clear")
   love.math.setRandomSeed(love.timer.getTime())
-  -- log.debug("Game started: #{love.timer.getTime()}")
-  -- love.profiler = require('libs.profiler') 
-  -- love.profiler.hookall("Lua")
-  -- love.profiler.start()
-  Debugger.load()
+  log.debug("Game started: #{love.timer.getTime()}")
+  Debugger.load({useProfiler: true})
   Gamestate.registerEvents()
   Gamestate.switch(MainMenu)
 
@@ -50,15 +47,9 @@ love.update       = (dt) ->
   NM.update(dt)
   Debugger.update(dt)
   -- lb.update(dt)
-  -- love.frame = love.frame + 1
-  -- if love.frame % 10 == 0 then
-  --   love.report = love.profiler.report('time', 20)
-  --   love.profiler.reset()
 
 love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)
-  -- love.graphics.setFont(GAME.fonts["mono"][16])
-  -- love.graphics.print(love.report or "Please wait...")
   Debugger.draw()
 
 love.keypressed   = (key, code, isrepeat) ->
@@ -66,20 +57,11 @@ love.keypressed   = (key, code, isrepeat) ->
   if key == "/" then UI.dbg = not UI.dbg
 
 love.keyreleased   = (key) ->
-
 love.mousepressed  = (x, y, button) ->
-  -- log.error "MOUSE CLICKED"
-
 love.mousereleased = (x, y, button) ->
-  --bug here with changing state 2 fast
-  -- log.error "MOUSE RELEASED"
-
 love.mousemoved    = (x, y, dx, dy) ->
-
 love.wheelmoved    = (x, y) ->
-
-love.focus = (f) ->
-
+love.focus         = (f) ->
 love.textinput     = (t) ->
 
 love.errhand       = (msg) ->
@@ -90,10 +72,3 @@ love.errhand       = (msg) ->
 love.quit          = () ->
   log.fatal("Quitting...")
   love.event.quit()
-
-export PRS = (x, y, r, sx, sy) ->
-  love.graphics.push()
-  love.graphics.translate(x, y)
-  love.graphics.rotate(r or 0)
-  love.graphics.scale(sx or 1, sy or sx or 1)
-  love.graphics.translate(-x, -y)

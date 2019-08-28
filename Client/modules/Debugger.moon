@@ -1,4 +1,5 @@
 Debugger = {}
+Debugger.useProfiler = false
 
 class Debugger.graph
   new: (@title, @x, @y, @fn, @delay) =>
@@ -33,7 +34,13 @@ class Debugger.graph
       love.graphics.setColor(255,255,255,255)
     love.graphics.pop()
 
-Debugger.load = () ->
+Debugger.load = (settings) ->
+  Debugger.useProfiler = settings.useProfiler or false
+  if Debugger.useProfiler
+    Debugger.profiler = require('libs.profiler') 
+    Debugger.profiler.hookall("Lua")
+    Debugger.profiler.start()
+
   x = love.graphics.getWidth()+210
   Debugger.graphs = {
     Debugger.graph("FPS", x, 15, -> return love.timer.getFPS())
@@ -46,8 +53,22 @@ Debugger.update = (dt) ->
   for k, graph in pairs(Debugger.graphs)
     graph\update(dt)
 
+  if Debugger.useProfiler
+    love.frame = love.frame + 1
+    if love.frame % 10 == 0 then
+      Debugger.report = Debugger.profiler.report('time', 20)
+      Debugger.profiler.reset()
+
 Debugger.draw = () ->
   for k, graph in pairs(Debugger.graphs)
     graph\draw()
+
+  if Debugger.useProfiler
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.rectangle('fill', 0,0, love.graphics.getWidth(), love.graphics.getHeight())
+    love.graphics.setColor(1,1,1, 1)
+    love.graphics.setFont(G.fonts["mono"][16])
+    love.graphics.print(Debugger.report or "Please wait...")
+
 
 return Debugger

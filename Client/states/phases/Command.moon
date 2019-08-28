@@ -50,13 +50,11 @@ Command.mousepressed = (x, y, button) ->
 			if Command.handlingCommand
 				MU.sGSo.cmd[Command.handlingCommand].m\mousepressed(x, y, button)
 				return
-
 			-- Untoggle command ui if click off ui
 			if Command.ui.canDraw and not Command.ui.mouseIsOver
 				Command.ui.canDraw = false
 				MU.deselectGS!
 				return
-
 			-- Set the clicked square command in object
 			if Command.ui.mouseIsOver
 				if Command.ui.currentHoveredSeg != 0
@@ -79,7 +77,6 @@ Command.mousepressed = (x, y, button) ->
 			-- If object exists, open the ui
 			if MU.sGSo
 				Command.ui.canDraw = true
-
 
 Command.mousereleased = (x, y, button) ->
 
