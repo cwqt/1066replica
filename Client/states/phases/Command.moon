@@ -20,11 +20,11 @@ Command.exit = () ->
 
 Command.update = (dt) ->
 	if Command.handlingUserInput
-		MU.sGSo.cmd[Command.handlingCommand].i.update(dt)
+		MU.sGSo.cmd[Command.handlingCommand].m\update(dt)
 
 Command.draw = () ->
 	if Command.handlingUserInput
-		MU.sGSo.cmd[Command.handlingCommand].i.draw()
+		MU.sGSo.cmd[Command.handlingCommand].m\draw()
 		return
 
 	if Command.ui.canDraw
@@ -41,32 +41,35 @@ Command.mousemoved = (x, y, dx, dy) ->
 	Command.ui.detectMouseOver!
 
 	if Command.handlingUserInput
-		MU.sGSo.cmd[Command.handlingCommand].i.mousemoved(x, y, dx, dy)
+		MU.sGSo.cmd[Command.handlingCommand].m\mousemoved(x, y, dx, dy)
 
 Command.mousepressed = (x, y, button) ->
 	if button == 1
-		-- Don't deal with Ui since requesting data
-		if Command.handlingCommand
-			MU.sGSo.cmd[Command.handlingCommand].i.mousepressed(x, y, button)
-			return
-
-		-- Untoggle command ui if click off ui
-		if Command.ui.canDraw and not Command.ui.mouseIsOver
-			Command.ui.canDraw = false
-			MU.deselectGS!
-			return
-
-		-- Set the clicked square command in object
-		if Command.ui.mouseIsOver
-			if Command.ui.currentHoveredSeg != 0
-				-- Command.ui.currentHoverSeg is an int that corresponds to 
-				-- nth index of hovered segment in Object.cmd table
-				-- e.g. cmd = {"MOVE", "FIRE", "FORTIFY"}
-				-- cmd["MOVE"] == 1
-				-- cmd["FIRE"] == 2
-				t = [key for key, _ in pairs(MU.sGSo.cmd)]
-				MU.sGSo\requestCommandInput(t[Command.ui.currentHoveredSeg])
+		if MU.sGSo
+			-- Don't deal with Ui since requesting data
+			if Command.handlingCommand
+				MU.sGSo.cmd[Command.handlingCommand].m\mousepressed(x, y, button)
 				return
+
+			-- Untoggle command ui if click off ui
+			if Command.ui.canDraw and not Command.ui.mouseIsOver
+				Command.ui.canDraw = false
+				MU.deselectGS!
+				return
+
+			-- Set the clicked square command in object
+			if Command.ui.mouseIsOver
+				if Command.ui.currentHoveredSeg != 0
+					-- Command selected, pop old command if one exists
+					MU.sGSo\popCommand!
+					-- Command.ui.currentHoverSeg is an int that corresponds to 
+					-- nth index of hovered segment in Object.cmd table
+					-- e.g. cmd = {"MOVE", "FIRE", "FORTIFY"}
+					-- cmd["MOVE"] == 1
+					-- cmd["FIRE"] == 2
+					t = [key for key, _ in pairs(MU.sGSo.cmd)]
+					MU.sGSo\requestCommandInput(t[Command.ui.currentHoveredSeg])
+					return
 
 		-- Select object if non selected and one exists at 
 		-- current focused grid square
@@ -106,7 +109,7 @@ Command.ui.draw = () ->
 
 Command.onGSChange = () ->
 	if Command.handlingUserInput
-		MU.sGSo.cmd[Command.handlingCommand].i.onGSChange()
+		MU.sGSo.cmd[Command.handlingCommand].m\onGSChange()
 
 Command.ui.detectMouseOverSegment = (order, position) ->
 	o = MU.sGSo

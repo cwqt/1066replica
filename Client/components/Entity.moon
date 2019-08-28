@@ -15,9 +15,13 @@ class Entity extends Map.Object
     @range = 5
     @icon_img = G.assets["icons"][@.__class.__name]
     @cmd = {
+      -- f: action time what to do to the object
+      -- i: pre-select behaviour object
+      -- m: instantiated behaviour
       ["MOVE"]: {
         f: (data) -> @move(data.x, data.y)
-        i: require("components.behaviours.Move")
+        i: -> require("components.behaviours.Generic")(self)
+        m: nil
         icon: G.assets["icons"]["Move"]
       }
       ["FIRE"]: {
@@ -59,15 +63,16 @@ class Entity extends Map.Object
   --   log.trace("Waiting for peer data for current command")
 
   requestCommandInput: (_type) =>
-    @cmd[_type].i.init(self)
     PM["Command"].handlingUserInput = true
     PM["Command"].handlingCommand = _type
     PM["Command"].ui.canDraw = false
+    -- instansiate object
+    @cmd[_type].m = @cmd[_type].i() 
 
   requestCommandFinish: () =>
     PM["Command"].handlingUserInput = false
     PM["Command"].handlingCommand = nil
-
+    MU.deselectGS!
 
   pushCommand: (command) =>
     --cmdIndex == position in Player command list

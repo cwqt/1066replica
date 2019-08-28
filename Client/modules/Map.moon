@@ -19,7 +19,6 @@ Map.generate = (width, height) ->
   return t
 
 Map.set = (map) ->
-  log.debug inspect map
   for y=1, map.height do
     for x=1, map.width do
       map[y][x].colorStack = { {0,0,0,0} }
@@ -129,18 +128,16 @@ Map.findPath = (sx, sy, ex, ey) ->
     log.error("No path found!")
     return nil
 
-Map.getDirection = (path) ->
+Map.getDirection = (sx, sy, ex, ey) ->
   --     |0,-1|
   -- ----+----+---
-  -- -1,0|0,0 |1,0
+  -- 1,0 |0,0 |-1,0
   -- ----+----+---            
   --     |0, 1|
   --path = {current, next}
-  --path = {{1,1}, {1,2}}
-  sx, sy = path[1][1], path[1][2]
-  ex, ey = path[2][1], path[2][2]
-  dx = ex - sx
+  --path = {1,1, 1,2}
+  dx = sx - ex
   dy = ey - sy
-  return {dx, dy}
+  return dx, dy
 
 return Map

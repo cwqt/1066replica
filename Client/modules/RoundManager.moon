@@ -30,6 +30,7 @@ RM.collect = () ->
   -- Move commands here
   for k, player in pairs(G.PLAYERS) do
     RM.playerCommands[k] = player.commands
+    log.trace("Collected #{M.count(player.commands)} from P(#{k})")
   -- Clean players up
   RM.clear!
 
@@ -37,6 +38,7 @@ RM.collect = () ->
 -- equiv. except operate on Players rather than indivdual
 -- entities
 RM.executeCmdQasPlayer = () ->
+  log.trace("Running all commands as Player...")
   c = 0
   while true
     break if #RM.playerCommands[1] + #RM.playerCommands[2] == 0
@@ -54,6 +56,7 @@ RM.next = () ->
   recurse = () ->
     -- Executed all
     if (#RM.playerCommands[1] + #RM.playerCommands[2]) == 0
+      log.trace("Finished command stack (.next)")
       return true --empty
 
     -- Flip-flop between p1 and p2 commands, executing first
@@ -74,6 +77,7 @@ RM.clear = () ->
     player.commands = {}
 
 RM.requestPeerCommands = () ->
+  log.net("Requesting player commands")
   NM.sendDataToPeer({
     type: "REQUEST_PEER_COMMANDS",
     payload: nil

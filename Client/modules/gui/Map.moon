@@ -16,6 +16,7 @@ MU.update = (dt) ->
 	s = s .. "fGS: #{inspect MU.fGS}\n"
 	s = s .. "pfGS: #{inspect MU.pfGS}\n"
 	s = s .. "sGS: #{inspect MU.sGS}\n"
+	s = s .. "sGSo: #{MU.sGSo}\n"
 	s = s .. "Phase: #{PM.current}\n"
 	s = s .. "Turn: #{RM.turn}\n"
 	s = s .. "ui.canDraw: #{PM['Command'].ui.canDraw}\n"
