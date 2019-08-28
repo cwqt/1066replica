@@ -93,6 +93,7 @@ Command.ui.detectMouseOver = () ->
 
 Command.ui.draw = () ->
 	o = MU.sGSo
+	if not o then return
 	tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
 	t = {}
 	for key, command in pairs(o.cmd)
@@ -168,9 +169,5 @@ Command.ui.drawSegment = (order, position, command) ->
 		.pop!
 		.pop!
 		.pop!
-
-
-
-
 
 return Command
