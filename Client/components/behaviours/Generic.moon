@@ -1,7 +1,5 @@
 class Generic
 	new: (@o) =>
-		@finish!
-
 	update: (dt) =>
 	draw: () =>
 	mousepressed: (x, y, button) =>

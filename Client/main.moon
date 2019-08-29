@@ -37,7 +37,7 @@ love.load         = () ->
   os.execute("clear")
   love.math.setRandomSeed(love.timer.getTime())
   log.debug("Game started: #{love.timer.getTime()}")
-  Debugger.load({useProfiler: true})
+  Debugger.load({useProfiler: false})
   Gamestate.registerEvents()
   Gamestate.switch(MainMenu)
 

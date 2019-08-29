@@ -19,8 +19,8 @@ class Entity extends Map.Object
       -- i: pre-select behaviour object
       -- m: instantiated behaviour
       ["MOVE"]: {
-        f: (data) -> @move(data.x, data.y)
-        i: -> require("components.behaviours.Generic")(self)
+        f: (data) -> @move(data)--@move(data.x, data.y)
+        i: -> require("components.behaviours.Move")(self)
         m: nil
         icon: G.assets["icons"]["Move"]
       }
@@ -75,6 +75,7 @@ class Entity extends Map.Object
     MU.deselectGS!
 
   pushCommand: (command) =>
+    command.x, command.y = @x, @y
     --cmdIndex == position in Player command list
     @cmdIndex = #G.PLAYERS[@belongsTo].commands + 1
     table.insert(G.PLAYERS[@belongsTo].commands, command)

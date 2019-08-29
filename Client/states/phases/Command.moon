@@ -5,7 +5,7 @@ Command.ui.canDraw = false
 Command.ui.mouseIsOver = false
 Command.ui.hoveredSegment = nil
 Command.ui.cmdUiOrder = nil
-Command.ui.degOffsets = {[2]:90, [3]:30, [4]: 45, [5]: 54}
+Command.ui.degOffsets = {[2]:90, [3]:30, [4]: 45, [5]: 54} --it'll do
 Command.ui.currentHoveredSeg = 0
 
 Command.handlingUserInput = false
@@ -161,10 +161,6 @@ Command.ui.drawSegment = (order, position, command) ->
 		G.pushRotate(0, 0, math.rad(-angle/2 - rotFactor))
 		-- Inverse translation to center image in sector center
 		.draw(command.icon, -100, -100)
-		.pop!
-		.pop!
-		.pop!
-		.pop!
-		.pop!
+		for i=1, 5 do .pop!
 
 return Command

@@ -31,12 +31,15 @@ Game.enter  = (previous)   =>
 				.text.color = {1,1,1,1}
 		})
 		UI.Container(1,3,8,1, {
-			with UI.Button("End planning", 1,2,3,1, "finishplanning")
-				.text.font = G.fonts["default"][27]
+			with UI.Button("End planning", 1,2,2,1, "finishplanning")
+				.text.font = G.fonts["default"][16]
 				.text.alignh = "center"
-			with UI.Button("End cmd", 4,2,3,1, "nextround")
-				.text.font = G.fonts["default"][27]
+				.text.alignv = "center"
+			with UI.Button("End command", 1,3,2,1, "nextround")
+				.text.font = G.fonts["default"][16]
 				.text.alignh = "center"
+				.text.alignv = "center"
+				.p = {10,0,10,0}
 				-- .onClick = -> ()
 		}, "test")
 	})

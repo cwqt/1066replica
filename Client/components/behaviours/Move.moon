@@ -1,17 +1,20 @@
-class Move
-	new: () =>
+Generic = require("components.behaviours.Generic")
+
+class Move extends Generic
+	new: (...) =>
+		super(...)
 		@path = {0,0,0,0}
 		@finished = false
 		@updateCurrentPath!
 
-	drawRange = () =>
+	drawRange: () =>
 
-	drawLine = () =>
+	drawLine: () =>
 		love.graphics.setLineWidth(10)
 		x = [((p-1) * MU.p)+MU.p/2 for _, p in ipairs @path]
 		love.graphics.line(x)
 
-	drawLineArrow = () =>
+	drawLineArrow: () =>
 		-- get last 4 elements in path
 		p = @path
 		x = {p[#p-3], p[#p-2], p[#p-1], p[#p]}
@@ -31,41 +34,38 @@ class Move
 			.polygon("fill", 5, 10, MU.p-5, 10, MU.p/2, MU.p/2+10)
 			.pop!
 
-	draw = () =>
-		if Move.path
+	draw: () =>
+		if @path
 			with love.graphics
 				.push!
 				.translate(Map.tx, Map.ty)
-				Move.drawRange!
-				Move.drawLine!
-				Move.drawLineArrow!
+				@drawRange!
+				@drawLine!
+				@drawLineArrow!
 				.pop!
 
-	update = (dt) =>
+	update: (dt) =>
 
-	mousepressed = (x, y, button) =>
+	mousepressed: (x, y, button) =>
 		if button == 1
-			if Move.path then Move.finish!
+			if @path then @finish!
 
-	finish = () =>
-		Move.finished = true
-		Move.obj.o\pushCommand({
-			type: "MOVE",
-			payload: Move.path
-		})
+	finish: () =>
+		@finished = true
+		super\finish(@path)
 
-	mousemoved = (x, y, dx, dy) =>
+	mousemoved: (x, y, dx, dy) =>
 
-	onGSChange = () =>
-		if not Move.finished
-			Move.updateCurrentPath!
+	onGSChange: () =>
+		if not @finished
+			@updateCurrentPath!
 
-	updateCurrentPath = () =>
+	updateCurrentPath: () =>
 		-- stop jumper path.filter crash
 		if M.identical(MU.sGS, MU.fGS)
 			return
 
-		path = Map.findPath(Move.obj.o.x, Move.obj.o.y, unpack(MU.fGS))
-		if path then Move.path = M.flatten(path)
+		path = Map.findPath(@o.x, @o.y, unpack(MU.fGS))
+		if path then @path = M.flatten(path)
 
 return Move
