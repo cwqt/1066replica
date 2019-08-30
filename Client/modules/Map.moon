@@ -48,12 +48,11 @@ Map.copyObject = (x, y) ->
 Map.moveObject = (sx, sy, ex, ey) ->
   if Map.current[ey][ex].object
     log.error("moveObject: Object exists at #{ex}, #{ey}")
+    print inspect Map.current[ey][ex].object
     return false
   
   copy = Map.copyObject(sx, sy)
   copy.x, copy.y = ex, ey
-  print inspect copy
-  print ex, ey
   Map.current[ey][ex].object = copy
   Map.current[sy][sx].object = nil
   log.debug("Moved #{Map.current[ey][ex].object.__class.__name} from #{sx},#{sy} to #{ex},#{ey}")
