@@ -20,7 +20,7 @@ class Entity extends Map.Object
       -- i: pre-select behaviour object
       -- m: instantiated behaviour
       ["MOVE"]: {
-        f: (data) -> @move(data)
+        f: (payload, x, y) -> @move(payload, x, y)
         i: (...) -> require("components.behaviours.Move")(...)
         m: nil
         icon: G.assets["icons"]["Move"]
@@ -87,9 +87,9 @@ class Entity extends Map.Object
       table.remove(G.PLAYERS[@belongsTo].commands, @cmdIndex)
       log.debug("#{@@.__name}(#{@uuid\sub(1,8)}) popped: #{@cmdIndex}")
 
-  move: (path) =>
-    print inspect path
-    print inspect(self, {depth:1})
+  move: (payload, x, y) =>
+    Map.print(Map.current)
+    @x, @y = x, y
     @timer\tween(2.5, self, {x: 10}, "linear", -> RM.next!)
   -- move: (path) =>
   --   if length <= @range 

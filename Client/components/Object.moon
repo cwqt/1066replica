@@ -1,5 +1,6 @@
 class Object
-  new: (@icon="█") =>
+  new: () =>
+  	@icon = "█"
   	@uuid = G.UUID!
   	@player = 0
   	@createdAt = love.timer.getTime()
