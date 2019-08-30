@@ -19,7 +19,10 @@ class Entity extends Map.Object
       -- i: pre-select behaviour object
       -- m: instantiated behaviour
       ["MOVE"]: {
-        f: (data) -> @move(data)--@move(data.x, data.y)
+        f: (data) ->
+          print inspect data --@move(data)--@move(data.x, data.y)
+          RM.next!
+
         i: -> require("components.behaviours.Move")(self)
         m: nil
         icon: G.assets["icons"]["Move"]

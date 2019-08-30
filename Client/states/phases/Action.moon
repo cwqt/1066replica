@@ -7,6 +7,8 @@ Action.init = () ->
 	Action.done!
 
 Action.enter = () ->
+	RM.collect()
+	RM.next()
 
 Action.exit = () ->
 

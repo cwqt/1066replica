@@ -46,7 +46,7 @@ RM.executeCmdQasPlayer = () ->
     k = (c % 2) > 0 and 1 or 2
     m = RM.playerCommands[k][1]
     if m == nil then continue
-    G.PLAYERS[k]["cmd"][m.type].f(m.payload, m.x, m.y)
+    G.PLAYERS[k].cmd[m.type].f(m.payload, m.x, m.y)
     table.remove(RM.playerCommands[k], 1)
     --Executed all
 
@@ -65,9 +65,12 @@ RM.next = () ->
     k = (c % 2) > 0 and 1 or 2
     m = RM.playerCommands[k][1]
     if m == nil then recurse!
-    o = Map.getObjAtPos(m.x, m.y)
-    o["cmd"][m.type](table.unpack(m.payload))
+    -- Remove command first before execution to prevent
+    -- infinite loop -> stack overflow from when next .next called
     table.remove(RM.playerCommands[k], 1)
+
+    o = Map.getObjAtPos(m.x, m.y)    
+    o.cmd[m.type].f(m.payload, m.x, m.y)
     return false -- not empty 
 
   return recurse!
