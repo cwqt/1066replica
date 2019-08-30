@@ -88,7 +88,7 @@ MU.drawUnits = () ->
 			if Map.current[y][x].object
 				o = Map.current[y][x].object
 				love.graphics.push()
-				tx, ty = MU.getUnitCenterPxPos(x, y)
+				tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
 
 				if Game\isPlanning() and M.identical({x, y}, MU.sGS or {})
 					love.graphics.translate((love.mouse.getX()-Map.tx-tx), (love.mouse.getY()-Map.ty-ty))
@@ -103,7 +103,7 @@ MU.drawUnits = () ->
 				--assume image 1:1
 				iw = o.icon_img\getWidth()
 				s = 0.55*MU.p/iw
-				love.graphics.draw(o.icon_img, (x-1)*MU.p+MU.p/2-.275*MU.p, (y-1)*MU.p+MU.p/2-.275*MU.p, 0, s, s)
+				love.graphics.draw(o.icon_img, tx-.275*MU.p, ty-.275*MU.p, 0, s, s)
 				love.graphics.setColor(0,0,0,1)
 				-- love.graphics.rectangle("line", (x-1)*p+p/2-.35*p, (y-1)*p+p/2-.35*p, 0.7*p, 0.7*p)
 				love.graphics.setColor(1,1,1,1)

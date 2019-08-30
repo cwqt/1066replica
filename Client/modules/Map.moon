@@ -52,6 +52,8 @@ Map.moveObject = (sx, sy, ex, ey) ->
   
   copy = Map.copyObject(sx, sy)
   copy.x, copy.y = ex, ey
+  print inspect copy
+  print ex, ey
   Map.current[ey][ex].object = copy
   Map.current[sy][sx].object = nil
   log.debug("Moved #{Map.current[ey][ex].object.__class.__name} from #{sx},#{sy} to #{ex},#{ey}")
@@ -65,6 +67,13 @@ Map.removeObjects = () ->
     for obj in *Map.deleteStack
       log.debug("Removed object #{obj.__class.__name}")
       Map.current[obj.y][obj.x].object = nil
+
+Map.update = (dt) ->
+  for y=1, Map.height
+    for x=1, Map.width
+      o = Map.getObjAtPos(x, y)
+      if o then
+        o\update(dt)
 
 Map.print = (map) ->
   yl = "  "

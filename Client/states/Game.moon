@@ -56,6 +56,7 @@ Game.enter  = (previous)   =>
 Game.update = (dt) =>
 	ui\update()
 	MU.update(dt)
+	Map.update(dt)
 	Game.timer\update(dt)
 	-- Notifications.update(dt)
 	PM[PM.current].update(dt)
