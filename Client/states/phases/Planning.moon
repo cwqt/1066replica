@@ -54,11 +54,9 @@ Planning.handleMovingObjects = (using nil) ->
 	m = G.PLAYERS[p].margin
 	-- Don't allow placements outside player margin
 	if p % 2 == 0
-		if dx <= Map.width-m
-			return	
+		if dx <= Map.width-m then return	
 	else
-		if dx >= m+1
-			return
+		if dx >= m+1 then return
 
 	sx, sy = unpack(MU.sGS)
 	ex, ey = unpack(MU.fGS)
@@ -70,7 +68,7 @@ Planning.handleMovingObjects = (using nil) ->
 		o\pushCommand({
 			type: "DIRECT_MOVE",
 			payload: {x: ex, y: ey},
-			x: o.x, y: o.y
+			x: sx, y: sy
 		})
 		MU.deselectGS()
 		return

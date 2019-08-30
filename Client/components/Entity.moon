@@ -76,7 +76,8 @@ class Entity extends Map.Object
     MU.deselectGS!
 
   pushCommand: (command) =>
-    command.x, command.y = @x, @y
+    command.x = command.x or @x
+    command.y = command.y or @y
     --cmdIndex == position in Player command list
     @cmdIndex = #G.PLAYERS[@belongsTo].commands + 1
     table.insert(G.PLAYERS[@belongsTo].commands, command)
