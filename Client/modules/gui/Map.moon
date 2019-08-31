@@ -155,12 +155,11 @@ MU.deselectGS = () ->
 
 MU.pushGSColor = (x, y, color) ->
 	gsc = Map.getGSAtPos(x, y).colorStack
-	if M.identical(color, gcs[#gcs]) then return
-	table.insert(gcs, color)
+	if M.identical(color, gsc[#gsc]) then return
+	table.insert(gsc, color)
 
 MU.popGSColor = (x, y) ->
 	gsc = Map.getGSAtPos(x, y).colorStack
-	if #gcs > 1
-		table.remove(gcs, #fcs)
+	if #gsc > 1 then table.remove(gsc, #gsc)
 
 return MU

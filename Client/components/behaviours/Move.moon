@@ -5,15 +5,21 @@ class Move extends Generic
 		super(...)
 		@route = {0,0}
 		@finished = false
+		@floodFilledSquares = {}
+
 		@updateCurrentPath!
+
+	unsetRange: () =>
+		for k, gs in ipairs(@floodFilledSquares) do
+			MU.popGSColor(gs[1], gs[2])
 
 	setRange: () =>
 		for y=1, Map.height
 			for x=1, Map.width
 				dist = Map.distanceBetweenPoints(@o.x, @o.y, x, y) or 999
 				if dist-1 < @o.range
-					gs = Map.getGSAtPos(x, y)
-					table.insert(gs.colorStack, {1,0,0,0.5})
+					MU.pushGSColor(x, y, {1,0,0,0.5})
+					table.insert(@floodFilledSquares, {x, y})
 
 	drawLine: () =>
 		love.graphics.setLineWidth(10)
@@ -57,6 +63,7 @@ class Move extends Generic
 			if @route then @finish!
 
 	finish: () =>
+		@unsetRange!
 		@finished = true
 		super\finish(@route)
 
