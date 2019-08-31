@@ -65,7 +65,6 @@ MU.drawMap = () ->
 			for x=1, #Map.current[1]
 				.print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)
 
-				
 				clrStack = Map.current[y][x].colorStack
 				.setColor(unpack(clrStack[#clrStack]))
 				.rectangle("fill", (x-1)*MU.p, (y-1)*MU.p, MU.p, MU.p)
@@ -85,11 +84,11 @@ MU.drawUnit = (o) ->
 MU.drawUnits = () ->
 	for y=1, #Map.current
 		for x=1, #Map.current[y]
-			if Map.current[y][x].object
-				o = Map.current[y][x].object
+			o = Map.getObjAtPos(x, y)
+			if o then
 				love.graphics.push()
 				tx, ty = MU.getUnitCenterPxPos(o.x, o.y)
-
+ 
 				if Game\isPlanning() and M.identical({x, y}, MU.sGS or {})
 					love.graphics.translate((love.mouse.getX()-Map.tx-tx), (love.mouse.getY()-Map.ty-ty))
 

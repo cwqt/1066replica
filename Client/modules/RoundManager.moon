@@ -70,7 +70,6 @@ RM.next = () ->
     table.remove(RM.playerCommands[k], 1)
 
     o = Map.getObjAtPos(m.x, m.y)    
-    print inspect o
     o.cmd[m.type].f(m.payload, m.x, m.y)
     return false -- not empty 
 

@@ -61,14 +61,12 @@ Planning.handleMovingObjects = (using nil) ->
 	sx, sy = unpack(MU.sGS)
 	ex, ey = unpack(MU.fGS)
 	o = Map.getObjAtPos(sx, sy)
-	o.x, o.y = ex, ey
-	-- success = Map.moveObject(sx, sy, ex, ey)
+	success = Map.moveObject(sx, sy, ex, ey)
 	if success
-		o = Map.getObjAtPos(unpack(MU.sGS))
 		o\pushCommand({
 			type: "DIRECT_MOVE",
 			payload: {x: ex, y: ey},
-			x: sx, y: sy
+			x: o.x, y: o.y
 		})
 		MU.deselectGS()
 		return

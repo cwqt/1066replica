@@ -1,26 +1,16 @@
 class Entity extends Map.Object
   new: (...) =>
     super(...)
-    @atk = 1
-    @def = 10
-    @mrl = 10
-    @hp  = 10
-    @states = {
-      ['current']: 'standing'
-      ['standing']: {}
-      ['charging']: {
-        distance: 4
-      }
-    }
     @timer = Timer!
     @range = 5
     @icon_img = G.assets["icons"][@.__class.__name]
+    @cmdIndex = nil
     @cmd = {
       -- f: action time what to do to the object
       -- i: pre-select behaviour object
       -- m: instantiated behaviour
       ["MOVE"]: {
-        f: (payload, x, y) -> @move(payload, x, y)
+        f: (payload, x, y) -> @move(self, payload, x, y)
         i: (...) -> require("components.behaviours.Move")(...)
         m: nil
         icon: G.assets["icons"]["Move"]
@@ -50,20 +40,6 @@ class Entity extends Map.Object
   draw: () =>
     super\draw()
 
-  -- requestUserInput: (type) =>
-  --   switch type 
-  --     when "TEST"
-  --       sendUserInput("HELLO")
-
-  -- sendUserInput: (input) =>
-  --   NM.sendDataToPeer({
-  --     type: "RECEIVE_DATA_INPUT",
-  --     payload: input
-  --   })
-
-  -- awaitUserInput: () =>
-  --   log.trace("Waiting for peer data for current command")
-
   requestCommandInput: (_type) =>
     PM["Command"].handlingUserInput = true
     PM["Command"].handlingCommand = _type
@@ -88,9 +64,7 @@ class Entity extends Map.Object
       table.remove(G.PLAYERS[@belongsTo].commands, @cmdIndex)
       log.debug("#{@@.__name}(#{@uuid\sub(1,8)}) popped: #{@cmdIndex}")
 
-  move: (payload, x, y) =>
-    Map.print(Map.current)
-    @x, @y = x, y
+  move: (payload) =>
     @timer\tween(2.5, self, {x: 10}, "linear", -> RM.next!)
   -- move: (path) =>
   --   if length <= @range 
@@ -125,14 +99,14 @@ class Entity extends Map.Object
   --     log.error("Path out of range: #{length} > #{@range}")
   --     return
 
-  attack: (object) =>
-    log.debug("Attacking #{object.__class.__name} at #{object.x}, #{object.y}")
-    dmg = math.ceil((@atk^2)/(@atk + object.def))
-    log.debug("Dealing #{dmg} damage")
-    object.hp -= dmg
-    log.debug("#{object.__class.__name} has #{object.hp}HP remaining")
-    if object.hp <= 0
-      object\die()
+  -- attack: (object) =>
+  --   log.debug("Attacking #{object.__class.__name} at #{object.x}, #{object.y}")
+  --   dmg = math.ceil((@atk^2)/(@atk + object.def))
+  --   log.debug("Dealing #{dmg} damage")
+  --   object.hp -= dmg
+  --   log.debug("#{object.__class.__name} has #{object.hp}HP remaining")
+  --   if object.hp <= 0
+  --     object\die()
 
   die: () =>
     @timer\destroy!

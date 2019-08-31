@@ -50,9 +50,14 @@ Map.moveObject = (sx, sy, ex, ey) ->
     log.error("moveObject: Object exists at #{ex}, #{ey}")
     return false
   
-  copy = Map.copyObject(sx, sy)
-  copy.x, copy.y = ex, ey
-  Map.current[ey][ex].object = copy
+  -- lua tables are simply references in memory,
+  -- copy the reference from one table position to another
+  -- assert(t1 == t2) = true
+  o = Map.current[sy][sx].object
+  o.x, o.y = ex, ey
+  Map.current[ey][ex].object = o
+  -- o is a reference to object in memory
+  -- must remove reference in sy, sx to object
   Map.current[sy][sx].object = nil
   log.debug("Moved #{Map.current[ey][ex].object.__class.__name} from { #{sx}, #{sy} } to { #{ex}, #{ey} }")
   return true
