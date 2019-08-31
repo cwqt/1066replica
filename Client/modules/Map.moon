@@ -58,6 +58,7 @@ Map.moveObject = (sx, sy, ex, ey) ->
   Map.current[ey][ex].object = o
   -- o is a reference to object in memory
   -- must remove reference in sy, sx to object
+  o = nil
   Map.current[sy][sx].object = nil
   log.debug("Moved #{Map.current[ey][ex].object.__class.__name} from { #{sx}, #{sy} } to { #{ex}, #{ey} }")
   return true
@@ -77,6 +78,21 @@ Map.update = (dt) ->
       o = Map.getObjAtPos(x, y)
       if o then
         o\update(dt)
+
+Map.returnAllUnits = () ->
+  t = {}
+  for y=1, Map.height
+    for x=1, Map.width
+      o = Map.getObjAtPos(x, y)
+      if o then t[#t+1] = o
+  return t
+
+Map.returnAllPlayerUnits = (player) ->
+  units = Map.returnAllUnits!
+  for k, unit in pairs(units) do
+    if unit.belongsTo != player then
+      table.remove(units, k)
+  return units
 
 Map.print = (map) ->
   yl = "  "
@@ -118,20 +134,20 @@ Map.findPath = (sx, sy, ex, ey) ->
   pathFinderMap[sy][sx] = 0
   
   grid = Grid(pathFinderMap)
-  myFinder = Pathfinder(grid, 'JPS', 0)
-  myFinder\setMode("ORTHOGONAL")
-  path, length = myFinder\getPath(sx, sy, ex, ey)
+  finder = Pathfinder(grid, 'JPS', 0)
+  finder\setMode("ORTHOGONAL")
+  path, length = finder\getPath(sx, sy, ex, ey)
   
   if path then
-    path\filter()
     log.debug(('Path found! Length: %.2f')\format(length))
-    -- for node, count in path\iter() do
-    --   log.debug(('x: %d, y: %d')\format(node.x, node.y))    
-    t = {}
-    path\fill()
-    for node, _ in path\iter() do
-      t[#t+1] = {node.x, node.y}
-    return t, length
+    -- route: full path from sx,sy to ex,ey
+    -- nodes: points at which there is a change in direction
+    route = {}
+    nodes = {}
+    for node, _ in path\iter() do route[#route+1] = {node.x, node.y}
+    path\filter()
+    for node, _ in path\iter() do nodes[#nodes+1] = {node.x, node.y}
+    return route, nodes, length
   else
     log.error("No path found!")
     return nil

@@ -6,7 +6,6 @@ class Player
     log.info("Created new Player #{@player}")
     @px, @py = 0, 1
     @margin = margin
-    @units = {}
     @commands = {}
     
     @cmd = {
@@ -19,7 +18,6 @@ class Player
           o = G.returnObjectFromType(payload.type, payload.payload or {})
           o.belongsTo = @player
           Map.addObject(x, y, o)
-          table.insert(@units, o.uuid)
           -- @units[o.uuid] = o
       }
       ["DIRECT_MOVE"]: {

@@ -70,47 +70,47 @@ UnitSelect.done = () =>
 					payload: nil						
 				}
 			},
-			-- {
-			-- 	type: "CREATE_OBJECT",
-			-- 	payload: {
-			-- 		type: "ENTITY",
-			-- 		payload: nil						
-			-- 	}
-			-- },
-			-- {
-			-- 	type: "CREATE_OBJECT",
-			-- 	payload: {
-			-- 		type: "ENTITY",
-			-- 		payload: nil						
-			-- 	}
-			-- },
-			-- {
-			-- 	type: "CREATE_OBJECT",
-			-- 	payload: {
-			-- 		type: "ENTITY",
-			-- 		payload: nil						
-			-- 	}
-			-- },{
-			-- 	type: "CREATE_OBJECT",
-			-- 	payload: {
-			-- 		type: "ENTITY",
-			-- 		payload: nil						
-			-- 	}
-			-- }
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			},{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			}
 		}
 	})
-	-- G.PLAYERS[G.opponent]\pushCommand({
-	-- 	type: "SET_INITIAL_UNITS",
-	-- 	payload: {
-	-- 		{
-	-- 			type: "CREATE_OBJECT",
-	-- 			payload: {
-	-- 				type: "ENTITY",
-	-- 				payload: nil						
-	-- 			}
-	-- 		}
-	-- 	}
-	-- })
+	G.PLAYERS[G.opponent]\pushCommand({
+		type: "SET_INITIAL_UNITS",
+		payload: {
+			{
+				type: "CREATE_OBJECT",
+				payload: {
+					type: "ENTITY",
+					payload: nil						
+				}
+			}
+		}
+	})
 
 
 	UnitSelect.playerDone = true

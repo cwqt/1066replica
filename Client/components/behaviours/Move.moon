@@ -3,7 +3,7 @@ Generic = require("components.behaviours.Generic")
 class Move extends Generic
 	new: (...) =>
 		super(...)
-		@path = {0,0,0,0}
+		@route = {0,0}
 		@finished = false
 		@updateCurrentPath!
 
@@ -11,12 +11,12 @@ class Move extends Generic
 
 	drawLine: () =>
 		love.graphics.setLineWidth(10)
-		x = [((p-1) * MU.p)+MU.p/2 for _, p in ipairs @path]
+		x = [((p-1) * MU.p)+MU.p/2 for _, p in ipairs M.flatten(@nodes)]
 		love.graphics.line(x)
 
 	drawLineArrow: () =>
 		-- get last 4 elements in path
-		p = @path
+		p = @route
 		x = {p[#p-3], p[#p-2], p[#p-1], p[#p]}
 		-- get amount of rotation required for arrow
 		-- to face end direction
@@ -35,7 +35,7 @@ class Move extends Generic
 			.pop!
 
 	draw: () =>
-		if @path
+		if @route
 			with love.graphics
 				.push!
 				.translate(Map.tx, Map.ty)
@@ -48,11 +48,11 @@ class Move extends Generic
 
 	mousepressed: (x, y, button) =>
 		if button == 1
-			if @path then @finish!
+			if @route then @finish!
 
 	finish: () =>
 		@finished = true
-		super\finish(@path)
+		super\finish(@route)
 
 	mousemoved: (x, y, dx, dy) =>
 
@@ -62,10 +62,12 @@ class Move extends Generic
 
 	updateCurrentPath: () =>
 		-- stop jumper path.filter crash
-		if M.identical(MU.sGS, MU.fGS)
-			return
+		if M.identical(MU.sGS, MU.fGS) then return
 
-		path = Map.findPath(@o.x, @o.y, unpack(MU.fGS))
-		if path then @path = M.flatten(path)
+		route, nodes, length = Map.findPath(@o.x, @o.y, unpack(MU.fGS))
+		if route then
+			@route = M.flatten(route)
+			@nodes = nodes
+			@length = length
 
 return Move

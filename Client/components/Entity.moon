@@ -10,7 +10,7 @@ class Entity extends Map.Object
       -- i: pre-select behaviour object
       -- m: instantiated behaviour
       ["MOVE"]: {
-        f: (payload, x, y) -> @move(self, payload, x, y)
+        f: (payload, x, y) -> @move(payload, x, y)
         i: (...) -> require("components.behaviours.Move")(...)
         m: nil
         icon: G.assets["icons"]["Move"]
@@ -65,7 +65,23 @@ class Entity extends Map.Object
       log.debug("#{@@.__name}(#{@uuid\sub(1,8)}) popped: #{@cmdIndex}")
 
   move: (payload) =>
-    @timer\tween(2.5, self, {x: 10}, "linear", -> RM.next!)
+    p = payload
+    -- remove first 2 positions
+    -- because theyre our start position
+    for i=1, 2 do table.remove(p, 1)
+    recurse = ->
+      -- when no more positions to move to
+      -- run the next command
+      if #p == 0 then
+          RM.next!
+          return
+
+      x, y = p[1], p[2]
+      for i=1, 2 do table.remove(p, 1)
+      @timer\tween(.5, self, {x: x, y: y}, "linear", -> recurse!)    
+      
+    recurse!
+
   -- move: (path) =>
   --   if length <= @range 
   --     if path
