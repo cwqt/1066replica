@@ -78,8 +78,8 @@ RM.next = () ->
 RM.clear = () ->
   for _, player in ipairs(G.PLAYERS) do
     player.commands = {}
-  -- for unit in pairs(Map.returnAllUnits()) do
-  --   unit.cmdIndex = nil
+  for _, unit in pairs(Map.returnAllUnits()) do
+    unit.cmdIndex = nil
   log.trace("Cleared all commands and cmdIndexes")
 
 RM.requestPeerCommands = () ->

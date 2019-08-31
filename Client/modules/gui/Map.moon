@@ -63,6 +63,7 @@ MU.drawMap = () ->
 		-- Draw co-ord numbers
 		for y=1, #Map.current
 			for x=1, #Map.current[1]
+				.setColor(1,1,1,0.5)
 				.print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)
 
 				clrStack = Map.current[y][x].colorStack
@@ -129,7 +130,6 @@ MU.mousemoved = (x, y, dx, dy) ->
 	MU.hoverGS(x, y)
 	-- MU.pfGS.colorStack[#Map.current[y][x].colorStack] = nil
 
-
 MU.mousepressed = (x, y, button) ->
 	if not MU.mouseOverMap and not PM["Command"].ui.mouseIsOver then
 		MU.deselectGS!
@@ -152,5 +152,15 @@ MU.deselectGS = () ->
 		log.debug("Deselected #{inspect MU.sGS} :: #{MU.sGSo.__class.__name}")
 		MU.sGS = nil
 		MU.sGSo = nil
+
+MU.pushGSColor = (x, y, color) ->
+	gsc = Map.getGSAtPos(x, y).colorStack
+	if M.identical(color, gcs[#gcs]) then return
+	table.insert(gcs, color)
+
+MU.popGSColor = (x, y) ->
+	gsc = Map.getGSAtPos(x, y).colorStack
+	if #gcs > 1
+		table.remove(gcs, #fcs)
 
 return MU

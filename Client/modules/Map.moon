@@ -127,7 +127,16 @@ Map.getSimplePFMap = (map) ->
         tt[y][x]= 0
 
   return tt
-  
+
+Map.distanceBetweenPoints = (sx, sy, ex, ey) ->
+  pathFinderMap = Map.getSimplePFMap(Map.current)
+  pathFinderMap[sy][sx] = 0  
+  grid = Grid(pathFinderMap)
+  finder = Pathfinder(grid, 'JPS', 0)
+  finder\setMode("ORTHOGONAL")
+  path, length = finder\getPath(sx, sy, ex, ey)
+  if path then return length
+
 Map.findPath = (sx, sy, ex, ey) ->
   pathFinderMap = Map.getSimplePFMap(Map.current)
   -- Allow movement from start position (e.g. if object at start)

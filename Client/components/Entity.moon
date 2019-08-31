@@ -2,7 +2,7 @@ class Entity extends Map.Object
   new: (...) =>
     super(...)
     @timer = Timer!
-    @range = 5
+    @range = 4
     @icon_img = G.assets["icons"][@.__class.__name]
     @cmdIndex = nil
     @cmd = {
@@ -66,54 +66,20 @@ class Entity extends Map.Object
 
   move: (payload) =>
     p = payload
-    -- remove first 2 positions
-    -- because theyre our start position
     for i=1, 2 do table.remove(p, 1)
-    recurse = ->
-      -- when no more positions to move to
-      -- run the next command
+    sx, sy = @x, @y
+    recurse = (fx, fy) ->
+      -- todo: some checking for enemies, terrian speed calculation
+      -- charging, etc.
+
       if #p == 0 then
+          Map.moveObject(sx, sy, fx, fy)
           RM.next!
           return
-
       x, y = p[1], p[2]
       for i=1, 2 do table.remove(p, 1)
-      @timer\tween(.5, self, {x: x, y: y}, "linear", -> recurse!)    
-      
+      @timer\tween(.5, self, {x: x, y: y}, "linear", -> recurse(x, y))    
     recurse!
-
-  -- move: (path) =>
-  --   if length <= @range 
-  --     if path
-  --       log.debug("Moving #{@.__class.__name} from #{inspect(path[1])} to #{inspect(path[#path])}")
-  --       for i=1, #path do
-  --         -- Command is inserted into a stack, so if the object
-  --         -- is copied (as in moveObject), the object referenced
-  --         -- in the stack will remain the same, so @x/@y are static
-  --         -- so we update it here
-  --         @x, @y = path[i][1], path[i][2]
-
-  --         -- Table edge cases checking
-  --         xub = L.clamp(@x+1, 1, Map.width)
-  --         xlb = L.clamp(@x-1, 1, Map.width)
-          
-  --         -- Probe left and right of current position for enemies
-  --         for i=xlb, xub do
-  --           o = Map.current[@y][i].object
-  --           if o and o != self
-  --             if o.player != @player and o.player != nil
-  --               log.debug("Enemy infront of curent position (#{@x}, #{@y}) at #{o.x}, #{o.y}, attacking!")
-  --               @attack(o)
-  --               return
-
-  --         -- Finished moving
-  --         if i == #path then return
-
-  --         -- Move object to next position
-  --         Map.moveObject({path[i][1], path[i][2]},{path[i+1][1], path[i+1][2]})
-  --   else
-  --     log.error("Path out of range: #{length} > #{@range}")
-  --     return
 
   -- attack: (object) =>
   --   log.debug("Attacking #{object.__class.__name} at #{object.x}, #{object.y}")

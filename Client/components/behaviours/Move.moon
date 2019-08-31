@@ -7,7 +7,13 @@ class Move extends Generic
 		@finished = false
 		@updateCurrentPath!
 
-	drawRange: () =>
+	setRange: () =>
+		for y=1, Map.height
+			for x=1, Map.width
+				dist = Map.distanceBetweenPoints(@o.x, @o.y, x, y) or 999
+				if dist-1 < @o.range
+					gs = Map.getGSAtPos(x, y)
+					table.insert(gs.colorStack, {1,0,0,0.5})
 
 	drawLine: () =>
 		love.graphics.setLineWidth(10)
@@ -39,7 +45,7 @@ class Move extends Generic
 			with love.graphics
 				.push!
 				.translate(Map.tx, Map.ty)
-				@drawRange!
+				-- @drawRange!
 				@drawLine!
 				@drawLineArrow!
 				.pop!
@@ -61,11 +67,13 @@ class Move extends Generic
 			@updateCurrentPath!
 
 	updateCurrentPath: () =>
+		@setRange!
 		-- stop jumper path.filter crash
 		if M.identical(MU.sGS, MU.fGS) then return
 
 		route, nodes, length = Map.findPath(@o.x, @o.y, unpack(MU.fGS))
 		if route then
+			if length > @o.range then return
 			@route = M.flatten(route)
 			@nodes = nodes
 			@length = length
