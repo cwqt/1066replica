@@ -30,7 +30,7 @@ Game.enter  = (previous)   =>
 				.text.font = G.fonts["mono"][16]
 				.text.color = {1,1,1,1}
 		})
-		UI.Container(1,3,8,1, {
+		UI.Container(1,2,8,1, {
 			with UI.Button("End planning", 1,2,2,1, "finishplanning")
 				.text.font = G.fonts["default"][16]
 				.text.alignh = "center"

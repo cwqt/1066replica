@@ -2,13 +2,25 @@ margin = 6
 
 class Player
   new: (@player) =>
+    @icon = G.assets.icons["Roman"]
     @morale = 100
     log.info("Created new Player #{@player}")
     @px, @py = 0, 1
     @margin = margin
     @commands = {}
-    @color = G.COLORS[@player]
-    @icon = G.assets.icons["Roman"]
+    -- hacky
+    if G.playerIsOnLeft(@player) then
+      @color = {
+        normal: G.COLORS["red"]
+        light: G.COLORS["red-light"]
+        dark: G.COLORS["red-dark"]
+      }
+    else
+      @color = {
+        normal: G.COLORS["blue"]
+        light: G.COLORS["blue-light"]
+        dark: G.COLORS["blue-dark"]
+      }
     
     @cmd = {
       ["SET_INITIAL_UNITS"]: {
@@ -29,7 +41,6 @@ class Player
     }
 
   pushCommand: (command) =>
-    -- print inspect command
     log.debug("Player(#{@player}) added command: #{command.type}")
     table.insert(@commands, command)
 

@@ -25,10 +25,13 @@ G.UNITS = {
 	["ENTITY"]: Entity,
 }
 
-G.COLOR = {0.1,0.1,0.1,1}
 G.COLORS = {
-	[1]: {0.53, 0.10, 0.19, 1},
-	[2]: {0,0,1,1}
+	['red-light']: 	RGB(227, 67 , 99) 
+	['red']: 				RGB(153, 0  , 0)
+	['red-dark']: 	RGB(126, 28 , 48)
+	['blue-light']: RGB(93 , 133, 255)
+	['blue']: 			RGB(0  , 64 , 255)
+	['blue-dark']: 	RGB(0  , 41 , 163)
 }
 
 G.image = love.graphics.newImage("media/ase/entity-move.png") 
@@ -57,9 +60,9 @@ F = {
 -- Function to provide fonts in sizes:
 sizes = {16, 27, 50, 100, 216}
 for k, _ in pairs(F) do G.fonts[k] = {}
-for k, font in pairs(F)
+for fontname, font in pairs(F)
 	for _, size in pairs(sizes)
-		G.fonts[k][size] = love.graphics.newFont(font, size)
+		G.fonts[fontname][size] = love.graphics.newFont(font, size)
 
 --helper functions
 G.UUID = () ->

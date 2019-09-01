@@ -1,6 +1,6 @@
 Command = {}
 Command.ui = {}
-Command.ui.radius = 80
+Command.ui.radius = 70
 Command.ui.canDraw = false
 Command.ui.mouseIsOver = false
 Command.ui.hoveredSegment = nil

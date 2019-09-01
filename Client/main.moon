@@ -22,6 +22,7 @@ export CD         = require("modules.CollDet")
 export UM         = require("modules.UnitManager")
 export PM         = require("modules.PhaseManager")
 export MU         = require("modules.gui.Map")
+export Infobar    = require("modules.gui.Infobar")
 export Debugger   = require("modules.Debugger")
 
 export Player     = require("components.Player")
@@ -34,11 +35,7 @@ export UnitSelect = require("states.UnitSelect")
 
 export G          = require("G")
 
-export RGB = (r,g,b,a) ->
-  return {r/255, g/255, b/255, a}
-
 love.load         = () ->
-  love.graphics.setDefaultFilter("nearest")
   os.execute("clear")
   love.math.setRandomSeed(love.timer.getTime())
   log.debug("Game started: #{love.timer.getTime()}")
@@ -52,6 +49,7 @@ love.update       = (dt) ->
   NM.update(dt)
   Debugger.update(dt)
   lb.update(dt)
+  -- print inspect({love.window.getMode!})
 
 love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)

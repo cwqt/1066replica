@@ -66,9 +66,11 @@ Planning.getPlanningAreaRange = () ->
 
 Planning.pushPlanningArea = () ->
 	fs, fe = Planning.getPlanningAreaRange!
+	c = M.clone(G.PLAYERS[G.self].color.normal)
+	c[4] = 0.2
 	for y=1, Map.height
 		for x=fs, fe do
-			MU.pushGSColor(x, y, G.COLORS[G.self])
+			MU.pushGSColor(x, y, c)
 
 Planning.popPlanningArea = () ->
 	fs, fe = Planning.getPlanningAreaRange!

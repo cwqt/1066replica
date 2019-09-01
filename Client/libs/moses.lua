@@ -306,6 +306,28 @@ function M.deepClone(obj)
   return res
 end
 
+M.identical = function(a, b)
+  if a == nil or b == nil then
+    return false
+  end
+  for i = 1, #a do
+    local _continue_0 = false
+    repeat
+      if a[i] == b[i] then
+        _continue_0 = true
+        break
+      else
+        return false
+      end
+      _continue_0 = true
+    until true
+    if not _continue_0 then
+      break
+    end
+  end
+  return true
+end
+
 --- Adjusts the value at a given key using a function or a value. In case `f` is a function, 
 -- it should be prototyped `f(v)`. It does not mutate the given table, but rather
 -- returns a new array. In case the given `key` does not exist in `t`, it throws an error.

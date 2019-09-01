@@ -22,7 +22,7 @@ UI.df = love.graphics.newFont(14)
 	-- bpw  box pixel width
 	-- bph  box pixel height
 	-- tx   true x position
-	-- ty   true y position
+	-- ty   true y positionxx
 
 UI.theme = {
 	bg: {0.5, 0.5, 0.5, 1}
@@ -60,7 +60,7 @@ class Master
 		UI.id = {}
 		love.keyboard.setKeyRepeat(false)
 		@bpw, @bph = @bw*@bs, @bh*@bs
-		love.window.setMode(@bpw, @bph, {msaa:4})
+		love.window.setMode(@bpw, @bph, {msaa:8, highdpi:true})
 		for container in *@elements do container\activate(@bs)
 
 	update: (dt) =>
