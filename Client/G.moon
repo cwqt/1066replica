@@ -11,6 +11,9 @@ G.instantiatePlayers = (_self, opponent) ->
 	G.PLAYERS[_self]    = Player(_self)
 	G.PLAYERS[opponent] = Player(opponent)
 
+G.playerIsOnLeft = (player) ->
+	return (player % 2) > 0 and true or false
+
 G.returnObjectFromType = (str, params) ->
 	if not G.UNITS[str]
 		log.error("No such unit #{str} indexed.")
@@ -38,6 +41,7 @@ G.assets = {
 		["Fire"]:    love.graphics.newImage("media/img/icons/Fire.png")
 		["Testudo"]: love.graphics.newImage("media/img/icons/Testudo.png")
 		["Spear"]:   love.graphics.newImage("media/img/icons/Spear.png")
+		["Roman"]: 	 love.graphics.newImage("media/img/icons/Roman.png")
 		["point"]:   love.graphics.newImage("media/img/icons/point.png")
 	}
 	["bg"]: love.graphics.newImage("media/img/bg.png")
@@ -56,7 +60,6 @@ for k, _ in pairs(F) do G.fonts[k] = {}
 for k, font in pairs(F)
 	for _, size in pairs(sizes)
 		G.fonts[k][size] = love.graphics.newFont(font, size)
-
 
 --helper functions
 G.UUID = () ->

@@ -15,7 +15,7 @@ Game.init = () =>
 Game.enter  = (previous)   =>
 	log.state("Entered Game")
 
-	export ui = UI.Master(8, 5, 140, {
+	export ui = UI.Master(8, 4.5, 160, {
 		UI.Container(1,1,8,2, {
 			with UI.Text("", 1,1,3,4, "debug")
 				.text.font = G.fonts["mono"][16]
@@ -64,8 +64,8 @@ Game.update = (dt) =>
 Game.draw   = ()   =>
 	-- Field.draw()
 	ui\draw()
-	PM[PM.current].draw()
 	MU.draw()
+	PM[PM.current].draw()
 	-- Notifications.draw()
 
 Game.isPlanning 	 = () => return PM.current == "Planning" and true or false
@@ -90,7 +90,8 @@ Game.mousepressed = (x, y, button) =>
 
 Game.keypressed = (key) =>
 	ui\keypressed(key)
-	PM.keypressed(x, y, button)
+	MU.keypressed(key)
+	PM.keypressed(key)
 
 Game.textinput = (t) =>
 	ui\textinput(t)

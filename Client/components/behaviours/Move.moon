@@ -6,7 +6,6 @@ class Move extends Generic
 		@route = {0,0}
 		@finished = false
 		@floodFilledSquares = {}
-
 		@updateCurrentPath!
 
 	unsetRange: () =>
@@ -22,9 +21,12 @@ class Move extends Generic
 					table.insert(@floodFilledSquares, {x, y})
 
 	drawLine: () =>
-		love.graphics.setLineWidth(10)
 		x = [((p-1) * MU.p)+MU.p/2 for _, p in ipairs M.flatten(@nodes)]
-		love.graphics.line(x)
+		with love.graphics
+			.setLineWidth(10)
+			.setColor(1,1,1,1)
+			.line(x)
+			.setLineWidth(1)
 
 	drawLineArrow: () =>
 		-- get last 4 elements in path

@@ -7,6 +7,8 @@ class Player
     @px, @py = 0, 1
     @margin = margin
     @commands = {}
+    @color = G.COLORS[@player]
+    @icon = G.assets.icons["Roman"]
     
     @cmd = {
       ["SET_INITIAL_UNITS"]: {

@@ -2,15 +2,16 @@ io.stdout\setvbuf("no")
 
 export M          = require("libs.moses")     -- table functions
 export L          = require("libs.lume")      -- lume maths
-export inspect    = require("libs.inspect")   -- table pretty print
-export lb         = require("libs.lovebird")  -- online debugger
+export Z          = require("libs.deep")      -- z-indexer
 export Gamestate  = require("libs.gamestate") -- gamestates, duh
 export Timer      = require("libs.timer")     -- " "
 export ANet       = require("libs.Affair/network")
-export log        = require("libs.log")       -- logging
 export TSerial    = require("libs.TSerial")   -- serialisation
-export deep       = require("libs.deep")      -- z-indexer
-export anim8      = require("libs.anim8")
+export Camera     = require("libs.Camera")    -- STALKERX Camera
+export inspect    = require("libs.inspect")   -- table pretty print
+export lb         = require("libs.lovebird")  -- online debugger
+export log        = require("libs.log")       -- logging
+export anim8      = require("libs.anim8")     -- sprite animation
 export socket     = require("socket")         -- socket.gettime()
 
 export Map        = require("modules.Map")
@@ -33,7 +34,11 @@ export UnitSelect = require("states.UnitSelect")
 
 export G          = require("G")
 
+export RGB = (r,g,b,a) ->
+  return {r/255, g/255, b/255, a}
+
 love.load         = () ->
+  love.graphics.setDefaultFilter("nearest")
   os.execute("clear")
   love.math.setRandomSeed(love.timer.getTime())
   log.debug("Game started: #{love.timer.getTime()}")
@@ -43,7 +48,7 @@ love.load         = () ->
 
 love.frame = 0
 love.update       = (dt) ->
-  -- if dt < 1/60 then love.timer.sleep(1/60 - dt)
+  if dt < 1/60 then love.timer.sleep(1/60 - dt)
   NM.update(dt)
   Debugger.update(dt)
   lb.update(dt)
@@ -51,6 +56,7 @@ love.update       = (dt) ->
 love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)
   Debugger.draw()
+  Z.execute()
 
 love.keypressed   = (key, code, isrepeat) ->
   if key == "q" then love.event.quit()

@@ -32,7 +32,7 @@ Map.addObject = (x, y, obj) ->
   if Map.current[y][x].object == nil
     Map.current[y][x].object = obj
     obj.x, obj.y = x, y
-    log.info("Inserted #{obj.__class.__name}(#{obj.player}) at #{x}, #{y}")
+    log.info("Inserted #{obj.__class.__name}(#{obj.belongsTo}) at #{x}, #{y}")
   else
     log.error("Object already exists at #{x}, #{y}")
 

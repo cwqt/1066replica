@@ -58,7 +58,7 @@ utf8char_after = (s, idx) ->
 class Master
 	new: (@bw, @bh, @bs, @elements={}) =>
 		UI.id = {}
-		love.keyboard.setKeyRepeat(true)
+		love.keyboard.setKeyRepeat(false)
 		@bpw, @bph = @bw*@bs, @bh*@bs
 		love.window.setMode(@bpw, @bph, {msaa:4})
 		for container in *@elements do container\activate(@bs)

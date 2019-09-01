@@ -8,6 +8,7 @@ Planning.init = () ->
 
 Planning.enter = () ->
 	RM.nextRound()
+	Planning.pushPlanningArea!
 	-- Notifications.push 1,
 	-- 	'Planning - Position troops',
 	-- 	G.assets["icons"]["move"],
@@ -23,25 +24,11 @@ Planning.done = () ->
 	PM.switch("Action")
 
 Planning.exit = () ->
+	Planning.popPlanningArea!
 
 Planning.update = (dt) ->
 
 Planning.draw = () ->
-	with love.graphics
-		.push!
-		.translate(Map.tx, Map.ty)
-		-- left/right highlight
-		x = G.self >= 2 and Map.width-G.PLAYERS[G.self].margin or 0
-		y, w, h = 0, G.PLAYERS[G.self].margin, #Map.current
-		c = M.clone(G.COLORS[G.self])
-		-- Make slightly transparent
-		c[4] = 0.5
-		.setColor(c)
-		.scale(MU.p, MU.p)
-		-- Draw bg block to highlight placement options
-		.rectangle("fill", x, y, w, h)
-		.setColor(1,1,1,1)
-		.pop!
 
 Planning.handleMovingObjects = (using nil) ->
 	-- Attempt to place selected object at new location
@@ -71,8 +58,27 @@ Planning.handleMovingObjects = (using nil) ->
 		MU.deselectGS()
 		return
 
+-- Planning placement area highlighting
+Planning.getPlanningAreaRange = () ->
+	fs = G.playerIsOnLeft(G.self) and 1 or Map.width-G.PLAYERS[G.self].margin
+	fe = G.playerIsOnLeft(G.self) and G.PLAYERS[G.self].margin or Map.width
+	return fs, fe
+
+Planning.pushPlanningArea = () ->
+	fs, fe = Planning.getPlanningAreaRange!
+	for y=1, Map.height
+		for x=fs, fe do
+			MU.pushGSColor(x, y, G.COLORS[G.self])
+
+Planning.popPlanningArea = () ->
+	fs, fe = Planning.getPlanningAreaRange!
+	for y=1, Map.height
+		for x=fs, fe do
+			MU.popGSColor(x, y)
+
 Planning.mousemoved = (x, y, dx, dy) ->
 Planning.mousepressed = (x, y, button) ->
+	if not MU.mouseOverMap then return
 	if button == 1
 		if MU.sGSo == nil
 				MU.selectGS(MU.fGS)
