@@ -15,8 +15,8 @@ RM.nextRound = () ->
   RM.turn += 1
   if not RM.turn == 0
     Notifications.push(1, "Round #{RM.turn} - Select commands", nil, nil, G.COLOR)
-    if not G.isLocal
-      RM.setCommandingStatusOnServer(true)
+    if not G.isLocal then RM.setCommandingStatusOnServer(true)
+  log.trace("Round #{RM.turn} start.")
 
 -- collect moves from player insert into cmdStack
 -- once all commands are collected from each player we sort
@@ -57,6 +57,7 @@ RM.next = () ->
     -- Executed all
     if (#RM.playerCommands[1] + #RM.playerCommands[2]) == 0
       log.trace("Finished command stack (.next)")
+      PM.getCurrentPhase!.done!
       return true --empty
 
     -- Flip-flop between p1 and p2 commands, executing first

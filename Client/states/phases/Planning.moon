@@ -5,10 +5,13 @@ Planning.duration = 30
 Planning.init = () ->
 	RM.collect!
 	RM.executeCmdQasPlayer!
+	for k, player in pairs(G.PLAYERS) do
+		c = player\calculateRemainingUnitCount()
+		player.unitCount = c
 
 Planning.enter = () ->
 	RM.nextRound()
-	Planning.pushPlanningArea!
+	Planning.pushPlanningAreaColor!
 	-- Notifications.push 1,
 	-- 	'Planning - Position troops',
 	-- 	G.assets["icons"]["move"],
@@ -24,7 +27,7 @@ Planning.done = () ->
 	PM.switch("Action")
 
 Planning.exit = () ->
-	Planning.popPlanningArea!
+	Planning.popPlanningAreaColor!
 
 Planning.update = (dt) ->
 
@@ -64,7 +67,7 @@ Planning.getPlanningAreaRange = () ->
 	fe = G.playerIsOnLeft(G.self) and G.PLAYERS[G.self].margin or Map.width
 	return fs, fe
 
-Planning.pushPlanningArea = () ->
+Planning.pushPlanningAreaColor = () ->
 	fs, fe = Planning.getPlanningAreaRange!
 	c = M.clone(G.PLAYERS[G.self].color.normal)
 	c[4] = 0.2
@@ -72,7 +75,7 @@ Planning.pushPlanningArea = () ->
 		for x=fs, fe do
 			MU.pushGSColor(x, y, c)
 
-Planning.popPlanningArea = () ->
+Planning.popPlanningAreaColor = () ->
 	fs, fe = Planning.getPlanningAreaRange!
 	for y=1, Map.height
 		for x=fs, fe do
@@ -99,6 +102,5 @@ Planning.mousepressed = (x, y, button) ->
 Planning.mousereleased = (x, y, button) ->
 Planning.keypressed = (key) ->
 Planning.onGSChange = () ->
-
 
 return Planning 

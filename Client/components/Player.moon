@@ -1,4 +1,4 @@
-margin = 6
+margin = 2
 
 class Player
   new: (@player) =>
@@ -7,6 +7,8 @@ class Player
     log.info("Created new Player #{@player}")
     @px, @py = 0, 1
     @margin = margin
+    @units = {}
+    @unitCount = 0
     @commands = {}
     -- hacky
     if G.playerIsOnLeft(@player) then
@@ -32,13 +34,19 @@ class Player
           o = G.returnObjectFromType(payload.type, payload.payload or {})
           o.belongsTo = @player
           Map.addObject(x, y, o)
-          -- @units[o.uuid] = o
+          @units[o.uuid] = o
       }
       ["DIRECT_MOVE"]: {
         f: (payload, x, y) ->
           Map.moveObject(x, y, payload.x, payload.y)
       }
     }
+
+  calculateRemainingUnitCount: () =>
+    c = 0
+    for _, entity in pairs(@units) do
+      c += entity.unit.count
+    return c
 
   pushCommand: (command) =>
     log.debug("Player(#{@player}) added command: #{command.type}")

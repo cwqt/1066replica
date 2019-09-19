@@ -27,6 +27,7 @@ export Debugger   = require("modules.Debugger")
 
 export Player     = require("components.Player")
 export Entity     = require("components.Entity")
+export Unit       = require("components.Unit")
 
 export MainMenu   = require("states.MainMenu")
 export Game       = require("states.Game")
@@ -49,7 +50,6 @@ love.update       = (dt) ->
   NM.update(dt)
   Debugger.update(dt)
   lb.update(dt)
-  -- print inspect({love.window.getMode!})
 
 love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)

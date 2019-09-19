@@ -5,6 +5,7 @@ class Entity extends Map.Object
     @range = 4
     @icon_img = G.assets["icons"][@.__class.__name]
     @cmdIndex = nil
+    @unit = Unit()
     @cmd = {
       -- f: action time what to do to the object
       -- i: pre-select behaviour object
@@ -35,10 +36,12 @@ class Entity extends Map.Object
 
   update: (dt) =>
     @timer\update(dt)
+    @unit\update(dt)
     super\update(dt)
 
   draw: () =>
-    super\draw()
+    @unit\draw!
+    super\draw!
 
   requestCommandInput: (_type) =>
     PM["Command"].handlingUserInput = true

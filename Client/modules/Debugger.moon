@@ -17,6 +17,7 @@ class Debugger.graph
       @t = @delay
 
   draw: () =>
+    love.graphics.setFont(G.fonts["mono"][16])
     love.graphics.push()
     love.graphics.translate(@x-5, @y+55)
     love.graphics.setColor(0,0,0,100)
@@ -30,7 +31,7 @@ class Debugger.graph
     if #@points > 2 
       love.graphics.line(unpack(t))
       love.graphics.setColor(255,255,255,100)
-      love.graphics.print(("%.4g")\format(@points[#@points]) .. string.rep("-",22), -45, math.ceil(-(50/math.max(unpack(@points)))*@points[#@points])-8)
+      love.graphics.print(("%.4g")\format(@points[#@points]) .. string.rep("-",12), -45, math.ceil(-(50/math.max(unpack(@points)))*@points[#@points])-8)
       love.graphics.setColor(255,255,255,255)
     love.graphics.pop()
 

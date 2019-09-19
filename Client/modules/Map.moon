@@ -68,9 +68,12 @@ Map.removeObject = (x, y) ->
 
 Map.removeObjects = () ->
   if #Map.deleteStack >= 1
-    for obj in *Map.deleteStack
+    for gs in *Map.deleteStack
       log.debug("Removed object #{obj.__class.__name}")
-      Map.current[obj.y][obj.x].object = nil
+      o = Map.getObjAtPos(gs.x, gs.y)
+      p = GAME.PLAYERS[o.belongsTo]
+      table.remove(p.units, o.uuid)
+      Map.current[gs.y][gs.x].object = nil
 
 Map.update = (dt) ->
   for y=1, Map.height
@@ -172,5 +175,8 @@ Map.getDirection = (sx, sy, ex, ey) ->
   dx = sx - ex
   dy = ey - sy
   return dx, dy
+
+Map.getAllTilesWithinRangeOfPoint = (x, y, w, h) ->
+
 
 return Map

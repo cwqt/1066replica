@@ -4,7 +4,7 @@ PM = {}
 PM.register = (phase) ->
 	PM[phase] = require("states.phases.#{phase}")
 	PM[phase].firstTime = true
-	PM[phase].__name__ = phases
+	PM[phase].__name__ = phase
 	log.phase("Registered #{phase}")
 
 PM.switch = (phase) ->

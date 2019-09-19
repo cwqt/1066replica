@@ -1,18 +1,22 @@
 MU = {}
-MU.sGS = nil
-MU.sGSo = nil
-MU.fGS = {1,1}
-MU.pfGS = {1,1}
-MU.mouseOverMap = false
-MU.timer = Timer!
-MU.p = 40
-MU.x, MU.y, MU.s = 0, 0, 1
 
 MU.load = () ->
+	MU.sGS = nil
+	MU.sGSo = nil
+	MU.fGS = {1,1}
+	MU.pfGS = {1,1}
+	MU.mouseOverMap = false
+	MU.timer = Timer!
+
+	-- bx= total blocks of width MU.p at res
+	MU.bx, MU.by = 40, 22.5
+	MU.p = love.graphics.getWidth()/MU.bx
+	MU.x, MU.y, MU.s = 0, 0, 1
+
 	Map.tx = (love.graphics.getWidth()-(Map.width*MU.p))/2
 	Map.ty = (love.graphics.getHeight()-(Map.height*MU.p))-MU.p/4
-	Map.tw = Map.width*MU.p
-	Map.th = Map.height*MU.p
+	Map.tw = MU.bx*MU.p
+	Map.th = MU.by*MU.p
 	Infobar.load()
 
 	print Map.tx, Map.ty, Map.tw, Map.th
@@ -68,6 +72,10 @@ MU.drawUnits = () ->
 			o = Map.getObjAtPos(x, y)
 			if o then
 				MU.drawUnit(o)
+				love.graphics.push!
+				love.graphics.translate(0, -200)
+				o\draw!
+				love.graphics.pop!
 
 MU.drawUnit = (o) ->
 	with love.graphics
@@ -81,6 +89,7 @@ MU.drawUnit = (o) ->
 		.pop!
 
 MU.drawColoredCircleIcon = (x, y, r, icon, color) ->
+	icon\setFilter( 'linear', 'linear' )
 	with love.graphics
 		.push!
 		.setColor(1,1,1,1)
@@ -101,11 +110,12 @@ MU.drawColoredCircleIcon = (x, y, r, icon, color) ->
 		.pop!
 
 MU.drawEdgeBars = () ->
+	edgeWidth = 3
 	for k, player in pairs(G.PLAYERS)
 		x = (k-1) * Map.tw
 		offset = 1
 		if G.playerIsOnLeft(player.player) then
-			offset = -(offset+5)
+			offset = -(offset+edgeWidth)
 		for i=1, Map.height
 			with love.graphics
 				.push!
@@ -115,8 +125,8 @@ MU.drawEdgeBars = () ->
 				if MU.sGS
 					if MU.sGS[2] == i
 						.setColor(RGB(227, 67, 99, 1))			
-				.rectangle("fill", offset, 0, 5, MU.p)
-				.rectangle("line", offset, 0, 5, MU.p)
+				.rectangle("fill", offset, 0, edgeWidth, MU.p)
+				.rectangle("line", offset, 0, edgeWidth, MU.p)
 				.pop!
 
 MU.updateDebugInfo = () ->

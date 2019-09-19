@@ -44,6 +44,8 @@ Game.enter  = (previous)   =>
 		}, "test")
 	})
 
+	print inspect {love.window.getMode()}
+
 	UI.id["finishplanning"].onClick = -> PM["Planning"].done()
 	UI.id["nextround"].onClick = -> PM["Command"].done()
 
@@ -57,6 +59,7 @@ Game.update = (dt) =>
 	ui\update()
 	MU.update(dt)
 	Map.update(dt)
+	Infobar.update(dt)
 	Game.timer\update(dt)
 	-- Notifications.update(dt)
 	PM[PM.current].update(dt)

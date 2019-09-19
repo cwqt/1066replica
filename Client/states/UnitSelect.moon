@@ -8,7 +8,7 @@ UnitSelect.units = {}
 UnitSelect.init = () =>
 	self.__name__ = "UnitSelect"
 	log.state("Initialised UnitSelect")
-	map = Map.generate(29, 6)
+	map = Map.generate(6, 6)
 	Map.set(map)
 
 UnitSelect.enter  = (previous)   =>

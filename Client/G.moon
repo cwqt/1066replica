@@ -26,8 +26,8 @@ G.UNITS = {
 }
 
 G.COLORS = {
-	['red-light']: 	RGB(227, 67 , 99) 
-	['red']: 				RGB(153, 0  , 0)
+	['red-light']: 	RGB(299, 0  , 0)--RGB(227, 67 , 99) 
+	['red']: 				RGB(212, 0  , 0)
 	['red-dark']: 	RGB(126, 28 , 48)
 	['blue-light']: RGB(93 , 133, 255)
 	['blue']: 			RGB(0  , 64 , 255)
@@ -45,7 +45,11 @@ G.assets = {
 		["Testudo"]: love.graphics.newImage("media/img/icons/Testudo.png")
 		["Spear"]:   love.graphics.newImage("media/img/icons/Spear.png")
 		["Roman"]: 	 love.graphics.newImage("media/img/icons/Roman.png")
+		--
 		["point"]:   love.graphics.newImage("media/img/icons/point.png")
+		["larger"]: 	love.graphics.newImage("media/img/icons/larger.png")
+		["smaller"]: 	love.graphics.newImage("media/img/icons/smaller.png")
+		["unit"]: 	love.graphics.newImage("media/img/unit.png")
 	}
 	["bg"]: love.graphics.newImage("media/img/bg.png")
 }
@@ -53,12 +57,13 @@ G.assets = {
 F = {
 	title:   "media/fonts/title.ttf"
 	default: "media/fonts/default.ttf"
-	bold:    "media/fonts/bold.ttf"
+	-- bold:    "media/fonts/bold.ttf"
 	mono:    "media/fonts/mono.ttf"
-	text:    "media/fonts/Romanica.ttf"
+	-- text:    "media/fonts/Romanica.ttf"
+	main:    "media/fonts/main.ttf"
 }
 -- Function to provide fonts in sizes:
-sizes = {16, 27, 50, 100, 216}
+sizes = {16, 27, 36, 50, 100, 180, 216}
 for k, _ in pairs(F) do G.fonts[k] = {}
 for fontname, font in pairs(F)
 	for _, size in pairs(sizes)
