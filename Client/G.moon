@@ -32,12 +32,52 @@ G.COLORS = {
 	['blue-light']: RGB(93 , 133, 255)
 	['blue']: 			RGB(0  , 64 , 255)
 	['blue-dark']: 	RGB(0  , 41 , 163)
+	['grey']:       RGB(100, 100, 100) 
+}
+
+G.TERRAINS = {
+	[1]: {
+		name: "Road",
+		image: love.graphics.newImage("media/img/terrains/road.png")	
+		buffs: {
+			mov: 1.2,
+			atk: 1.2,
+			def: 1,
+		}
+	}
+	[2]: {
+		name: "Grass",
+		image: love.graphics.newImage("media/img/terrains/grass.png")	
+		buffs: {
+			mov: 0.9,
+			atk: 1,
+			def: 1
+		}
+	}
+	[3]: {
+		name: "Mud",
+		image: love.graphics.newImage("media/img/terrains/mud.png")	
+		buffs: {
+			mov: 0.7,
+			atk: 0.8,
+			def: 0.8
+		}
+	}
+	[4]: {
+		name: "Rocky",
+		image: love.graphics.newImage("media/img/terrains/rocky.png")	
+		buffs: {
+			mov: 0.5,
+			atk: 0.6,
+			def: 0.6,
+		}
+	}
 }
 
 G.image = love.graphics.newImage("media/ase/entity-move.png") 
-
 G.assets = {
 	["icons"]: {
+		["Object"]:  love.graphics.newImage("media/img/icons/Entity.png")
 		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
 		["Move"]:    love.graphics.newImage("media/img/icons/Move.png")
 		["Fortify"]: love.graphics.newImage("media/img/icons/Fortify.png")
@@ -47,9 +87,9 @@ G.assets = {
 		["Roman"]: 	 love.graphics.newImage("media/img/icons/Roman.png")
 		--
 		["point"]:   love.graphics.newImage("media/img/icons/point.png")
-		["larger"]: 	love.graphics.newImage("media/img/icons/larger.png")
-		["smaller"]: 	love.graphics.newImage("media/img/icons/smaller.png")
-		["unit"]: 	love.graphics.newImage("media/img/unit.png")
+		["larger"]:  love.graphics.newImage("media/img/icons/larger.png")
+		["smaller"]: love.graphics.newImage("media/img/icons/smaller.png")
+		["unit"]: 	 love.graphics.newImage("media/img/unit.png")
 	}
 	["bg"]: love.graphics.newImage("media/img/bg.png")
 }

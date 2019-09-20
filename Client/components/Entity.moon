@@ -3,7 +3,6 @@ class Entity extends Map.Object
     super(...)
     @timer = Timer!
     @range = 4
-    @icon_img = G.assets["icons"][@.__class.__name]
     @cmdIndex = nil
     @unit = Unit()
     @cmd = {
@@ -33,6 +32,14 @@ class Entity extends Map.Object
         icon: G.assets["icons"]["Spear"]
       }
     }
+    @ATK = 1  -- attack
+    @DEF = 1  -- defence
+    @SPD = 1  -- speed
+    @STA = 1  -- stamina
+    @RNG = 1  -- range
+    @CRES = 1 -- cavalry resistance
+    @RRES = 1 -- ranged resistance
+    @MRES = 1 -- melee resistance
 
   update: (dt) =>
     @timer\update(dt)

@@ -22,6 +22,7 @@ export CD         = require("modules.CollDet")
 export UM         = require("modules.UnitManager")
 export PM         = require("modules.PhaseManager")
 export MU         = require("modules.gui.Map")
+export MP         = require("modules.MapParser")
 export Infobar    = require("modules.gui.Infobar")
 export Debugger   = require("modules.Debugger")
 

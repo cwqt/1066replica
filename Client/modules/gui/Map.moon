@@ -47,7 +47,9 @@ MU.drawMap = () ->
 		.setLineStyle("rough")
 		for y=1, #Map.current
 			for x=1, #Map.current[1]
-				.setColor(1,1,1,0.5)
+				-- draw heightmap
+				.setColor(1,1,1, Map.current[y][x].height/3)
+				.rectangle("fill", (x-1)*MU.p, (y-1)*MU.p, MU.p, MU.p)
 				-- .print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)
 				-- set grid square bg colour as top of stack
 				clrStack = Map.current[y][x].colorStack
@@ -85,7 +87,10 @@ MU.drawUnit = (o) ->
 		if Game\isPlanning() and M.identical({o.x, o.y}, MU.sGS or {})
 			.translate((love.mouse.getX()-Map.tx-tx), (love.mouse.getY()-Map.ty-ty))
 
-		MU.drawColoredCircleIcon(tx, ty, (MU.p/3), o.icon_img, G.PLAYERS[o.belongsTo].color.normal)
+		c = G.COLORS["grey"]
+		if o.belongsTo != 0 -- not neutral object
+			c = G.PLAYERS[o.belongsTo].color.normal
+		MU.drawColoredCircleIcon(tx, ty, (MU.p/3), o.icon_img, c)
 		.pop!
 
 MU.drawColoredCircleIcon = (x, y, r, icon, color) ->

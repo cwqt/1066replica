@@ -8,8 +8,9 @@ UnitSelect.units = {}
 UnitSelect.init = () =>
 	self.__name__ = "UnitSelect"
 	log.state("Initialised UnitSelect")
-	map = Map.generate(6, 6)
-	Map.set(map)
+	MP.setMapFromFile(require("maps.1"))
+	-- map = Map.generate(6, 6)
+	-- Map.set(map)
 
 UnitSelect.enter  = (previous)   =>
 	log.state("Entered UnitSelect")
