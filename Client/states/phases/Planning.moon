@@ -34,12 +34,13 @@ Planning.update = (dt) ->
 Planning.draw = () ->
 
 Planning.handleMovingObjects = (using nil) ->
+	log.trace("handling")
 	-- Attempt to place selected object at new location
 	-- Check if desired placement location within player margin
 	dx = MU.fGS[1]
 	p = MU.sGSo.belongsTo
 	-- Only be able to move objects that belong to us
-	if not p == G.self then return 
+	if not p == G.self then return
 	
 	m = G.PLAYERS[p].margin
 	-- Don't allow placements outside player margin
@@ -85,11 +86,18 @@ Planning.mousemoved = (x, y, dx, dy) ->
 Planning.mousepressed = (x, y, button) ->
 	if not MU.mouseOverMap then return
 	if button == 1
-		if MU.sGSo == nil
-				MU.selectGS(MU.fGS)
-				return
+		-- Only allow player to select own units
+		o = MU.fGS
+		o = Map.getObjAtPos(unpack(o))
+		if o then if o.belongsTo != G.self then return
 
-		if M.identical(MU.sGS, MU.fGS) then
+		-- Select a GS if none selected
+		if MU.sGSo == nil
+			MU.selectGS(MU.fGS)
+			return
+
+		-- Check if we're attempting to place down in original position
+		if M.identical(MU.sGS or {}, MU.fGS) then
 			MU.deselectGS!
 			return
 

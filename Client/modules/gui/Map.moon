@@ -47,8 +47,18 @@ MU.drawMap = () ->
 		.setLineStyle("rough")
 		for y=1, #Map.current
 			for x=1, #Map.current[1]
+				-- draw terrain icons
+				.push!
+				.translate((x-1)*MU.p, (y-1)*MU.p)
+				.setColor(1,1,1,1)
+				.scale(1.6, 1.6)
+				.draw(G.TERRAINS[Map.current[y][x].terrain].image, 0, 0)
+				.pop!
 				-- draw heightmap
-				.setColor(1,1,1, Map.current[y][x].height/3)
+
+
+				-- .setColor(0,0,0, Map.current[y][x].height/2)
+				.setColor(0,0,0, 0.5)
 				.rectangle("fill", (x-1)*MU.p, (y-1)*MU.p, MU.p, MU.p)
 				-- .print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)
 				-- set grid square bg colour as top of stack

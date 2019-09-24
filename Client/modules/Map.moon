@@ -50,7 +50,7 @@ Map.moveObject = (sx, sy, ex, ey) ->
     log.error("moveObject: Object exists at #{ex}, #{ey}")
     return false
   
-  -- lua tables are simply references in memory,
+  -- lua tables are references in memory,
   -- copy the reference from one table position to another
   -- assert(t1 == t2) = true
   o = Map.current[sy][sx].object
@@ -68,12 +68,13 @@ Map.removeObject = (x, y) ->
 
 Map.removeObjects = () ->
   if #Map.deleteStack >= 1
-    for gs in *Map.deleteStack
-      log.debug("Removed object #{obj.__class.__name}")
+    for key, gs in pairs(Map.deleteStack)
       o = Map.getObjAtPos(gs.x, gs.y)
-      p = GAME.PLAYERS[o.belongsTo]
-      table.remove(p.units, o.uuid)
+      p = G.PLAYERS[o.belongsTo]
+      p.units[o.uuid] = nil
       Map.current[gs.y][gs.x].object = nil
+      log.debug("Removed #{o.__class.__name}")
+      table.remove(Map.deleteStack, key)
 
 Map.update = (dt) ->
   for y=1, Map.height
@@ -81,6 +82,7 @@ Map.update = (dt) ->
       o = Map.getObjAtPos(x, y)
       if o then
         o\update(dt)
+  Map.removeObjects!
 
 Map.returnAllUnits = () ->
   t = {}

@@ -40,44 +40,42 @@ G.TERRAINS = {
 		name: "Road",
 		image: love.graphics.newImage("media/img/terrains/road.png")	
 		buffs: {
+			atk: 0.9,
 			mov: 1.2,
-			atk: 1.2,
-			def: 1,
+			def: 1.0
 		}
 	}
 	[2]: {
 		name: "Grass",
 		image: love.graphics.newImage("media/img/terrains/grass.png")	
-		buffs: {
-			mov: 0.9,
-			atk: 1,
-			def: 1
-		}
 	}
 	[3]: {
 		name: "Mud",
 		image: love.graphics.newImage("media/img/terrains/mud.png")	
-		buffs: {
-			mov: 0.7,
-			atk: 0.8,
-			def: 0.8
-		}
 	}
 	[4]: {
 		name: "Rocky",
 		image: love.graphics.newImage("media/img/terrains/rocky.png")	
-		buffs: {
-			mov: 0.5,
-			atk: 0.6,
-			def: 0.6,
-		}
+	}
+	[5]: {
+		name: "Water",
+		image: love.graphics.newImage("media/img/terrains/water.png")
+	}
+	[6]: {
+		name: "Deep water",
+		image: love.graphics.newImage("media/img/terrains/deep_water.png"),
+		passable: false
+	}
+	[7]: {
+		name: "Snow",
+		image: love.graphics.newImage("media/img/terrains/snow.png")
 	}
 }
 
 G.image = love.graphics.newImage("media/ase/entity-move.png") 
 G.assets = {
 	["icons"]: {
-		["Object"]:  love.graphics.newImage("media/img/icons/Entity.png")
+		["Object"]:  love.graphics.newImage("media/img/icons/Rock.png")
 		["Entity"]:  love.graphics.newImage("media/img/icons/Entity.png")
 		["Move"]:    love.graphics.newImage("media/img/icons/Move.png")
 		["Fortify"]: love.graphics.newImage("media/img/icons/Fortify.png")
