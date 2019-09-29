@@ -4,9 +4,9 @@ return {
 	width: 6,
 	height: 6,
 	objects: {
-		{type:"MAP_OBJECT", x:3, y:2},
-		{type:"MAP_OBJECT", x:3, y:3},
-		{type:"MAP_OBJECT", x:3, y:4},
+		-- {type:"MAP_OBJECT", x:3, y:2},
+		-- {type:"MAP_OBJECT", x:3, y:3},
+		-- {type:"MAP_OBJECT", x:3, y:4},
 	}
 	heightmap: {
 		{0.16, 0.33, 0.5, 0.66, 0.83, 1}

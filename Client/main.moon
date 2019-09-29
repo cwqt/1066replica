@@ -23,6 +23,7 @@ export UM         = require("modules.UnitManager")
 export PM         = require("modules.PhaseManager")
 export MU         = require("modules.gui.Map")
 export MP         = require("modules.MapParser")
+export Field      = require("modules.gui.Field")
 export Infobar    = require("modules.gui.Infobar")
 export Debugger   = require("modules.Debugger")
 
@@ -56,6 +57,7 @@ love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)
   Debugger.draw()
   Z.execute()
+  love.graphics.draw(G.bread, love.graphics.getWidth!-G.bread\getWidth!, 0)
 
 love.keypressed   = (key, code, isrepeat) ->
   if key == "q" then love.event.quit()

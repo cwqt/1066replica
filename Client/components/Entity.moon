@@ -48,11 +48,9 @@ class Entity extends Map.Object
 
   update: (dt) =>
     @timer\update(dt)
-    @unit\update(dt)
     super\update(dt)
 
   draw: () =>
-    @unit\draw!
     super\draw!
 
   requestCommandInput: (_type) =>
@@ -98,40 +96,64 @@ class Entity extends Map.Object
       return false
 
     isCharging = checkIfCharging!
+    nextTileWillAtk = false
 
-    recurse = (fx, fy) ->
-      -- Moved through entire path, move actual object
-      -- and run next command in command stack
-      if #p == 0 then
-        Map.moveObject(sx, sy, fx, fy)
-        RM.next!
-        return
+    checkIfEnemiesLRandAttack = (x, y) ->
+      -- Every move check tile infront and behind in x for an enemy
+      bx, by = L.clamp(x-1, 1, Map.current.width), y -- behind
+      ax, ay = L.clamp(x+1, 1, Map.current.width), y -- ahead
+      t = {bx, by, ax, ay}
+      -- If enemy, attack them
+      for i=1, #t-1, 2 do
+        o = Map.getObjAtPos(t[i], t[i+1])
+        if o then
+          if o.belongsTo != @belongsTo
+            -- @attack(o)
+            return true
+      return false
+
+    recurse = (cx, cy) ->
       -- Next position to move to
       x, y = p[1], p[2]
 
+      if #p >= 4 
+        -- Get direction vector
+        dx, dy = Map.getDirection(cx, cy, x, y)
+        -- Not moving in y plane
+        if dy != 0 then
+          -- Check 1 tile head of current position
+          ax = L.clamp(x+dx, 0, Map.current.width)
+          o = Map.getObjAtPos(ax, y)
+          if o then print o.__class.__name
+
+
+
+      -- Moved through entire path, move actual object
+      -- and run next command in command stack
+      if #p == 0 then
+        Map.moveObject(sx, sy, cx, cy)
+        checkIfEnemiesLRandAttack(@x, @y)
+        RM.next!
+        return
+
+
       for i=1, 2 do table.remove(p, 1)
       @timer\tween .5, self, {x: x, y: y}, "linear", ->
-        -- Every move check tile infront and behind in x for an enemy
-        bx, by = L.clamp(fx-1, 1, Map.current.width), fy -- behind
-        ax, ay = L.clamp(fx+1, 1, Map.current.width), fy -- ahead
-        print ax, ay
-        t = {bx, by, ax, ay}
-        -- If enemy, attack them
-        for i=1, #t-1, 2 do
-          o = Map.getObjAtPos(t[i], t[i+1])
-          if o then
-            if o.belongsTo != @belongsTo
-              @attack(o)
+        hasAtk = checkIfEnemiesLRandAttack(cx, cy)
+        if hasAtk
+          Map.moveObject(sx, sy, cx, cy)
+          RM.next!
+          return
+        recurse(x, y) 
 
-        recurse(x, y)  
     recurse(sx, sy)
 
-  attack: (object) =>
-    DMG = math.ceil((@stats.ATK^2)/(@stats.ATK + object.stats.DEF))
-    object.stats.HP -= DMG
-    log.debug("Dealt #{DMG}DMG to #{object.__class.__name} @ { #{object.x}, #{object.y} }")
-    if object.stats.HP <= 0
-      object\die()
+  attack: (enemy) =>
+    DMG = math.ceil((@stats.ATK^2)/(@stats.ATK + enemy.stats.DEF))
+    enemy.stats.HP -= DMG
+    log.debug("Dealt #{DMG}DMG to #{enemy.__class.__name} @ { #{enemy.x}, #{enemy.y} }")
+    if enemy.stats.HP <= 0
+      enemy\die()
 
   die: () =>
     @timer\destroy!

@@ -49,13 +49,20 @@ Game.enter  = (previous)   =>
 	UI.id["finishplanning"].onClick = -> PM["Planning"].done()
 	UI.id["nextround"].onClick = -> PM["Command"].done()
 
-	MU.load()
+	-- test = G.returnObjectFromType("ENTITY")
+	-- test.belongsTo = G.opponent
+	-- G.PLAYERS[test.belongsTo].units[test.uuid] = test
+	-- Map.addObject(4, 2, test)
+
+	MU.load!
 	-- Notifications.load()
 	PM.switch('Planning')
+	Field.load!
 
 --LOGIC============================================================
 
 Game.update = (dt) =>
+	Field.update(dt)
 	ui\update()
 	MU.update(dt)
 	Map.update(dt)
@@ -65,7 +72,7 @@ Game.update = (dt) =>
 	PM[PM.current].update(dt)
 
 Game.draw   = ()   =>
-	-- Field.draw()
+	Field.draw()
 	ui\draw()
 	MU.draw()
 	PM[PM.current].draw()

@@ -72,7 +72,7 @@ G.TERRAINS = {
 	}
 }
 
-G.image = love.graphics.newImage("media/ase/entity-move.png") 
+G.image = love.graphics.newImage("media/test.png") 
 G.assets = {
 	["icons"]: {
 		["Object"]:  love.graphics.newImage("media/img/icons/Rock.png")

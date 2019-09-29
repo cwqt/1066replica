@@ -84,10 +84,6 @@ MU.drawUnits = () ->
 			o = Map.getObjAtPos(x, y)
 			if o then
 				MU.drawUnit(o)
-				love.graphics.push!
-				love.graphics.translate(0, -200)
-				o\draw!
-				love.graphics.pop!
 
 MU.drawUnit = (o) ->
 	with love.graphics
@@ -100,6 +96,7 @@ MU.drawUnit = (o) ->
 		c = G.COLORS["grey"]
 		if o.belongsTo != 0 -- not neutral object
 			c = G.PLAYERS[o.belongsTo].color.normal
+
 		MU.drawColoredCircleIcon(tx, ty, (MU.p/3), o.icon_img, c)
 		.pop!
 
