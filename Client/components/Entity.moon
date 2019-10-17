@@ -4,7 +4,7 @@ class Entity extends Map.Object
     @timer = Timer!
     @range = 4
     @cmdIndex = nil
-    @unit = Unit()
+    @unit = Unit(self)
     @cmd = {
       -- f: action time what to do to the object
       -- i: pre-select behaviour object
@@ -125,7 +125,6 @@ class Entity extends Map.Object
           ax = L.clamp(x+dx, 0, Map.current.width)
           o = Map.getObjAtPos(ax, y)
           if o then print o.__class.__name
-
 
 
       -- Moved through entire path, move actual object

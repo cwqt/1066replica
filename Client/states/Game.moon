@@ -14,6 +14,8 @@ Game.init = () =>
 
 Game.enter  = (previous)   =>
 	log.state("Entered Game")
+	Game.startTime = love.timer.getTime!
+	Game.endTime = 0
 
 	export ui = UI.Master(8, 4.5, 160, {
 		UI.Container(1,1,8,2, {
@@ -49,10 +51,10 @@ Game.enter  = (previous)   =>
 	UI.id["finishplanning"].onClick = -> PM["Planning"].done()
 	UI.id["nextround"].onClick = -> PM["Command"].done()
 
-	-- test = G.returnObjectFromType("ENTITY")
-	-- test.belongsTo = G.opponent
-	-- G.PLAYERS[test.belongsTo].units[test.uuid] = test
-	-- Map.addObject(4, 2, test)
+	test = G.returnObjectFromType("ENTITY")
+	test.belongsTo = G.opponent
+	G.PLAYERS[test.belongsTo].units[test.uuid] = test
+	Map.addObject(6, 1, test)
 
 	MU.load!
 	-- Notifications.load()
@@ -72,10 +74,13 @@ Game.update = (dt) =>
 	PM[PM.current].update(dt)
 
 Game.draw   = ()   =>
+	love.graphics.print(math.floor(love.timer.getTime! - Game.startTime), love.graphics.getWidth!-200,5)
+
 	Field.draw()
 	ui\draw()
 	MU.draw()
 	PM[PM.current].draw()
+
 	-- Notifications.draw()
 
 Game.isPlanning 	 = () => return PM.current == "Planning" and true or false
@@ -102,6 +107,7 @@ Game.keypressed = (key) =>
 	ui\keypressed(key)
 	MU.keypressed(key)
 	PM.keypressed(key)
+	Field.keypressed(key)
 
 Game.textinput = (t) =>
 	ui\textinput(t)

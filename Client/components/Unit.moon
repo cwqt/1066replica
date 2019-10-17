@@ -1,5 +1,5 @@
 class Unit
-	new: () =>
+	new: (@o) =>
 		@count = 5
 		@image = G.image
 		@timer = Timer!		

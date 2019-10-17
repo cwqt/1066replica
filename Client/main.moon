@@ -57,7 +57,6 @@ love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)
   Debugger.draw()
   Z.execute()
-  love.graphics.draw(G.bread, love.graphics.getWidth!-G.bread\getWidth!, 0)
 
 love.keypressed   = (key, code, isrepeat) ->
   if key == "q" then love.event.quit()

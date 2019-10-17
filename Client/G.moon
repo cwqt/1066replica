@@ -90,6 +90,7 @@ G.assets = {
 		["unit"]: 	 love.graphics.newImage("media/img/unit.png")
 	}
 	["bg"]: love.graphics.newImage("media/img/bg.png")
+	["grunge-circle"]: love.graphics.newImage("media/img/grunge-circle-2.png")
 }
 
 F = {

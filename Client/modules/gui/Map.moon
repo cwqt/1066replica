@@ -23,7 +23,7 @@ MU.load = () ->
 
 MU.update = (dt) ->
 	MU.timer\update(dt)
-	MU.updateDebugInfo()
+	MU.updateDebugInfo!
 
 MU.draw = () ->
 	with love.graphics
@@ -55,9 +55,8 @@ MU.drawMap = () ->
 				.draw(G.TERRAINS[Map.current[y][x].terrain].image, 0, 0)
 				.pop!
 				-- draw heightmap
-
-
 				-- .setColor(0,0,0, Map.current[y][x].height/2)
+
 				.setColor(0,0,0, 0.5)
 				.rectangle("fill", (x-1)*MU.p, (y-1)*MU.p, MU.p, MU.p)
 				-- .print("#{x},#{y}", (x-1)*MU.p, (y-1)*MU.p)

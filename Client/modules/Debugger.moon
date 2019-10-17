@@ -42,7 +42,7 @@ Debugger.load = (settings) ->
     Debugger.profiler.hookall("Lua")
     Debugger.profiler.start()
 
-  x = love.graphics.getWidth()+210
+  x = 1280-115
   Debugger.graphs = {
     Debugger.graph("FPS", x, 15, -> return love.timer.getFPS())
     Debugger.graph("DT (ms)", x, 95, -> return love.timer.getDelta()*1000)
