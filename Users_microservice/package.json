@@ -1,0 +1,27 @@
+{
+  "name": "Users_microservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel server.js --out-dir build",
+    "dev": "babel-watch server.js"
+  },
+  "keywords": [],
+  "author": "cxss",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.7",
+    "bson-objectid": "^1.3.0",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.1",
+    "mongodb": "^3.3.5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-watch": "^7.0.0",
+    "nodemon": "^2.0.1"
+  }
+}
