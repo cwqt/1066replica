@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel server.js --out-dir build",
-    "dev": "babel-watch server.js"
+    "start" : "nodemon --exec babel-node server.js"
   },
   "keywords": [],
   "author": "cxss",
