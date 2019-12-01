@@ -1,31 +1,25 @@
 import { Router } from 'express';
 const router = Router();
 
-router.get("/:username", (req, res) => {
+router.get("/:username", async (req, res) => {
   var username = req.params.username
   var password = req.query.password
   if (!password) { return res.json({"message": "No password provided"}) }
 
-  //find the user
-  db.collection("users").findOne({"name":username}, function(err, r) {
-    if (r != null) {
-      if (r.isLoggedIn) {
-        return res.json({"message":"User already logged in"})
-      }
+  //see if user exists
+  var user = await db.findUser(username)
+  if (user == null) { return res.json({"message": "User not found"}) }  
 
-      //verify passwords match
-      var isCorrect = bcrypt.compareSync(password, r.hash)
-      if (isCorrect) {
-        //set logged in status
-        db.collection("users").update({"_id":r._id}, {"$set": {"isLoggedIn": true}}, function(e,x) {
-          return res.json({"message": "Logged in!", "data": true})
-        }) 
-      } else {
-        return res.json({"message": "Incorrect password"})         
-      }
-    } else {
-      return res.json({"message": "User not found"})
-    }
+  //check if already logged in
+  if (user.isLoggedIn) { return res.json({"message":"User already logged in"})}
+
+  //Check password against hash
+  var isCorrect = bcrypt.compareSync(password, user.hash)
+  if (!isCorrect) {return res.json({"message":"Incorrect password"})}
+
+  //Log the user in
+  db.collection("users").update({"_id": user._id}, {"$set": {"isLoggedIn": true}}, function(err, r) {
+    return res.json({"message": "Logged in!", "data": true})      
   })
 })
 

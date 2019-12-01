@@ -17,18 +17,3 @@ const app = express();
 	app.use("/login", 	routes.login)
 	app.use("/logout", 	routes.logout)
 })();
-
-
-// // const findUser = async username => {
-// //   return new Promise((resolve, reject) => {
-// //     db.collection("users").findOne({"name":username}, function(err, r) {
-// //       resolve(r);
-// //     })
-// //   })
-// // }
-
-
-
-
-
-
