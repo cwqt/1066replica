@@ -1,6 +1,12 @@
 import validator  from "email-validator"
+import { Router } from 'express'
 
-import { Router } from 'express';
+import db         from "../db"
+import User       from "../models/User"
+
+import requiresToken  from "../middleware/auth"
+import rateLimit      from "../middleware/rateLimit"
+
 const router = Router();
 
 router.get("/", (req, res) => {
@@ -15,7 +21,7 @@ router.get("/", (req, res) => {
 
   var skips = page_size * (page_num - 1)
 
-  db.collection("users")
+  db.getDb().collection("users")
     .find({})
     .skip(skips)
     .limit(page_size)
@@ -25,20 +31,19 @@ router.get("/", (req, res) => {
   );
 })
 
-router.get("/:username", (req, res) => {
+router.get("/:username", async (req, res) => {
   var username = req.params.username
   if (!username) { res.json({"message": "No username provided"}) }
-
-  db.collection("users").findOne({"name":username}, function(err, r) {
-    if (r !== null) {
-      return res.json({"data":r})
-    } else {
-      return res.json({"message":"User not found"})
-    }
-  })
+  
+  user = await db.findUser(username)
+  if (user != null) {
+    return res.json({"data":r})
+  } else {
+    return res.json({"message":"User not found"})
+  }
 })
 
-router.post("/:username", (req, res) => {
+router.post("/:username", rateLimit, (req, res) => {
   var username = req.params.username
   var password = req.query.password
   var email    = req.query.email
@@ -67,8 +72,10 @@ router.post("/:username", (req, res) => {
   }
 
   (async () => {
+    _db = db.getDb()
+
     let doesUserAlreadyExist = new Promise((resolve, reject) => {
-      db.collection("users").findOne({"name":username}, function(err, r) {
+      _db.collection("users").findOne({"name":username}, function(err, r) {
         if (r != null) {
           return resolve(false);
         }
@@ -77,7 +84,7 @@ router.post("/:username", (req, res) => {
     })
 
     let doesEmailAlreadyExist = new Promise((resolve, reject) => {
-      db.collection("users").findOne({"email":email}, function(err, r) {
+      _db.collection("users").findOne({"email":email}, function(err, r) {
         if (r != null) {
           return resolve(false);
         }
@@ -94,7 +101,7 @@ router.post("/:username", (req, res) => {
 
     user = new User(username, password, email)
 
-    db.collection('users').insertOne(user, function(err, r) {
+    _db.collection('users').insertOne(user, function(err, r) {
       if (r.insertedCount == 1) {
         return res.status(200).json({"message":"User created!", "data": user._id})
       } 
@@ -103,8 +110,8 @@ router.post("/:username", (req, res) => {
   })();
 })
 
-// router.put("/:username", (req, res) => {
+router.put("/:username", rateLimit, requiresToken, (req, res) => {
 
-// })
+})
 
 export default router;

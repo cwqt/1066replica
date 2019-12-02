@@ -1,7 +1,13 @@
 import { Router } from 'express';
+import bcrypt     from "bcrypt"
+
+import rateLimit      from "../middleware/rateLimit"
+
+import db from "../db"
+
 const router = Router();
 
-router.get("/:username", async (req, res) => {
+router.get("/:username", rateLimit, async (req, res) => {
   var username = req.params.username
   var password = req.query.password
   if (!password) { return res.json({"message": "No password provided"}) }
@@ -18,7 +24,7 @@ router.get("/:username", async (req, res) => {
   if (!isCorrect) {return res.json({"message":"Incorrect password"})}
 
   //Log the user in
-  db.collection("users").update({"_id": user._id}, {"$set": {"isLoggedIn": true}}, function(err, r) {
+  db.getDb().collection("users").update({"_id": user._id}, {"$set": {"isLoggedIn": true}}, function(err, r) {
     return res.json({"message": "Logged in!", "data": true})      
   })
 })
