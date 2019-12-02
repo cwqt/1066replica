@@ -26,6 +26,7 @@ export MP         = require("modules.MapParser")
 export Field      = require("modules.gui.Field")
 export Infobar    = require("modules.gui.Infobar")
 export Debugger   = require("modules.Debugger")
+export USI        = require("modules.UserServerInteractor")
 
 export Player     = require("components.Player")
 export Entity     = require("components.Entity")
@@ -45,6 +46,8 @@ love.load         = () ->
   Debugger.load({useProfiler: false})
   Gamestate.registerEvents()
   Gamestate.switch(MainMenu)
+
+  USI.login("test", "test")
 
 love.frame = 0
 love.update       = (dt) ->
