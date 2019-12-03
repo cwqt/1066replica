@@ -89,7 +89,7 @@ G.assets = {
 		["smaller"]: love.graphics.newImage("media/img/icons/smaller.png")
 		["unit"]: 	 love.graphics.newImage("media/img/unit.png")
 	}
-	["bg"]: love.graphics.newImage("media/img/bg.png")
+	["bg"]: love.graphics.newImage("media/img/bg.jpg")
 	["grunge-circle"]: love.graphics.newImage("media/img/grunge-circle-2.png")
 }
 
@@ -115,6 +115,9 @@ G.UUID = () ->
     r = (x == "x") and (r + 1) or (r % 4) + 9
     return ("0123456789abcdef")\sub(r, r)
   return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", fn))
+
+G.hex = (hex, value) ->
+	return {tonumber(string.sub(hex, 2, 3), 16)/256, tonumber(string.sub(hex, 4, 5), 16)/256, tonumber(string.sub(hex, 6, 7), 16)/256, value or 1}
 
 G.pushRotate = (x, y, r) ->
   love.graphics.push()

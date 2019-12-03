@@ -13,11 +13,11 @@ router.get('/:username', async (req, res) => {
   if (!token)    { return res.json({"message": "No token provided"}) }
 
   //find the user
-  user = await db.findUser(username)
+  var user = await db.findUser(username)
   if (user == null) { res.json({"message":"User does not exist"}) }
 
   //blacklist the token
-  _db = db.getDb()
+  var _db = db.getDb()
   _db.collection("blacklisted_tokens").insertOne({"token":token}, function(err, r) {
     //set user status to logged out
     _db.collection("users").update({"_id":user._id}, {"$set": {"isLoggedIn": false}}, function(err, r) {

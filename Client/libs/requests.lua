@@ -7,6 +7,7 @@ local ltn12 = require('ltn12')
 local json = require('cjson.safe')
 --local xml = require('xml')
 local md5sum = require('md5') -- TODO: Make modular?
+local log = require('libs.log')
 -- local base64 = require('base64')
 
 local requests = {
@@ -89,6 +90,7 @@ end
 
 --Makes a request
 function _requests.make_request(request)
+  log.usi(request.method .." :: "..request.url)
   local response_body = {}
   local full_request = {
     method = request.method,

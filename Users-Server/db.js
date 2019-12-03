@@ -8,7 +8,7 @@ module.exports = {
 	    MongoClient.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true }, function( err, client ) {
 	  	  if (err) return console.log(err)
 	      _db  = client.db('db');
-	    	resolve()
+	    	resolve();
 	    });
   	})
   },
@@ -19,9 +19,9 @@ module.exports = {
 
   findUser: function(username) {
 	  return new Promise((resolve, reject) => {
-	    _db.collection("users").findOne({"name":username}, function(err, r) {
-	    	if (err) {reject(err)}
-	      resolve(r);
+	    _db.collection("users").findOne({"name":username}, function(err, res) {
+	    	if (err) { reject(err) }
+	      resolve(res);
 	    })
 	  })  	
   },
@@ -29,9 +29,9 @@ module.exports = {
  	//functionally same as findUser
   findBlacklistedToken: function(token) {
 	  return new Promise((resolve, reject) => {
-	    _db.collection("blacklisted_tokens").findOne({"token":token}, function(err, r) {
-	    	if (err) {reject(err)}
-	      resolve(r);
+	    _db.collection("blacklisted_tokens").findOne({"token":token}, function(err, res) {
+	    	if (err) { reject(err) }
+	      resolve(res);
 	    })
 	  })  	  	
   }

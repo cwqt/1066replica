@@ -24,7 +24,8 @@ local modes = {
   { name = "server", color = "\27[41m", },
   { name = "net",    color = "\27[44m", },
   { name = "state",  color = "\27[40m", },
-  { name = "phase",  color = "\27[35m"  }
+  { name = "phase",  color = "\27[35m"  },
+  { name = "usi",    color = "\27[1m" }
 }
 
 

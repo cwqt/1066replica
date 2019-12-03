@@ -35,9 +35,9 @@ router.get("/:username", async (req, res) => {
   var username = req.params.username
   if (!username) { res.json({"message": "No username provided"}) }
   
-  user = await db.findUser(username)
+  var user = await db.findUser(username);
   if (user != null) {
-    return res.json({"data":r})
+    return res.json({"data":user})
   } else {
     return res.json({"message":"User not found"})
   }

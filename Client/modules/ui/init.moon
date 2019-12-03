@@ -30,7 +30,7 @@ UI.theme = {
 	fgh: {1,1,1,1}
 	bgf: {0.3,0.3,0.3,1}
 	fgf: {1,1,1,1}
-	m: {10,10,10,10} -- up, right, down, left (cw)
+	m: {5,5,5,5} -- up, right, down, left (cw)
 	p: {10,10,10,10}
 	-- bg_image:
 	text: {
