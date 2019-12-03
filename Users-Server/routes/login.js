@@ -24,7 +24,7 @@ router.get("/:username", rateLimit, async (req, res) => {
   if (!isCorrect) {return res.json({"message":"Incorrect password"})}
 
   //Log the user in
-  db.getDb().collection("users").update({"_id": user._id}, {"$set": {"isLoggedIn": true}}, function(err, r) {
+  db.getDb().collection("users").updateOne({"_id": user._id}, {"$set": {"isLoggedIn": true}}, function(err, r) {
     return res.json({"message": "Logged in!", "data": true})      
   })
 })

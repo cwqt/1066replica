@@ -25,7 +25,8 @@ local modes = {
   { name = "net",    color = "\27[44m", },
   { name = "state",  color = "\27[40m", },
   { name = "phase",  color = "\27[35m"  },
-  { name = "usi",    color = "\27[1m" }
+  { name = "http",   color = "\27[1m" },
+  { name = "usi",    color = "\27[0;33m" },
 }
 
 

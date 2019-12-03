@@ -90,7 +90,7 @@ end
 
 --Makes a request
 function _requests.make_request(request)
-  log.usi(request.method .." :: "..request.url)
+  log.http(request.method .." :: "..request.url)
   local response_body = {}
   local full_request = {
     method = request.method,

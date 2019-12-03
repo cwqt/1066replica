@@ -14,15 +14,15 @@ router.get('/:username', async (req, res) => {
 
   //find the user
   var user = await db.findUser(username)
-  if (user == null) { res.json({"message":"User does not exist"}) }
+  if (user == null) { return res.json({"message":"User does not exist"}) }
 
   //blacklist the token
   var _db = db.getDb()
   _db.collection("blacklisted_tokens").insertOne({"token":token}, function(err, r) {
     //set user status to logged out
-    _db.collection("users").update({"_id":user._id}, {"$set": {"isLoggedIn": false}}, function(err, r) {
+    _db.collection("users").updateOne({"_id":user._id}, {"$set": {"isLoggedIn": false}}, function(err, r) {
       return res.json({"message": "Logged out", "data": true})
-    }) 
+    })
   })
 })
 

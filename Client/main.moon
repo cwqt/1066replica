@@ -44,7 +44,6 @@ love.load         = () ->
   love.math.setRandomSeed(love.timer.getTime())
   log.debug("Game started: #{love.timer.getTime()}")
   Debugger.load({useProfiler: false})
-  USI.getUser("test")
   Gamestate.registerEvents()
   Gamestate.switch(MainMenu)
 
@@ -78,6 +77,6 @@ love.errhand       = (msg) ->
   love.quit()
 
 love.quit          = () ->
-  USI.logout(USI.token)
+  USI.logout!
   log.fatal("Quitting...")
   love.event.quit()
