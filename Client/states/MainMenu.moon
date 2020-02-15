@@ -109,9 +109,8 @@ MainMenu.enter  = (previous) =>
 		Gamestate.switch(UnitSelect)
 
 	UI.id["startmulti"].onClick = ->
-		if isConnected
-			G.isLocal = false
-			Gamestate.switch(MWS)
+		G.isLocal = false
+		Gamestate.switch(MWS)
 
 	-- UI.id["startlocal"].onClick()
 
@@ -129,6 +128,7 @@ MainMenu.draw   = ()   =>
 		.pop!
 
 	ui\draw()
+	UC.draw()
 
 --INPUT============================================================
 

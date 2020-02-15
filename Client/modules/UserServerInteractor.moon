@@ -7,7 +7,7 @@ USI.user = nil
 
 USI.getUser = (username) ->
 	res = requests.get(USI._URL .. "/users/#{username}")
-	return res.json()
+	return res.json().data
 
 USI.setUser = (user) ->
 	log.usi("Set user:\n#{inspect(user)}")
@@ -29,14 +29,14 @@ USI.generateTokenForUser = (username) ->
 		USI.token = res.data
 		return USI.token
 
-USI.logout = (username) ->
+USI.logout = () ->
 	if USI.user
 		headers = {['x-access-token']: USI.token}
-		res = requests.get({USI._URL .. "/logout/#{username}", headers:headers})
+		res = requests.get({USI._URL .. "/logout/#{USI.user.name}", headers:headers})
 		res = res.json()
 		if res.data
+			log.usi("Logged out #{USI.user.name}")
 			USI.user = nil
-			log.usi("Logged out #{username}")
 		return res.data or false, res.message or ""
 
 USI.getToken = () ->

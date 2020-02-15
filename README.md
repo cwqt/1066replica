@@ -34,8 +34,17 @@ Matchmaking server written in MoonScript using a forked version of [Affair](http
 
 ## Users-Server
 
+### api
+
 `npm start`
 
-Express.js user accounts server written in ES6 compiled by Babel using a MongoDB database -- decoupled from matchmaking server for indepedent use.
+Express.js user accounts server written in ES6 compiled by Babel using a MongoDB database -- decoupled from matchmaking server for indepedent use. <https://ftp.cass.si/=UDO2gjMwA.png>
 
-![](https://ftp.cass.si/=UDO2gjMwA.png)
+`.env`
+
+* __MONGO_URI__: `mongodb+srv://...`, MongoDB server URL
+* __PRIVATE_KEY__: `"string"`, Authentication key
+
+### fe
+
+For purposes of learning Angular

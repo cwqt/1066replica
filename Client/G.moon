@@ -91,6 +91,7 @@ G.assets = {
 	}
 	["bg"]: love.graphics.newImage("media/img/bg.jpg")
 	["grunge-circle"]: love.graphics.newImage("media/img/grunge-circle-2.png")
+	["user-icon"]: love.graphics.newImage("media/img/user-icon.jpg")
 }
 
 F = {

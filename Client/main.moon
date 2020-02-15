@@ -27,6 +27,7 @@ export Field      = require("modules.gui.Field")
 export Infobar    = require("modules.gui.Infobar")
 export Debugger   = require("modules.Debugger")
 export USI        = require("modules.UserServerInteractor")
+export UC         = require("modules.gui.UserCard")
 
 export Player     = require("components.Player")
 export Entity     = require("components.Entity")
@@ -52,7 +53,7 @@ love.update       = (dt) ->
   if dt < 1/60 then love.timer.sleep(1/60 - dt)
   NM.update(dt)
   Debugger.update(dt)
-  lb.update(dt)
+--  lb.update(dt)
 
 love.draw         = () ->
   love.graphics.setBackgroundColor(0.2,0.2,0.2, 0.5)

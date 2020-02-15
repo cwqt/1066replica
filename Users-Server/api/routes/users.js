@@ -10,11 +10,9 @@ import rateLimit      from "../middleware/rateLimit"
 const router = Router();
 
 router.get("/", (req, res) => {
-  var page_size = Number(req.query.page_size)
-  var page_num  = Number(req.query.page_number)
+  var page_size = Number(req.query.page_size) || 50
+  var page_num  = Number(req.query.page_number) || 1
 
-  if (!page_size) { return res.json({"message": "No page_size provided"}) }
-  if (!page_num)  { return res.json({"message": "No page_number provided"}) }
   if (page_size > 50) {
     return res.json({"message":"Max 50 items per page"})
   }
